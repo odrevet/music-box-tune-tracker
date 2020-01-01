@@ -2,7 +2,7 @@ This is a minimal music box editor compatible with Fred Record Player,
 available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
 Fred Record Player can be uses to open fpr which can be converted to SCAD file, which can be 3D printed into
-real records to uses with the original Fisher Price Record Player.
+real records to use with the original Fisher Price Record Player.
 
 # Prerequisites
 
