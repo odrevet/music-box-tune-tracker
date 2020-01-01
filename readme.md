@@ -29,13 +29,11 @@ timidity -iA -B2,8 -Os1l -s 44100
 
 ## List Midi ports
 
-Under Linux, midi ports can be listed with
+Under Linux, midi 'Port name' can be listed with
 
 ```
 aplaymidi -l
-```
 
-```
  Port    Client name                      Port name
  14:0    Midi Through                     Midi Through Port-0
 128:0    TiMidity                         TiMidity port 0
@@ -63,7 +61,7 @@ optional arguments:
 python music-box-tracker.py --port 'TiMidity port 0'
 ```
 
-## Using music box tracker
+## Using music box tune tracker
 
 * Arrow key: Move the cursor
 * Space: add/remove a note at cursor
