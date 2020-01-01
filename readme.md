@@ -44,10 +44,6 @@ aplaymidi -l
 128:3    TiMidity                         TiMidity port 3
 ```
 
-The 'Port name' can be passed to the music box tracker via the --port option
-
- python music-box-tracker.py --port 'TiMidity port 0'
-
 ## Command line usage
 
 ```
@@ -59,6 +55,12 @@ optional arguments:
   --port PORT        name of the midi port to use
   --file FILE        fpr file to open
   --program PROGRAM  midi instrument code
+```
+
+### Example 
+
+``` 
+python music-box-tracker.py --port 'TiMidity port 0'
 ```
 
 ## Using music box tracker
