@@ -8,3 +8,5 @@ EMPTY_FPR = '-'
 
 # colors
 PAIR_NOTE=1
+PAIR_INPUT_A=2
+PAIR_INPUT_B=3

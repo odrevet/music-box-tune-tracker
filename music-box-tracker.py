@@ -19,7 +19,9 @@ def main(stdscr, port, document, input):
 
     curses.start_color()
     curses.use_default_colors()
-    curses.init_pair(const.PAIR_NOTE, curses.COLOR_RED, -1)
+    curses.init_pair(const.PAIR_NOTE, curses.COLOR_WHITE, curses.COLOR_BLUE)
+    curses.init_pair(const.PAIR_INPUT_A, -1, curses.COLOR_BLACK)
+    curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_MAGENTA)
 
     input.draw(stdscr)
 
@@ -124,7 +126,8 @@ def populate_partition(stdscr, partition, input):
     '''Read screen and populate the partition'''
     for screen_y in range(input.start_y, input.length_y):
         for screen_x in range(input.start_x, input.length_x):
-            partition[screen_y][screen_x] = stdscr.inch(screen_y + 1, screen_x + 1) & curses.A_CHARTEXT
+            partition[screen_y][screen_x] = stdscr.inch(screen_y + input.offset_y,
+                                                        screen_x + input.offset_x) & curses.A_CHARTEXT
 
 def populate_screen(stdscr, partition, input):
     '''Read parition and populate the screen'''
@@ -132,11 +135,15 @@ def populate_screen(stdscr, partition, input):
         for partition_x in range(0, input.length_x):
             stdscr.move(input.start_y + input.offset_y + partition_y,
                         input.start_x + input.offset_x + partition_x)
+            attr=None
             if partition[partition_y][partition_x] == const.NOTE_CH:
-                stdscr.attron(curses.color_pair(const.PAIR_NOTE))
+                attr=curses.color_pair(const.PAIR_NOTE)
+            else:
+                attr = curses.color_pair(const.PAIR_INPUT_A) if partition_x % 2 == 0 else curses.color_pair(const.PAIR_INPUT_B)
+
+            stdscr.attron(attr)
             stdscr.addch(partition[partition_y][partition_x])
-            if partition[partition_y][partition_x] == const.NOTE_CH:
-                stdscr.attroff(curses.color_pair(const.PAIR_NOTE))
+            stdscr.attroff(attr)
 
 def play(stdscr, port, partition, input):
     t = threading.currentThread()
