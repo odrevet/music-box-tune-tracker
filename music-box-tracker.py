@@ -136,7 +136,7 @@ def populate_screen(stdscr, partition, input):
             stdscr.move(input.start_y + input.offset_y + partition_y,
                         input.start_x + input.offset_x + partition_x)
             attr=None
-            if partition[partition_y][partition_x] == const.NOTE_CH:
+            if partition[partition_y][partition_x] == ord(const.NOTE_CH):
                 attr=curses.color_pair(const.PAIR_NOTE)
             else:
                 pair = None
@@ -144,7 +144,6 @@ def populate_screen(stdscr, partition, input):
                     pair = const.PAIR_INPUT_A
                 else:
                     pair = const.PAIR_INPUT_B
-
                 attr = curses.color_pair(pair)
 
             stdscr.attron(attr)
