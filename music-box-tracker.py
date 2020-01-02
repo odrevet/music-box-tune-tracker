@@ -198,12 +198,14 @@ if __name__=="__main__":
     document = Document(input.length_x, input.length_y)
 
     parser=argparse.ArgumentParser()
-    parser.add_argument('--port', help='name of the midi port to use')
-    parser.add_argument('--file', help='fpr file to open')
+    parser.add_argument('--port',    help='name of the midi port to use')
+    parser.add_argument('--file',    help='fpr file to open')
     parser.add_argument('--program', help='midi instrument code')
+    parser.add_argument('--title',   help='set the title of a new tune')
     args=parser.parse_args()
     if args.port : portname = args.port
     if args.file : document.filename = args.file
+    elif args.title: document.title = args.title
     if args.program : program = int(args.program)
 
     # midi port
