@@ -20,7 +20,6 @@ def main(stdscr, port, document, input):
     curses.start_color()
     curses.use_default_colors()
     curses.init_pair(const.PAIR_NOTE, curses.COLOR_RED, -1)
-    curses.init_pair(const.PAIR_INPUT, curses.COLOR_GREEN, curses.COLOR_WHITE)
 
     input.draw(stdscr)
 
