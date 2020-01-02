@@ -139,7 +139,13 @@ def populate_screen(stdscr, partition, input):
             if partition[partition_y][partition_x] == const.NOTE_CH:
                 attr=curses.color_pair(const.PAIR_NOTE)
             else:
-                attr = curses.color_pair(const.PAIR_INPUT_A) if partition_x % 2 == 0 else curses.color_pair(const.PAIR_INPUT_B)
+                pair = None
+                if partition_x % 2 == 0:
+                    pair = const.PAIR_INPUT_A
+                else:
+                    pair = const.PAIR_INPUT_B
+
+                attr = curses.color_pair(pair)
 
             stdscr.attron(attr)
             stdscr.addch(partition[partition_y][partition_x])
