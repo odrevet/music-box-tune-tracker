@@ -7,6 +7,7 @@ class Document:
     partition = None
     length_x = 0
     length_y = 0
+    program = 8
 
     def __init__(self, length_x, length_y):
         self.partition = [[const.EMPTY_CH for x in range(length_x)]
@@ -25,7 +26,7 @@ class Document:
                 line = line.ljust(self.length_x, const.EMPTY_CH)[:self.length_x]
                 self.partition[lineno] = list(line)
                 lineno += 1
-            self.title=fp.readline()
+            self.title=fp.readline().rstrip()
             while line:
                 line=fp.readline()
                 self.comment+=line

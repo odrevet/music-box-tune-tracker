@@ -5,7 +5,6 @@ import threading
 
 import mido
 import curses
-from curses import wrapper
 
 import const
 from document import Document
@@ -49,6 +48,10 @@ def main(stdscr, port, document, input):
             if(input.can_move(cursor_y, next_x)):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
+        elif ch == ord('x'):
+            populate_partition(stdscr, partition, input)
+            export_to_mid(document)
+            stdscr.move(cursor_y, cursor_x)
         elif ch == ord('o'):
             input.player_start_at_value(stdscr, cursor_x - 1)
             stdscr.move(cursor_y, cursor_x)
@@ -136,6 +139,21 @@ def play(stdscr, port, partition, input):
         stdscr.refresh()
     stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x + input.offset_x)
 
+def export_to_mid(document):
+    mid = mido.MidiFile(type=0, ticks_per_beat=480)
+    track = mido.MidiTrack()
+    mid.tracks.append(track)
+
+    track.append(mido.Message('program_change', program=document.program, time=0))
+
+    for partition_x in range(0, document.length_x):
+        for partition_y in range(0, document.length_y):
+            ch = chr(document.partition[partition_y][partition_x])
+            if ch == const.NOTE_CH:
+                track.append(mido.Message('note_on', note=NOTES[partition_y], velocity=95, time=10))
+                track.append(mido.Message('note_off', note=NOTES[partition_y], velocity=95, time=10))
+    mid.save(document.title + '.mid')
+
 if __name__=="__main__":
     portname = None
     program = 8
@@ -165,5 +183,6 @@ if __name__=="__main__":
         port = mido.open_output()
 
     port.send(mido.Message('program_change', program=program))
+    document.program = program
 
-    wrapper(main, port, document, input)
+    curses.wrapper(main, port, document, input)
