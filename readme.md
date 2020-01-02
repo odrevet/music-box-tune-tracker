@@ -6,7 +6,7 @@ real records to use with the original Fisher Price Record Player.
 
 # Prerequisites
 
-This software uses Python with the Curses library for the interface and the Mido library for sound. 
+This software uses Python with the Curses library for the interface and the Mido library for sound.
 You will also need a Midi backend, I use timidity, which can be installed under Linux Ubuntu with :
 
 ```
@@ -55,9 +55,9 @@ optional arguments:
   --program PROGRAM  midi instrument code
 ```
 
-### Example 
+### Example
 
-``` 
+```
 python music-box-tracker.py --port 'TiMidity port 0'
 ```
 
@@ -74,6 +74,8 @@ python music-box-tracker.py --port 'TiMidity port 0'
 * o: move the playing start location to cursor
 * i: move the playing start location to the right
 * u: move the playing start location to the left
+* +: right shift the partition
+* -: left shift the partition
 
 # BUG
 
