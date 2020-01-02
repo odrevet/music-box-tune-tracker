@@ -61,6 +61,16 @@ def main(stdscr, port, document, input):
         elif ch == ord('i'):
             input.player_start_at_inc(stdscr)
             stdscr.move(cursor_y, cursor_x)
+        elif ch == ord('+'):
+            populate_partition(stdscr, partition, input)
+            right_shift(partition, cursor_x)
+            populate_screen(stdscr, partition, input)
+            stdscr.move(cursor_y, cursor_x)
+        elif ch == ord('-'):
+            populate_partition(stdscr, partition, input)
+            left_shift(partition, cursor_x)
+            populate_screen(stdscr, partition, input)
+            stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             if chr(stdscr.inch(cursor_y, cursor_x)) == const.EMPTY_CH:
                 stdscr.addch(const.NOTE_CH)
@@ -153,6 +163,16 @@ def export_to_mid(document):
                 track.append(mido.Message('note_on', note=NOTES[partition_y], velocity=95, time=10))
                 track.append(mido.Message('note_off', note=NOTES[partition_y], velocity=95, time=10))
     mid.save(document.title + '.mid')
+
+def left_shift(partition, x):
+    for partition_y in range(0, document.length_y):
+        partition[partition_y].pop(0)
+        partition[partition_y].append(const.EMPTY_CH)
+
+def right_shift(partition, x):
+    for partition_y in range(0, document.length_y):
+        partition[partition_y].insert(x-1, const.EMPTY_CH)
+        partition[partition_y].pop
 
 if __name__=="__main__":
     portname = None
