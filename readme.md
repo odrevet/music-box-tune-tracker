@@ -83,7 +83,5 @@ python music-box-tracker.py --port 'TiMidity port 0'
 
 # TODO
 
-* left and right shift the partition
 * set title and comment
 * export to scad
-* colors
