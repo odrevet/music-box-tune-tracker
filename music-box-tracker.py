@@ -137,6 +137,7 @@ def populate_screen(stdscr, partition, input):
             stdscr.addch(partition[partition_y][partition_x])
             if partition[partition_y][partition_x] == const.NOTE_CH:
                 stdscr.attroff(curses.color_pair(const.PAIR_NOTE))
+
 def play(stdscr, port, partition, input):
     t = threading.currentThread()
     SLEEP_DURATION = 0.45
@@ -175,7 +176,7 @@ def export_to_mid(document):
 
 def left_shift(partition, x):
     for partition_y in range(0, document.length_y):
-        partition[partition_y].pop(0)
+        partition[partition_y].pop(x-1)
         partition[partition_y].append(const.EMPTY_CH)
 
 def right_shift(partition, x):
