@@ -71,12 +71,12 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
             populate_partition(stdscr, partition, input)
-            right_shift(partition, cursor_x)
+            right_shift(partition, cursor_x - 1)
             populate_screen(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             populate_partition(stdscr, partition, input)
-            left_shift(partition, cursor_x)
+            left_shift(partition, cursor_x - 1)
             populate_screen(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
@@ -202,12 +202,12 @@ def export_to_mid(document):
 
 def left_shift(partition, x):
     for partition_y in range(0, document.length_y):
-        partition[partition_y].pop(x-1)
+        partition[partition_y].pop(x)
         partition[partition_y].append(const.EMPTY_CH)
 
 def right_shift(partition, x):
     for partition_y in range(0, document.length_y):
-        partition[partition_y].insert(x-1, const.EMPTY_CH)
+        partition[partition_y].insert(x, const.EMPTY_CH)
         partition[partition_y].pop
 
 if __name__=="__main__":
