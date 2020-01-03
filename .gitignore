@@ -1,3 +1,8 @@
+# file use or produce
+*.scad
+*.mid
+*.fpr
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
