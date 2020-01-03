@@ -28,11 +28,18 @@ document = Document(86, 16)
 document.filename = fpr_file
 document.load()
 
+document_bis = None
+if(fpr_file_bis is not None):
+    document_bis = Document(86, 16)
+    document_bis.filename = fpr_file_bis
+    document_bis.load()
+
+
 VERSION = '1.0'
 date_time = datetime.datetime.now().strftime('%d %b %Y %H:%M')
 has_second_side = fpr_file_bis is None
 
-scad_output = scad.to_scad(VERSION, date_time, thickness, document)
+scad_output = scad.to_scad(VERSION, date_time, thickness, document, document_bis)
 myfile = open(scad_file, 'w')
 myfile.write(scad_output)
 myfile.close()
