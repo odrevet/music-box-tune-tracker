@@ -36,7 +36,7 @@ class Document:
         output = ''
         for partition_y in range(0, self.length_y):
             for partition_x in range(0, self.length_x):
-                ch = chr(self.partition[partition_y][partition_x])
+                ch = self.partition[partition_y][partition_x]
                 output += const.NOTE_FPR if ch == const.NOTE_CH else const.EMPTY_FPR
             output += '\n'
         output += self.title
