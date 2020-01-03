@@ -85,7 +85,16 @@ def main(stdscr, port, document, input):
                 stdscr.addch(const.NOTE_CH)
                 stdscr.attroff(curses.color_pair(const.PAIR_NOTE))
             else:
+                pair = None
+                if cursor_x % 2 != 0:
+                    pair = const.PAIR_INPUT_A
+                else:
+                    pair = const.PAIR_INPUT_B
+                attr = curses.color_pair(pair)
+                stdscr.attron(attr)
                 stdscr.addch(const.EMPTY_CH)
+                stdscr.attroff(attr)
+
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             port.send(mido.Message('note_on',
