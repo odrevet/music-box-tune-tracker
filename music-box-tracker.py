@@ -102,8 +102,7 @@ def main(stdscr, port, document, input):
             populate_partition(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
             for partition_y in range(input.length_y):
-                ch = partition[partition_y][cursor_x - 1]
-                if ch == const.NOTE_CH:
+                if document.has_note(cursor_x - 1, partition_y):
                     port.send(mido.Message('note_on', note=NOTES[partition_y]))
         elif ch == ord('p'):
             if thread_player is not None and thread_player.is_alive():
