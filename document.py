@@ -5,8 +5,8 @@ class Document:
     title = 'Default'
     comment = ''
     partition = None
-    length_x = 0
-    length_y = 0
+    length_x = 0    #length of beats
+    length_y = 0    #length of tracks
     program = 8
 
     def __init__(self, length_x, length_y):
@@ -14,6 +14,9 @@ class Document:
                           for y in range(length_y)]
         self.length_x = length_x
         self.length_y = length_y
+
+    def has_note(self, x, y):
+        return self.partition[y][x] == const.NOTE_CH
 
     def load(self):
         input = ''
