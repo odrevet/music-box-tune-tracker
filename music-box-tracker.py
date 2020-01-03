@@ -30,8 +30,7 @@ def main(stdscr, port, document, input):
     populate_screen(stdscr, partition, input)
     stdscr.move(cursor_y, cursor_x)
 
-    t_player = threading.Thread(target = play,
-                                args=(stdscr, port, partition, input))
+    thread_player = None   #thread to play music in background
 
     while True:
         ch = stdscr.getch()
@@ -107,14 +106,14 @@ def main(stdscr, port, document, input):
                 if ch == const.NOTE_CH:
                     port.send(mido.Message('note_on', note=NOTES[partition_y]))
         elif ch == ord('p'):
-            if t_player.is_alive():
-                t_player.do_run = False
-                t_player.join()
+            if thread_player is not None and thread_player.is_alive():
+                thread_player.do_run = False
+                thread_player.join()
             else:
                 populate_partition(stdscr, partition, input)
-                t_player = threading.Thread(target = play,
-                                            args=(stdscr, port, partition, input))
-                t_player.start()
+                thread_player = threading.Thread(target = play,
+                                                 args=(stdscr, port, partition, input))
+                thread_player.start()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('s'):
             populate_partition(stdscr, partition, input)
@@ -127,9 +126,9 @@ def main(stdscr, port, document, input):
         elif ch == ord('q'):
             break
 
-    if t_player.is_alive():
-        t_player.do_run = False
-        t_player.join()
+    if thread_player.is_alive():
+        thread_player.do_run = False
+        thread_player.join()
 
     port.close()
 
