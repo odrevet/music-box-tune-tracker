@@ -178,17 +178,16 @@ def export_to_mid(document):
     track = mido.MidiTrack()
     mid.tracks.append(track)
 
-    delta=0
     ticks = 480
 
-    track.append(mido.Message('program_change', program=document.program, time=delta))
+    track.append(mido.Message('program_change', program=document.program, time=0))
 
     for partition_x in range(0, document.length_x):
         for partition_y in range(0, document.length_y):
             ch = document.partition[partition_y][partition_x]
             if ch == const.NOTE_CH:
-                track.append(mido.Message('note_on', note=NOTES[partition_y], time=int(delta*ticks)))
-        delta += 1
+                track.append(mido.Message('note_on', note=NOTES[partition_y], time=ticks))
+
     mid.save(document.title + '.mid')
 
 def left_shift(partition, x):
