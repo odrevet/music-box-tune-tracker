@@ -94,11 +94,6 @@ optional arguments:
                         side or 5 if two side
 ```
 
-# TODO
-
-* set title and comment from tracker interface
-* support for double sided disc scad convert
-
-# Credits
+# Thanks
 
 Thanks to fred27 https://www.instructables.com/member/fred27/ to have shared "Fred Record Player", it was of a great help, notably the export to scad feature.
