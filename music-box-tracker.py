@@ -186,7 +186,8 @@ def export_to_mid(document):
         for partition_y in range(0, document.length_y):
             ch = document.partition[partition_y][partition_x]
             if ch == const.NOTE_CH:
-                track.append(mido.Message('note_on', note=NOTES[partition_y], time=ticks))
+                track.append(mido.Message('note_on', note=NOTES[partition_y], time=0))
+        track.append(mido.Message('note_off', time=ticks))
 
     mid.save(document.title + '.mid')
 
