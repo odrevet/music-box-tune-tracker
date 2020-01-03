@@ -70,16 +70,13 @@ python music-box-tracker.py --port 'TiMidity port 0'
 * c: play the column of tones at cursor
 * s: save
 * l: load
+* x: export to .mid
 * q: quit
 * o: move the playing start location to cursor
 * i: move the playing start location to the right
 * u: move the playing start location to the left
 * +: right shift the partition
 * -: left shift the partition
-
-# BUG
-
-* The terminal must be at least 88x19 or else the software will crash
 
 # TODO
 
