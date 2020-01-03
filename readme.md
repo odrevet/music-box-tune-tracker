@@ -1,8 +1,5 @@
-This is a minimal music box editor compatible with Fred Record Player,
+This is a minimal music box tune tracker compatible with "Fred Record Player"
 available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
-
-Fred Record Player can be uses to open fpr which can be converted to SCAD file, which can be 3D printed into
-real records to use with the original Fisher Price Record Player.
 
 # Prerequisites
 
@@ -101,3 +98,7 @@ optional arguments:
 
 * set title and comment from tracker interface
 * support for double sided disc scad convert
+
+# Credits
+
+Thanks to fred27 https://www.instructables.com/member/fred27/ to have shared "Fred Record Player", it was of a great help, notably the export to scad feature.
