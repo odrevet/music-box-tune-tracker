@@ -78,6 +78,26 @@ python music-box-tracker.py --port 'TiMidity port 0'
 * +: right shift the partition
 * -: left shift the partition
 
+# Convert .fpr to .scad
+
+.fpr file can be converted to .scad file by using the fpr_to_scad.py file
+
+
+```
+usage: fpr_to_scad.py [-h] [--fpr FPR] [--fprbis FPRBIS] [--scad SCAD]
+                      [--thickness THICKNESS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --fpr FPR             name of fpr file
+  --fprbis FPRBIS       name of fpr file for second track
+  --scad SCAD           name of scad file to output
+  --thickness THICKNESS
+                        thickness in mm, must be 3 or 5. Default to 3 if one
+                        side or 5 if two side
+```
+
 # TODO
 
-* set title and comment from interface
+* set title and comment from tracker interface
+* support for double sided disc scad convert
