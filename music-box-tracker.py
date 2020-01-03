@@ -27,7 +27,7 @@ def main(stdscr, port, document, input):
 
     input.draw(stdscr)
 
-    populate_screen(stdscr, partition, input)
+    populate_screen(stdscr, document, input)
     stdscr.move(cursor_y, cursor_x)
 
     thread_player = None   #thread to play music in background
@@ -71,12 +71,12 @@ def main(stdscr, port, document, input):
         elif ch == ord('+'):
             populate_partition(stdscr, partition, input)
             right_shift(partition, cursor_x - 1)
-            populate_screen(stdscr, partition, input)
+            populate_screen(stdscr, document, input)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             populate_partition(stdscr, partition, input)
             left_shift(partition, cursor_x - 1)
-            populate_screen(stdscr, partition, input)
+            populate_screen(stdscr, document, input)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             if chr(stdscr.inch(cursor_y, cursor_x) & curses.A_CHARTEXT) != const.NOTE_CH:
@@ -111,7 +111,7 @@ def main(stdscr, port, document, input):
             else:
                 populate_partition(stdscr, partition, input)
                 thread_player = threading.Thread(target = play,
-                                                 args=(stdscr, port, partition, input))
+                                                 args=(stdscr, port, document, input))
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('s'):
@@ -120,12 +120,12 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             document.load()
-            populate_screen(stdscr, partition, input)
+            populate_screen(stdscr, document, input)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
             break
 
-    if thread_player.is_alive():
+    if thread_player is not None and thread_player.is_alive():
         thread_player.do_run = False
         thread_player.join()
 
@@ -138,14 +138,14 @@ def populate_partition(stdscr, partition, input):
             partition[screen_y][screen_x] = chr(stdscr.inch(screen_y + input.offset_y,
                                                         screen_x + input.offset_x) & curses.A_CHARTEXT)
 
-def populate_screen(stdscr, partition, input):
+def populate_screen(stdscr, document, input):
     '''Read parition and populate the screen'''
     for partition_y in range(input.length_y):
         for partition_x in range(input.length_x):
             stdscr.move(input.start_y + input.offset_y + partition_y,
                         input.start_x + input.offset_x + partition_x)
             attr=None
-            if partition[partition_y][partition_x] == const.NOTE_CH:
+            if document.has_note(partition_x, partition_y):
                 attr=curses.color_pair(const.PAIR_NOTE)
             else:
                 pair = None
@@ -156,10 +156,10 @@ def populate_screen(stdscr, partition, input):
                 attr = curses.color_pair(pair)
 
             stdscr.attron(attr)
-            stdscr.addch(partition[partition_y][partition_x])
+            stdscr.addch(document.partition[partition_y][partition_x])
             stdscr.attroff(attr)
 
-def play(stdscr, port, partition, input):
+def play(stdscr, port, document, input):
     t = threading.currentThread()
     SLEEP_DURATION = .45
     PROGRESS_INDICATOR_Y = input.length_y + input.offset_y + 2
@@ -170,8 +170,7 @@ def play(stdscr, port, partition, input):
             stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x)
             return
         for partition_y in range(input.length_y):
-            ch = partition[partition_y][partition_x]
-            if ch == const.NOTE_CH:
+            if document.has_note(partition_x, partition_y):
                 port.send(mido.Message('note_on', note=NOTES[partition_y]))
         time.sleep(SLEEP_DURATION)
         #update progress indicator
