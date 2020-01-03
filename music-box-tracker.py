@@ -136,7 +136,8 @@ def populate_partition(stdscr, partition, input):
     for screen_y in range(input.start_y, input.length_y):
         for screen_x in range(input.start_x, input.length_x):
             partition[screen_y][screen_x] = chr(stdscr.inch(screen_y + input.offset_y,
-                                                        screen_x + input.offset_x) & curses.A_CHARTEXT)
+                                                        screen_x + input.offset_x)
+                                                & curses.A_CHARTEXT) == const.NOTE_CH
 
 def populate_screen(stdscr, document, input):
     '''Read parition and populate the screen'''
@@ -145,9 +146,12 @@ def populate_screen(stdscr, document, input):
             stdscr.move(input.start_y + input.offset_y + partition_y,
                         input.start_x + input.offset_x + partition_x)
             attr=None
+            ch=None
             if document.has_note(partition_x, partition_y):
                 attr=curses.color_pair(const.PAIR_NOTE)
+                ch=const.NOTE_CH
             else:
+                ch=const.EMPTY_CH
                 pair = None
                 if partition_x % 2 == 0:
                     pair = const.PAIR_INPUT_A
@@ -156,7 +160,7 @@ def populate_screen(stdscr, document, input):
                 attr = curses.color_pair(pair)
 
             stdscr.attron(attr)
-            stdscr.addch(document.partition[partition_y][partition_x])
+            stdscr.addch(ch)
             stdscr.attroff(attr)
 
 def play(stdscr, port, document, input):
@@ -190,8 +194,7 @@ def export_to_mid(document):
 
     for partition_x in range(document.length_x):
         for partition_y in range(document.length_y):
-            ch = document.partition[partition_y][partition_x]
-            if ch == const.NOTE_CH:
+            if document.has_note(partition_x, partition_y):
                 track.append(mido.Message('note_on', note=NOTES[partition_y], time=0))
         track.append(mido.Message('note_off', time=ticks))
 
@@ -200,11 +203,11 @@ def export_to_mid(document):
 def left_shift(partition, x):
     for partition_y in range(document.length_y):
         partition[partition_y].pop(x)
-        partition[partition_y].append(const.EMPTY_CH)
+        partition[partition_y].append(False)
 
 def right_shift(partition, x):
     for partition_y in range(document.length_y):
-        partition[partition_y].insert(x, const.EMPTY_CH)
+        partition[partition_y].insert(x, False)
         partition[partition_y].pop
 
 if __name__=="__main__":

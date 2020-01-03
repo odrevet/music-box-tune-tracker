@@ -10,13 +10,13 @@ class Document:
     program = 8
 
     def __init__(self, length_x, length_y):
-        self.partition = [[const.EMPTY_CH for x in range(length_x)]
+        self.partition = [[False for x in range(length_x)]
                           for y in range(length_y)]
         self.length_x = length_x
         self.length_y = length_y
 
     def has_note(self, x, y):
-        return self.partition[y][x] == const.NOTE_CH
+        return self.partition[y][x]
 
     def load(self):
         input = ''
@@ -24,10 +24,9 @@ class Document:
             lineno = 0
             while lineno < self.length_y:
                 line = fp.readline().rstrip()
-                line = line.replace(const.EMPTY_FPR, const.EMPTY_CH)
-                line = line.replace(const.NOTE_FPR, const.NOTE_CH)
-                line = line.ljust(self.length_x, const.EMPTY_CH)[:self.length_x]
-                self.partition[lineno] = list(line)
+                line = line.ljust(self.length_x, const.EMPTY_FPR)[:self.length_x]
+                for i in range(len(line)):
+                    self.partition[lineno][i] = line[i] == const.NOTE_FPR
                 lineno += 1
             self.title=fp.readline().rstrip()
             while line:
@@ -39,8 +38,8 @@ class Document:
         output = ''
         for partition_y in range(0, self.length_y):
             for partition_x in range(0, self.length_x):
-                ch = self.partition[partition_y][partition_x]
-                output += const.NOTE_FPR if ch == const.NOTE_CH else const.EMPTY_FPR
+                has_note = self.has_note(partition_x, partition_y)
+                output += const.NOTE_FPR if has_note else const.EMPTY_FPR
             output += '\n'
         output += self.title
         output += self.comment
