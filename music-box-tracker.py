@@ -101,7 +101,7 @@ def main(stdscr, port, document, input):
         elif ch == ord('c'):
             populate_partition(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
-            for partition_y in range(0, input.length_y):
+            for partition_y in range(input.length_y):
                 ch = partition[partition_y][cursor_x - 1]
                 if ch == const.NOTE_CH:
                     port.send(mido.Message('note_on', note=NOTES[partition_y]))
@@ -141,8 +141,8 @@ def populate_partition(stdscr, partition, input):
 
 def populate_screen(stdscr, partition, input):
     '''Read parition and populate the screen'''
-    for partition_y in range(0, input.length_y):
-        for partition_x in range(0, input.length_x):
+    for partition_y in range(input.length_y):
+        for partition_x in range(input.length_x):
             stdscr.move(input.start_y + input.offset_y + partition_y,
                         input.start_x + input.offset_x + partition_x)
             attr=None
@@ -162,7 +162,7 @@ def populate_screen(stdscr, partition, input):
 
 def play(stdscr, port, partition, input):
     t = threading.currentThread()
-    SLEEP_DURATION = 0.45
+    SLEEP_DURATION = .45
     PROGRESS_INDICATOR_Y = input.length_y + input.offset_y + 2
     PROGRESS_INDICATOR_CH = '■'
 
@@ -170,7 +170,7 @@ def play(stdscr, port, partition, input):
         if getattr(t, "do_run", True) == False:
             stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x)
             return
-        for partition_y in range(0, input.length_y):
+        for partition_y in range(input.length_y):
             ch = partition[partition_y][partition_x]
             if ch == const.NOTE_CH:
                 port.send(mido.Message('note_on', note=NOTES[partition_y]))
@@ -190,8 +190,8 @@ def export_to_mid(document):
 
     track.append(mido.Message('program_change', program=document.program, time=0))
 
-    for partition_x in range(0, document.length_x):
-        for partition_y in range(0, document.length_y):
+    for partition_x in range(document.length_x):
+        for partition_y in range(document.length_y):
             ch = document.partition[partition_y][partition_x]
             if ch == const.NOTE_CH:
                 track.append(mido.Message('note_on', note=NOTES[partition_y], time=0))
@@ -200,12 +200,12 @@ def export_to_mid(document):
     mid.save(document.title + '.mid')
 
 def left_shift(partition, x):
-    for partition_y in range(0, document.length_y):
+    for partition_y in range(document.length_y):
         partition[partition_y].pop(x)
         partition[partition_y].append(const.EMPTY_CH)
 
 def right_shift(partition, x):
-    for partition_y in range(0, document.length_y):
+    for partition_y in range(document.length_y):
         partition[partition_y].insert(x, const.EMPTY_CH)
         partition[partition_y].pop
 
