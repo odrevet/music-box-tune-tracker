@@ -80,5 +80,4 @@ python music-box-tracker.py --port 'TiMidity port 0'
 
 # TODO
 
-* set title and comment
-* export to scad
+* set title and comment from interface
