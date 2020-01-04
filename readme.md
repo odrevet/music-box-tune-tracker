@@ -96,4 +96,6 @@ optional arguments:
 
 # Thanks
 
-Thanks to fred27 https://www.instructables.com/member/fred27/ to have shared "Fred Record Player", it was of a great help, notably the export to scad feature.
+Thanks to fred27 https://www.instructables.com/member/fred27/ to have shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
+
+More informations on running Fred Record Player under linux is available in the [fred_record_player](fred_record_player.md) file 
