@@ -2,7 +2,6 @@ import math
 import const
 from document import Document
 
-
 # Variable to replace in the scad template are:
 # VERSION     : The version of the software used
 # DATE_TIME   : Formated as 'DD MMM YYYY HH:MM'
@@ -42,9 +41,9 @@ class Expanded_document(Document):
     def __split_track(self, first_track_number, second_track_number, beats):
         on_second_track = False
         for beat_index in range(len(beats)):
-            if beats[beat_index] == const.NOTE_CH:
+            if beats[beat_index] == True:
                 track_number = second_track_number if on_second_track else first_track_number
-                self.partition[track_number][beat_index] = const.NOTE_CH
+                self.partition[track_number][beat_index] = True
                 on_second_track = not on_second_track
 
 TRACK_RADIUS = [28.65,
