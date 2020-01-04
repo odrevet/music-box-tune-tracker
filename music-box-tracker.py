@@ -37,12 +37,14 @@ def main(stdscr, port, document, input):
             next_y = cursor_y - 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
+                populate_partition(stdscr, partition, input)
                 input.draw(stdscr, document, cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_DOWN:
             next_y = cursor_y + 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
+                populate_partition(stdscr, partition, input)
                 input.draw(stdscr, document, cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_LEFT:
