@@ -14,7 +14,9 @@ sudo apt install mono-complete
 
 # Build
 
- xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v4.5 Fred.RecordPlayer.csproj
+ ```
+xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v4.5 Fred.RecordPlayer.csproj
+```
 
 # Run
 
