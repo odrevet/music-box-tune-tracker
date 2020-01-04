@@ -71,41 +71,59 @@ TRACK_RADIUS = [28.65,
 OVERLAP = 0.2
 HEAD_OFFSET = 2
 
-def __note_angle_degrees(track, note, is_second_side):
-    beat_count = 86
-    note_angle = 2 * math.pi / beat_count
+class Pin:
+    __inner = None
+    __outer = None
+    __angle = None
+    __is_second_side = None
 
-    radius = TRACK_RADIUS[track]
-    angle = note_angle * note
-    angle -= (HEAD_OFFSET / radius)
-    angle = angle * 180 / math.pi
+    def __init__(self, inner, outer, is_second_side):
+        self.__inner = inner
+        self.__outer = outer
+        self.__is_second_side = is_second_side
 
-    if is_second_side:
-        angle = 360 - angle
+    def set_angle(self, track, note):
+        beat_count = 86
+        note_angle = 2 * math.pi / beat_count
 
-    return angle
+        radius = TRACK_RADIUS[track]
+        angle = note_angle * note
+        angle -= (HEAD_OFFSET / radius)
+        angle = angle * 180 / math.pi
 
-def get_pins(e_document, is_second_side):
-    pins = []
-    is_second_side_str = '1' if is_second_side else '0'
-    for track_index in range(e_document.length_y):
-        inner = TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index %2 == 0 else 0)
-        outer = inner + 1 + OVERLAP
-        for note_index in range(e_document.length_x):
-            if e_document.has_note(note_index, track_index):
-                angle = __note_angle_degrees(track_index, note_index, is_second_side)
-                pins.append([inner, outer, angle, is_second_side_str])
-    return pins
+        if self.__is_second_side:
+            angle = 360 - angle
+
+        self.__angle = angle
+
+    def to_str(self):
+        is_second_side_str = '1' if self.__is_second_side else '0'
+        return 'pin({},{},{},{});'.format(self.__inner,
+                                          self.__outer,
+                                          self.__angle,
+                                          is_second_side_str)
 
 def pins_to_str(pins, title=None, is_second_side=None):
     pin_str = ''
     indent = '\t'*2
     for pin in pins:
-        pin_str += indent+'pin({},{},{},{});\n'.format(pin[0], pin[1], pin[2], pin[3])
+        pin_str += indent+pin.to_str()+'\n'
     if title is not None:
         second_side_str = '1' if is_second_side else '0'
         pin_str += '\n'+indent+'title("{}",{});\n\n'.format(title, second_side_str)
     return pin_str
+
+def get_pins(e_document, is_second_side):
+    pins = []
+    for track_index in range(e_document.length_y):
+        inner = TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index %2 == 0 else 0)
+        outer = inner + 1 + OVERLAP
+        for note_index in range(e_document.length_x):
+            if e_document.has_note(note_index, track_index):
+                pin = Pin(inner, outer, is_second_side)
+                pin.set_angle(track_index, note_index)
+                pins.append(pin)
+    return pins
 
 def to_scad(version, date_time, thickness, document, document_bis=None):
     with open('res/FisherPriceTemplate.scad', 'r') as content_file:
@@ -117,7 +135,6 @@ def to_scad(version, date_time, thickness, document, document_bis=None):
 
         e_document = Expanded_document(86, 22, document)
         pins = get_pins(e_document, False)
-
         pin_str = pins_to_str(pins, e_document.title, False)
 
         if document_bis is not None:
