@@ -67,12 +67,12 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
             populate_partition(stdscr, partition, input)
-            right_shift(partition, cursor_x - 1)
+            document.right_shift(cursor_x - 1)
             input.draw(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             populate_partition(stdscr, partition, input)
-            left_shift(partition, cursor_x - 1)
+            document.left_shift(cursor_x - 1)
             input.draw(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
@@ -155,16 +155,6 @@ def play(stdscr, port, document, input):
         stdscr.addch(PROGRESS_INDICATOR_CH)
         stdscr.refresh()
     stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x + input.offset_x)
-
-def left_shift(partition, x):
-    for partition_y in range(document.length_y):
-        partition[partition_y].pop(x)
-        partition[partition_y].append(False)
-
-def right_shift(partition, x):
-    for partition_y in range(document.length_y):
-        partition[partition_y].insert(x, False)
-        partition[partition_y].pop
 
 if __name__=="__main__":
     portname = None
