@@ -37,14 +37,14 @@ def main(stdscr, port, document, input):
             next_y = cursor_y - 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
-                stdscr.move(cursor_y, cursor_x)
                 input.draw(stdscr, document, cursor_x, cursor_y)
+                stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_DOWN:
             next_y = cursor_y + 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
-                stdscr.move(cursor_y, cursor_x)
                 input.draw(stdscr, document, cursor_x, cursor_y)
+                stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_LEFT:
             next_x = cursor_x - 1;
             if(input.can_move(cursor_y, next_x)):

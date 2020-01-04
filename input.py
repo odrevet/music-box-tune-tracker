@@ -52,17 +52,18 @@ class Input:
         self.__populate_screen(stdscr, document)
 
         # draw tones
-        tones = ['G4',
-                 'C5', 'D5', 'E5', 'G5', 'A5', 'B5',
-                 'C6', 'D6', 'E6', 'F6', 'G6', 'A6', 'B6',
-                 'C7', 'D7']
+        tones = ['G4 Sol',
+                 'C5 Do', 'D5 Ré', 'E5 Mi', 'G5 Sol', 'A5 La', 'B5 Si',
+                 'C6 Do', 'D6 Ré', 'E6 Mi', 'F6 Fa', 'G6 Sol', 'A6 La', 'B6 Si',
+                 'C7 Do', 'D7 Ré']
 
         for i in range(0, self.length_y):
-            if cursor_x == i:
+            if cursor_y - 1 == i:
                 stdscr.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
             self.__draw_tone(stdscr, i, tones[i])
-            if cursor_x == i:
+            if cursor_y - 1 == i:
                 stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
+
 
 
         #draw player start at
