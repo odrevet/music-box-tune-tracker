@@ -16,7 +16,7 @@ class Input:
                       self.start_x + self.length_x + self.offset_x + 1,
                       tone_str)
 
-    def populate_screen(self, stdscr, document):
+    def __populate_screen(self, stdscr, document):
         '''Read parition and populate the screen'''
         for partition_y in range(self.length_y):
             for partition_x in range(self.length_x):
@@ -49,7 +49,7 @@ class Input:
                   self.length_x + self.offset_x)
 
         # draw partition table
-        self.populate_screen(stdscr, document)
+        self.__populate_screen(stdscr, document)
 
         # draw tones
         tones = ['G4',
