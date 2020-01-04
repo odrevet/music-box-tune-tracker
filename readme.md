@@ -96,6 +96,8 @@ optional arguments:
 
 # Screenshot
 
+<img src="https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png" width="200" height="400" />
+
 ![](https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png =250x250)
 
 # Thanks
