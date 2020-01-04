@@ -64,8 +64,6 @@ class Input:
             if cursor_y - 1 == i:
                 stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
-
-
         #draw player start at
         stdscr.move(self.length_y + self.offset_y + 1, self.player_start_at + self.offset_x)
         stdscr.addch('|')
