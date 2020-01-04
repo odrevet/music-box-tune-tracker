@@ -52,7 +52,7 @@ class Input:
         self.__populate_screen(stdscr, document)
 
         # draw tones
-        tones = ['G4 Sol',
+        TONES = ['G4 Sol',
                  'C5 Do', 'D5 Ré', 'E5 Mi', 'G5 Sol', 'A5 La', 'B5 Si',
                  'C6 Do', 'D6 Ré', 'E6 Mi', 'F6 Fa', 'G6 Sol', 'A6 La', 'B6 Si',
                  'C7 Do', 'D7 Ré']
@@ -60,7 +60,7 @@ class Input:
         for i in range(0, self.length_y):
             if cursor_y - 1 == i:
                 stdscr.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
-            self.__draw_tone(stdscr, i, tones[i])
+            self.__draw_tone(stdscr, i, TONES[i])
             if cursor_y - 1 == i:
                 stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
