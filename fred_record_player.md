@@ -18,7 +18,7 @@ sudo apt install mono-complete
 xbuild /p:Configuration=Release /p:TargetFrameworkVersion=v4.5 Fred.RecordPlayer.csproj
 ```
 
-# Run
+# Run and export to scad
 
 ## Windows path separator
 
@@ -30,7 +30,7 @@ export MONO_IOMAP="all"
 
 Otherwise the software will crash when trying to create a .scad file as it cannot find the "Fred.RecordPlayer/.\Resources\FisherPriceTemplate.scad" file because of Windows path separators.
 
-## Set local to export to scad
+## Set local
 
 If your computer has local that set decimal separator to a comma, then the scad file pin will not have the write format, as dot in float numbers will be commas: `pin(42,0,42,0,42,0,0);` instead of `pin(42.0,42.0,42.0,0);`
 
