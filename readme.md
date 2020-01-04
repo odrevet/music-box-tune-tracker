@@ -96,7 +96,7 @@ optional arguments:
 
 # Screenshot
 
-<img src="/screenshots/screenshot.jpg" width="240px" />
+<img src="/screenshots/screenshot.png" width="240px" />
 
 # Thanks
 
