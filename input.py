@@ -40,7 +40,7 @@ class Input:
                 stdscr.addch(ch)
                 stdscr.attroff(attr)
 
-    def draw(self, stdscr, document):
+    def draw(self, stdscr, document, cursor_x, cursor_y):
         # draw border
         rectangle(stdscr,
                   self.start_y,
@@ -58,7 +58,12 @@ class Input:
                  'C7', 'D7']
 
         for i in range(0, self.length_y):
+            if cursor_x == i:
+                stdscr.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
             self.__draw_tone(stdscr, i, tones[i])
+            if cursor_x == i:
+                stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
+
 
         #draw player start at
         stdscr.move(self.length_y + self.offset_y + 1, self.player_start_at + self.offset_x)

@@ -20,6 +20,16 @@ class Document:
     def has_note(self, x, y):
         return self.partition[y][x]
 
+    def left_shift(self, x):
+        for partition_y in range(self.length_y):
+            self.partition[partition_y].pop(x)
+            self.partition[partition_y].append(False)
+
+    def right_shift(self, x):
+        for partition_y in range(self.length_y):
+            self.partition[partition_y].insert(x, False)
+            self.partition[partition_y].pop
+
     def load(self):
         input = ''
         with open(self.filename) as fp:
@@ -49,7 +59,6 @@ class Document:
         file = open(self.filename, 'w')
         file.write(output)
         file.close()
-
 
     def export_to_mid(self):
         mid = mido.MidiFile(type=0, ticks_per_beat=480)

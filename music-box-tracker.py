@@ -22,8 +22,9 @@ def main(stdscr, port, document, input):
     curses.init_pair(const.PAIR_NOTE, curses.COLOR_WHITE, curses.COLOR_BLUE)
     curses.init_pair(const.PAIR_INPUT_A, -1, curses.COLOR_BLACK)
     curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_MAGENTA)
+    curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
-    input.draw(stdscr, document)
+    input.draw(stdscr, document, cursor_x, cursor_y)
 
     stdscr.move(cursor_y, cursor_x)
 
@@ -37,11 +38,13 @@ def main(stdscr, port, document, input):
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
                 stdscr.move(cursor_y, cursor_x)
+                input.draw(stdscr, document, cursor_x, cursor_y)
         elif ch == curses.KEY_DOWN:
             next_y = cursor_y + 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
                 stdscr.move(cursor_y, cursor_x)
+                input.draw(stdscr, document, cursor_x, cursor_y)
         elif ch == curses.KEY_LEFT:
             next_x = cursor_x - 1;
             if(input.can_move(cursor_y, next_x)):
@@ -68,12 +71,12 @@ def main(stdscr, port, document, input):
         elif ch == ord('+'):
             populate_partition(stdscr, partition, input)
             document.right_shift(cursor_x - 1)
-            input.draw(stdscr, document)
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             populate_partition(stdscr, partition, input)
             document.left_shift(cursor_x - 1)
-            input.draw(stdscr, document)
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             if chr(stdscr.inch(cursor_y, cursor_x) & curses.A_CHARTEXT) != const.NOTE_CH:
@@ -117,7 +120,7 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             document.load()
-            input.draw(stdscr, document)
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
             break
