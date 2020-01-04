@@ -98,7 +98,7 @@ def main(stdscr, port, document, input):
         elif ch == ord('t'):
             port.send(mido.Message('note_on',
                                    note=NOTES[cursor_y - (input.start_y + input.offset_y)]))
-        elif ch == ord('c'):
+        elif ch == ord('r'):
             populate_partition(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
             for partition_y in range(input.length_y):

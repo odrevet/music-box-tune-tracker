@@ -64,7 +64,7 @@ python music-box-tracker.py --port 'TiMidity port 0'
 * Space: add/remove a note at cursor
 * p: play/stop
 * t: play the tone at cursor
-* c: play the column of tones at cursor
+* r: play the column of tones at cursor
 * s: save
 * l: load
 * x: export to .mid
@@ -98,4 +98,4 @@ optional arguments:
 
 Thanks to fred27 https://www.instructables.com/member/fred27/ to have shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
 
-More informations on running Fred Record Player under linux is available in the [fred_record_player](fred_record_player.md) file 
+More informations on running Fred Record Player under linux is available in the [fred_record_player](fred_record_player.md) file
