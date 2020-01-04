@@ -1,3 +1,4 @@
+import mido
 import const
 
 class Document:
@@ -8,6 +9,7 @@ class Document:
     length_x = 0    #length of beats
     length_y = 0    #length of tracks
     program = 8
+    NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
 
     def __init__(self, length_x, length_y):
         self.partition = [[False for x in range(length_x)]
@@ -47,3 +49,21 @@ class Document:
         file = open(self.filename, 'w')
         file.write(output)
         file.close()
+
+
+    def export_to_mid(self):
+        mid = mido.MidiFile(type=0, ticks_per_beat=480)
+        track = mido.MidiTrack()
+        mid.tracks.append(track)
+
+        ticks = 480
+
+        track.append(mido.Message('program_change', program=self.program, time=0))
+
+        for partition_x in range(self.length_x):
+            for partition_y in range(self.length_y):
+                if self.has_note(partition_x, partition_y):
+                    track.append(mido.Message('note_on', note=self.NOTES[partition_y], time=0))
+            track.append(mido.Message('note_off', time=ticks))
+
+        mid.save(self.title + '.mid')

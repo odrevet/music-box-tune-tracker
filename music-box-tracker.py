@@ -12,8 +12,6 @@ import const
 from document import Document
 from input import Input
 
-NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
-
 def main(stdscr, port, document, input):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
@@ -56,7 +54,7 @@ def main(stdscr, port, document, input):
                 stdscr.move(cursor_y, cursor_x)
         elif ch == ord('x'):
             populate_partition(stdscr, partition, input)
-            export_to_mid(document)
+            document.export_to_mid()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('o'):
             input.player_start_at_value(stdscr, cursor_x - 1)
@@ -96,13 +94,13 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             port.send(mido.Message('note_on',
-                                   note=NOTES[cursor_y - (input.start_y + input.offset_y)]))
+                                   note=document.NOTES[cursor_y - (input.start_y + input.offset_y)]))
         elif ch == ord('r'):
             populate_partition(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
             for partition_y in range(input.length_y):
                 if document.has_note(cursor_x - 1, partition_y):
-                    port.send(mido.Message('note_on', note=NOTES[partition_y]))
+                    port.send(mido.Message('note_on', note=document.NOTES[partition_y]))
         elif ch == ord('p'):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -150,30 +148,13 @@ def play(stdscr, port, document, input):
             return
         for partition_y in range(input.length_y):
             if document.has_note(partition_x, partition_y):
-                port.send(mido.Message('note_on', note=NOTES[partition_y]))
+                port.send(mido.Message('note_on', note=document.NOTES[partition_y]))
         time.sleep(SLEEP_DURATION)
         #update progress indicator
         stdscr.move(PROGRESS_INDICATOR_Y, partition_x + input.offset_x)
         stdscr.addch(PROGRESS_INDICATOR_CH)
         stdscr.refresh()
     stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x + input.offset_x)
-
-def export_to_mid(document):
-    mid = mido.MidiFile(type=0, ticks_per_beat=480)
-    track = mido.MidiTrack()
-    mid.tracks.append(track)
-
-    ticks = 480
-
-    track.append(mido.Message('program_change', program=document.program, time=0))
-
-    for partition_x in range(document.length_x):
-        for partition_y in range(document.length_y):
-            if document.has_note(partition_x, partition_y):
-                track.append(mido.Message('note_on', note=NOTES[partition_y], time=0))
-        track.append(mido.Message('note_off', time=ticks))
-
-    mid.save(document.title + '.mid')
 
 def left_shift(partition, x):
     for partition_y in range(document.length_y):
