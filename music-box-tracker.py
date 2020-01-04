@@ -37,14 +37,12 @@ def main(stdscr, port, document, input):
             next_y = cursor_y - 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
-                populate_partition(stdscr, partition, input)
                 input.draw(stdscr, document, cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_DOWN:
             next_y = cursor_y + 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
-                populate_partition(stdscr, partition, input)
                 input.draw(stdscr, document, cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_LEFT:
@@ -58,11 +56,10 @@ def main(stdscr, port, document, input):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
         elif ch == ord('x'):
-            populate_partition(stdscr, partition, input)
             document.export_to_mid()
-            stdscr.move(cursor_y, cursor_x)
         elif ch == ord('o'):
             input.player_start_at_value(stdscr, cursor_x - 1)
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('u'):
             input.player_start_at_dec(stdscr)
@@ -71,37 +68,21 @@ def main(stdscr, port, document, input):
             input.player_start_at_inc(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
-            populate_partition(stdscr, partition, input)
             document.right_shift(cursor_x - 1)
             input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
-            populate_partition(stdscr, partition, input)
             document.left_shift(cursor_x - 1)
             input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
-            if chr(stdscr.inch(cursor_y, cursor_x) & curses.A_CHARTEXT) != const.NOTE_CH:
-                stdscr.attron(curses.color_pair(const.PAIR_NOTE))
-                stdscr.addch(const.NOTE_CH)
-                stdscr.attroff(curses.color_pair(const.PAIR_NOTE))
-            else:
-                pair = None
-                if cursor_x % 2 != 0:
-                    pair = const.PAIR_INPUT_A
-                else:
-                    pair = const.PAIR_INPUT_B
-                attr = curses.color_pair(pair)
-                stdscr.attron(attr)
-                stdscr.addch(const.EMPTY_CH)
-                stdscr.attroff(attr)
-
+            document.partition[cursor_y - 1][cursor_x - 1] = not document.partition[cursor_y - 1][cursor_x - 1]
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             port.send(mido.Message('note_on',
                                    note=document.NOTES[cursor_y - (input.start_y + input.offset_y)]))
         elif ch == ord('r'):
-            populate_partition(stdscr, partition, input)
             stdscr.move(cursor_y, cursor_x)
             for partition_y in range(input.length_y):
                 if document.has_note(cursor_x - 1, partition_y):
@@ -111,13 +92,11 @@ def main(stdscr, port, document, input):
                 thread_player.do_run = False
                 thread_player.join()
             else:
-                populate_partition(stdscr, partition, input)
                 thread_player = threading.Thread(target = play,
                                                  args=(stdscr, port, document, input))
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('s'):
-            populate_partition(stdscr, partition, input)
             document.save()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
@@ -132,14 +111,6 @@ def main(stdscr, port, document, input):
         thread_player.join()
 
     port.close()
-
-def populate_partition(stdscr, partition, input):
-    '''Read screen and populate the partition'''
-    for screen_y in range(input.start_y, input.length_y):
-        for screen_x in range(input.start_x, input.length_x):
-            partition[screen_y][screen_x] = chr(stdscr.inch(screen_y + input.offset_y,
-                                                        screen_x + input.offset_x)
-                                                & curses.A_CHARTEXT) == const.NOTE_CH
 
 def play(stdscr, port, document, input):
     t = threading.currentThread()

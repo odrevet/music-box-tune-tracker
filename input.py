@@ -82,7 +82,6 @@ class Input:
                         self.player_start_at + self.offset_x)
             stdscr.addch(' ')
             self.player_start_at = value
-            self.draw(stdscr)
 
     def player_start_at_inc(self, stdscr):
         self.player_start_at_value(stdscr, self.player_start_at + 1)
