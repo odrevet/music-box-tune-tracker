@@ -94,6 +94,10 @@ optional arguments:
                         side or 5 if two side
 ```
 
+# Screenshot
+
+<img src="/screenshots/screenshot.jpg" width="240px" />
+
 # Thanks
 
 Thanks to fred27 https://www.instructables.com/member/fred27/ to have shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
