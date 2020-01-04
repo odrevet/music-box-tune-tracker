@@ -1,4 +1,6 @@
+import curses
 from curses.textpad import rectangle
+import const
 
 class Input:
     start_y = 0
@@ -14,13 +16,40 @@ class Input:
                       self.start_x + self.length_x + self.offset_x + 1,
                       tone_str)
 
-    def draw(self, stdscr):
+    def populate_screen(self, stdscr, document):
+        '''Read parition and populate the screen'''
+        for partition_y in range(self.length_y):
+            for partition_x in range(self.length_x):
+                stdscr.move(self.start_y + self.offset_y + partition_y,
+                            self.start_x + self.offset_x + partition_x)
+                attr=None
+                ch=None
+                if document.has_note(partition_x, partition_y):
+                    attr=curses.color_pair(const.PAIR_NOTE)
+                    ch=const.NOTE_CH
+                else:
+                    ch=const.EMPTY_CH
+                    pair = None
+                    if partition_x % 2 == 0:
+                        pair = const.PAIR_INPUT_A
+                    else:
+                        pair = const.PAIR_INPUT_B
+                    attr = curses.color_pair(pair)
+
+                stdscr.attron(attr)
+                stdscr.addch(ch)
+                stdscr.attroff(attr)
+
+    def draw(self, stdscr, document):
         # draw border
         rectangle(stdscr,
                   self.start_y,
                   self.start_y,
                   self.length_y + self.offset_y,
                   self.length_x + self.offset_x)
+
+        # draw partition table
+        self.populate_screen(stdscr, document)
 
         # draw tones
         tones = ['G4',

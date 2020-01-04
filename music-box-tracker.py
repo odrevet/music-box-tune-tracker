@@ -25,9 +25,8 @@ def main(stdscr, port, document, input):
     curses.init_pair(const.PAIR_INPUT_A, -1, curses.COLOR_BLACK)
     curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_MAGENTA)
 
-    input.draw(stdscr)
+    input.draw(stdscr, document)
 
-    populate_screen(stdscr, document, input)
     stdscr.move(cursor_y, cursor_x)
 
     thread_player = None   #thread to play music in background
@@ -71,12 +70,12 @@ def main(stdscr, port, document, input):
         elif ch == ord('+'):
             populate_partition(stdscr, partition, input)
             right_shift(partition, cursor_x - 1)
-            populate_screen(stdscr, document, input)
+            input.populate_screen(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             populate_partition(stdscr, partition, input)
             left_shift(partition, cursor_x - 1)
-            populate_screen(stdscr, document, input)
+            input.populate_screen(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             if chr(stdscr.inch(cursor_y, cursor_x) & curses.A_CHARTEXT) != const.NOTE_CH:
@@ -120,7 +119,7 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             document.load()
-            populate_screen(stdscr, document, input)
+            input.populate_screen(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
             break
@@ -138,30 +137,6 @@ def populate_partition(stdscr, partition, input):
             partition[screen_y][screen_x] = chr(stdscr.inch(screen_y + input.offset_y,
                                                         screen_x + input.offset_x)
                                                 & curses.A_CHARTEXT) == const.NOTE_CH
-
-def populate_screen(stdscr, document, input):
-    '''Read parition and populate the screen'''
-    for partition_y in range(input.length_y):
-        for partition_x in range(input.length_x):
-            stdscr.move(input.start_y + input.offset_y + partition_y,
-                        input.start_x + input.offset_x + partition_x)
-            attr=None
-            ch=None
-            if document.has_note(partition_x, partition_y):
-                attr=curses.color_pair(const.PAIR_NOTE)
-                ch=const.NOTE_CH
-            else:
-                ch=const.EMPTY_CH
-                pair = None
-                if partition_x % 2 == 0:
-                    pair = const.PAIR_INPUT_A
-                else:
-                    pair = const.PAIR_INPUT_B
-                attr = curses.color_pair(pair)
-
-            stdscr.attron(attr)
-            stdscr.addch(ch)
-            stdscr.attroff(attr)
 
 def play(stdscr, port, document, input):
     t = threading.currentThread()
