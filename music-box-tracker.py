@@ -68,12 +68,12 @@ def main(stdscr, port, document, input):
         elif ch == ord('+'):
             populate_partition(stdscr, partition, input)
             right_shift(partition, cursor_x - 1)
-            input.populate_screen(stdscr, document)
+            input.draw(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             populate_partition(stdscr, partition, input)
             left_shift(partition, cursor_x - 1)
-            input.populate_screen(stdscr, document)
+            input.draw(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             if chr(stdscr.inch(cursor_y, cursor_x) & curses.A_CHARTEXT) != const.NOTE_CH:
@@ -117,7 +117,7 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             document.load()
-            input.populate_screen(stdscr, document)
+            input.draw(stdscr, document)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
             break
