@@ -2,7 +2,7 @@
 
 I ported some code from Fred Record Player to create music box tune tracker.
 I had to first build Fred Record Player under Linux. Fortunately the source code is
-avaiable online and is written in c# which can be compiled with mono.
+available online and is written in c# which can be compiled with mono.
 
 Here is what I did to compile and launch Fred Record Player under Ubuntu.
 
