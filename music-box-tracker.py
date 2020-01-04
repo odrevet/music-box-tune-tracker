@@ -63,9 +63,11 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('u'):
             input.player_start_at_dec(stdscr)
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('i'):
             input.player_start_at_inc(stdscr)
+            input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
             document.right_shift(cursor_x - 1)
