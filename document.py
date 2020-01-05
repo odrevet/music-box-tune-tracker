@@ -40,20 +40,23 @@ class Document:
             self._partition[partition_y].pop
 
     def load(self):
-        input = ''
-        with open(self.filename) as fp:
-            lineno = 0
-            while lineno < self.length_y:
-                line = fp.readline().rstrip()
-                line = line.ljust(self.length_x, const.EMPTY_FPR)[:self.length_x]
-                for i in range(len(line)):
-                    self._partition[lineno][i] = line[i] == const.NOTE_FPR
-                lineno += 1
-            self.title=fp.readline().rstrip()
-            while line:
-                line=fp.readline()
-                self.comment+=line
-        fp.close()
+        try:
+            input = ''
+            with open(self.filename) as fp:
+                lineno = 0
+                while lineno < self.length_y:
+                    line = fp.readline().rstrip()
+                    line = line.ljust(self.length_x, const.EMPTY_FPR)[:self.length_x]
+                    for i in range(len(line)):
+                        self._partition[lineno][i] = line[i] == const.NOTE_FPR
+                    lineno += 1
+                self.title=fp.readline().rstrip()
+                while line:
+                    line=fp.readline()
+                    self.comment+=line
+            fp.close()
+        except FileNotFoundError as e:
+            pass
 
     def save(self):
         output = ''
