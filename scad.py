@@ -129,7 +129,7 @@ def get_pins(e_document, is_second_side):
     return pins
 
 def to_scad(version, date_time, thickness, document, document_bis=None):
-    with open('res/FisherPriceTemplate.scad', 'r') as content_file:
+    with open('res/fisher-price-template.scad', 'r') as content_file:
         content = content_file.read()
         content = content.replace('{VERSION}', version)
         content = content.replace('{DATE_TIME}', date_time)
