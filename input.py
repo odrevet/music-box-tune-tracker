@@ -21,8 +21,8 @@ class Input:
     def refresh_partition_display(self, stdscr):
         '''Read parition and populate the screen'''
         # what is displayed
-        NOTE_CH = '•'
-        EMPTY_CH = '-'
+        NOTE_CH = '◉'
+        EMPTY_CH = '_'
 
         tracks_range = range(self.length_y)
         for partition_y in tracks_range:
