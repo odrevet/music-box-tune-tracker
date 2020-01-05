@@ -3,6 +3,7 @@
 import sys
 import argparse
 import time, datetime
+from pathlib import Path
 import scad
 
 from document import Document
@@ -19,17 +20,25 @@ fpr_file = args.fpr
 fpr_file_bis = args.fprbis
 scad_file = args.scad
 thickness = None
-if(args.thickness in ['3', '5']):
+if args.thickness in ['3', '5']:
     thickness = int(args.thickness)
 else:
     thickness = 5 if fpr_file_bis else 3
+
+if not Path(fpr_file).is_file():
+    print('Cannot find ' + fpr_file)
+    sys.exit()
 
 document = Document(86, 16)
 document.filename = fpr_file
 document.load()
 
 document_bis = None
-if(fpr_file_bis is not None):
+if fpr_file_bis is not None:
+    if not Path(fpr_file_bis).is_file():
+        print('Cannot find ' + fpr_file_bis)
+        sys.exit()
+
     document_bis = Document(86, 16)
     document_bis.filename = fpr_file_bis
     document_bis.load()
