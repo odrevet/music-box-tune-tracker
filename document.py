@@ -1,3 +1,4 @@
+import os
 import mido
 import const
 
@@ -60,6 +61,7 @@ class Document:
                     self.comment+=line
             fp.close()
         except FileNotFoundError as e:
+            self.title = os.path.splitext(self.filename)[0]
             pass
 
     def save(self):
