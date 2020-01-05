@@ -15,7 +15,6 @@ from input import Input
 def main(stdscr, port, document, input):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
-    partition = document.partition
 
     curses.start_color()
     curses.use_default_colors()
@@ -78,7 +77,7 @@ def main(stdscr, port, document, input):
             input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
-            document.partition[cursor_y - 1][cursor_x - 1] = not document.partition[cursor_y - 1][cursor_x - 1]
+            document.reverse_note(cursor_x - 1, cursor_y - 1)
             input.draw(stdscr, document, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):

@@ -5,30 +5,39 @@ class Document:
     filename = None
     title = 'Default'
     comment = ''
-    partition = None
+    _partition = None
     length_x = 0    #length of beats
     length_y = 0    #length of tracks
     program = 8
     NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
 
     def __init__(self, length_x, length_y):
-        self.partition = [[False for x in range(length_x)]
+        self._partition = [[False for x in range(length_x)]
                           for y in range(length_y)]
         self.length_x = length_x
         self.length_y = length_y
 
     def has_note(self, x, y):
-        return self.partition[y][x]
+        return self._partition[y][x]
+
+    def set_note(self, x, y, value):
+        self._partition[y][x] = value
+
+    def get_beats(self, track_index):
+        return self._partition[track_index]
+
+    def reverse_note(self, x, y):
+        self._partition[y][x] = not self._partition[y][x]
 
     def left_shift(self, x):
         for partition_y in range(self.length_y):
-            self.partition[partition_y].pop(x)
-            self.partition[partition_y].append(False)
+            self._partition[partition_y].pop(x)
+            self._partition[partition_y].append(False)
 
     def right_shift(self, x):
         for partition_y in range(self.length_y):
-            self.partition[partition_y].insert(x, False)
-            self.partition[partition_y].pop
+            self._partition[partition_y].insert(x, False)
+            self._partition[partition_y].pop
 
     def load(self):
         input = ''
@@ -38,7 +47,7 @@ class Document:
                 line = fp.readline().rstrip()
                 line = line.ljust(self.length_x, const.EMPTY_FPR)[:self.length_x]
                 for i in range(len(line)):
-                    self.partition[lineno][i] = line[i] == const.NOTE_FPR
+                    self._partition[lineno][i] = line[i] == const.NOTE_FPR
                 lineno += 1
             self.title=fp.readline().rstrip()
             while line:

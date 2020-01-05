@@ -14,38 +14,6 @@ from document import Document
 # angle degrees (Float)
 # second side (Boolean)
 
-class Expanded_document(Document):
-    def __init__(self, length_x, length_y, document):
-        super().__init__(length_x, length_y)
-        self.title = document.title
-
-        for i in range(document.length_y):
-            beats = document.partition[i]
-            if i < 7:
-                self.partition[i] = beats.copy()
-            elif i == 7:
-                self.__split_track(7, 8, beats)
-            elif i == 8:
-                self.__split_track(9, 10, beats)
-            elif i == 9:
-                self.__split_track(11, 12, beats)
-            elif i == 10:
-                self.__split_track(13, 14, beats)
-            elif i == 11:
-                self.__split_track(15, 16, beats)
-            elif i == 12:
-                self.__split_track(17, 18, beats)
-            elif i > 12:
-                self.partition[i + 6] = beats.copy()
-
-    def __split_track(self, first_track_number, second_track_number, beats):
-        on_second_track = False
-        for beat_index in range(len(beats)):
-            if beats[beat_index] == True:
-                track_number = second_track_number if on_second_track else first_track_number
-                self.partition[track_number][beat_index] = True
-                on_second_track = not on_second_track
-
 TRACK_RADIUS = [28.65,
                 29.65,
                 31.39,
@@ -68,23 +36,56 @@ TRACK_RADIUS = [28.65,
                 54.61,
                 56.4,
                 57.4]
-OVERLAP = 0.2
-HEAD_OFFSET = 2
+
+
+class Expanded_document(Document):
+    def __init__(self, length_x, length_y, document):
+        super().__init__(length_x, length_y)
+        self.title = document.title
+
+        for track_index in range(document.length_y):
+            beats = document.get_beats(track_index)
+            if track_index < 7:
+                self._partition[track_index] = beats.copy()
+            elif track_index == 7:
+                self.__split_track(7, 8, beats)
+            elif track_index == 8:
+                self.__split_track(9, 10, beats)
+            elif track_index == 9:
+                self.__split_track(11, 12, beats)
+            elif track_index == 10:
+                self.__split_track(13, 14, beats)
+            elif track_index == 11:
+                self.__split_track(15, 16, beats)
+            elif track_index == 12:
+                self.__split_track(17, 18, beats)
+            elif track_index > 12:
+                self._partition[track_index + 6] = beats.copy()
+
+    def __split_track(self, first_track_number, second_track_number, beats):
+        on_second_track = False
+        for beat_index in range(len(beats)):
+            if beats[beat_index] == True:
+                track_number = second_track_number if on_second_track else first_track_number
+                self.set_note(beat_index, track_number, True)
+                on_second_track = not on_second_track
 
 class Pin:
     __inner = None
     __outer = None
     __angle = None
     __is_second_side = None
+    __beat_count = 86
 
-    def __init__(self, inner, outer, is_second_side):
+    def __init__(self, inner, outer, is_second_side, beat_count):
         self.__inner = inner
         self.__outer = outer
         self.__is_second_side = is_second_side
+        self.__beat_count = beat_count
 
     def set_angle(self, track, note):
-        beat_count = 86
-        note_angle = 2 * math.pi / beat_count
+        HEAD_OFFSET = 2
+        note_angle = 2 * math.pi / self.__beat_count
 
         radius = TRACK_RADIUS[track]
         angle = note_angle * note
@@ -115,12 +116,14 @@ def pins_to_str(pins, title=None, is_second_side=None):
 
 def get_pins(e_document, is_second_side):
     pins = []
+    OVERLAP = 0.2
+
     for track_index in range(e_document.length_y):
         inner = TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index %2 == 0 else 0)
         outer = inner + 1 + OVERLAP
         for note_index in range(e_document.length_x):
             if e_document.has_note(note_index, track_index):
-                pin = Pin(inner, outer, is_second_side)
+                pin = Pin(inner, outer, is_second_side, e_document.length_x)
                 pin.set_angle(track_index, note_index)
                 pins.append(pin)
     return pins
