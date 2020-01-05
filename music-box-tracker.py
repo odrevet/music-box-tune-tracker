@@ -149,19 +149,18 @@ if __name__=="__main__":
     parser.add_argument('--file',    help='fpr file to open')
     parser.add_argument('--program', help='midi instrument code')
     parser.add_argument('--title',   help='set the title of a new tune')
-    parser.add_argument('--hi',
-                        help='display hi pitch note first',
-                        action='store_false')
     parser.add_argument('--low',
                         help='display low pitch note first',
-                        action='store_true')
+                        action='store_false')
 
     args=parser.parse_args()
     if args.port : portname = args.port
     if args.file : document.filename = args.file
     elif args.title: document.title = args.title
     if args.program : program = int(args.program)
-    if args.hi: input.tone_descending = False
+    if args.low: input.tone_descending = True
+
+    print(input.tone_descending)
 
     # midi port
     port = None
