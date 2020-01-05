@@ -59,7 +59,8 @@ class Input:
                   self.beats_count + self.offset_x)
 
         #title
-        stdscr.addstr(self.start_y, self.start_x + 2, self.document.title)
+        if self.document.title is not None:
+            stdscr.addstr(self.start_y, self.start_x + 2, self.document.title)
 
         # draw partition table
         self.refresh_partition_display(stdscr)
