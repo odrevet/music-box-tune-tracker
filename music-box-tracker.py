@@ -80,7 +80,7 @@ def main(stdscr, port, document, input):
             x = cursor_x - 1
             y = cursor_y - 1
             if input.tone_descending:
-                y = input.length_y - 1 - y
+                y = input.tracks_count - 1 - y
 
             document.reverse_note(x, y)
             input.refresh_partition_display(stdscr)
@@ -90,9 +90,9 @@ def main(stdscr, port, document, input):
                                    note=document.NOTES[cursor_y - (input.start_y + input.offset_y)]))
         elif ch == ord('r'):
             stdscr.move(cursor_y, cursor_x)
-            for partition_y in range(input.length_y):
-                if document.has_note(cursor_x - 1, partition_y):
-                    port.send(mido.Message('note_on', note=document.NOTES[partition_y]))
+            for track_index in range(input.tracks_count):
+                if document.has_note(cursor_x - 1, track_index):
+                    port.send(mido.Message('note_on', note=document.NOTES[track_index]))
         elif ch == ord('p'):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -121,28 +121,28 @@ def main(stdscr, port, document, input):
 def play(stdscr, port, document, input):
     t = threading.currentThread()
     SLEEP_DURATION = .45
-    PROGRESS_INDICATOR_Y = input.length_y + input.offset_y + 2
+    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 2
     PROGRESS_INDICATOR_CH = '■'
 
-    for partition_x in range(input.player_start_at, input.length_x):
+    for beat_index in range(input.player_start_at, input.beats_count):
         if getattr(t, "do_run", True) == False:
-            stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x)
+            stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.beats_count)
             return
-        for partition_y in range(input.length_y):
-            if document.has_note(partition_x, partition_y):
-                port.send(mido.Message('note_on', note=document.NOTES[partition_y]))
+        for track_index in range(input.tracks_count):
+            if document.has_note(beat_index, track_index):
+                port.send(mido.Message('note_on', note=document.NOTES[track_index]))
         time.sleep(SLEEP_DURATION)
         #update progress indicator
-        stdscr.move(PROGRESS_INDICATOR_Y, partition_x + input.offset_x)
+        stdscr.move(PROGRESS_INDICATOR_Y, beat_index + input.offset_x)
         stdscr.addch(PROGRESS_INDICATOR_CH)
         stdscr.refresh()
-    stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.length_x + input.offset_x)
+    stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.beats_count + input.offset_x)
 
 if __name__=="__main__":
     portname = None
     program = 8
     input = Input()
-    document = Document(input.length_x, input.length_y)
+    document = Document(input.beats_count, input.tracks_count)
 
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')

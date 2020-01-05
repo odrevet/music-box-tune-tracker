@@ -5,8 +5,8 @@ import const
 class Input:
     start_y = 0
     start_x = 0
-    length_y = 16
-    length_x = 86
+    tracks_count = 16
+    beats_count = 86
     offset_x = 1
     offset_y = 1
     player_start_at = 0
@@ -15,7 +15,7 @@ class Input:
 
     def __draw_tone(self, stdscr, index, tone_str):
         stdscr.addstr(self.start_y + self.offset_y + index,
-                      self.start_x + self.length_x + self.offset_x + 1,
+                      self.start_x + self.beats_count + self.offset_x + 1,
                       tone_str)
 
     def refresh_partition_display(self, stdscr):
@@ -24,23 +24,23 @@ class Input:
         NOTE_CH = '◉'
         EMPTY_CH = '_'
 
-        tracks_range = range(self.length_y)
-        for partition_y in tracks_range:
-            for partition_x in range(self.length_x):
-                stdscr.move(self.start_y + self.offset_y + partition_y,
-                            self.start_x + self.offset_x + partition_x)
+        tracks_range = range(self.tracks_count)
+        for track_index in tracks_range:
+            for beat_index in range(self.beats_count):
+                stdscr.move(self.start_y + self.offset_y + track_index,
+                            self.start_x + self.offset_x + beat_index)
                 attr=None
                 ch=None
                 if self.tone_descending:
-                    partition_y = self.length_y - 1 - partition_y
+                    track_index = self.tracks_count - 1 - track_index
 
-                if self.document.has_note(partition_x, partition_y):
+                if self.document.has_note(beat_index, track_index):
                     attr=curses.color_pair(const.PAIR_NOTE)
                     ch=NOTE_CH
                 else:
                     ch=EMPTY_CH
                     pair = None
-                    if partition_x % 2 == 0:
+                    if beat_index % 2 == 0:
                         pair = const.PAIR_INPUT_A
                     else:
                         pair = const.PAIR_INPUT_B
@@ -55,8 +55,8 @@ class Input:
         rectangle(stdscr,
                   self.start_y,
                   self.start_y,
-                  self.length_y + self.offset_y,
-                  self.length_x + self.offset_x)
+                  self.tracks_count + self.offset_y,
+                  self.beats_count + self.offset_x)
 
         # draw partition table
         self.refresh_partition_display(stdscr)
@@ -69,7 +69,7 @@ class Input:
         if self.tone_descending:
             tones.reverse()
 
-        for i in range(0, self.length_y):
+        for i in range(0, self.tracks_count):
             if cursor_y - 1 == i:
                 stdscr.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
             self.__draw_tone(stdscr, i, tones[i])
@@ -77,18 +77,18 @@ class Input:
                 stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
         #draw player start at
-        stdscr.move(self.length_y + self.offset_y + 1, self.player_start_at + self.offset_x)
+        stdscr.move(self.tracks_count + self.offset_y + 1, self.player_start_at + self.offset_x)
         stdscr.addch('|')
 
     def can_move(self, y, x):
         return (y > self.start_y
                 and x > self.start_x
-                and y < self.length_y + self.offset_y
-                and x < self.length_x + self.offset_x)
+                and y < self.tracks_count + self.offset_y
+                and x < self.beats_count + self.offset_x)
 
     def player_start_at_value(self, stdscr, value):
-        if value < self.length_x and value >= 0:
-            stdscr.move(self.length_y + self.offset_y + 1,
+        if value < self.beats_count and value >= 0:
+            stdscr.move(self.tracks_count + self.offset_y + 1,
                         self.player_start_at + self.offset_x)
             stdscr.addch(' ')
             self.player_start_at = value

@@ -39,11 +39,11 @@ TRACK_RADIUS = [28.65,
 
 
 class Expanded_document(Document):
-    def __init__(self, length_x, length_y, document):
-        super().__init__(length_x, length_y)
+    def __init__(self, beats_count, tracks_count, document):
+        super().__init__(beats_count, tracks_count)
         self.title = document.title
 
-        for track_index in range(document.length_y):
+        for track_index in range(document.tracks_count):
             beats = document.get_beats(track_index)
             if track_index < 7:
                 self._partition[track_index] = beats.copy()
@@ -114,12 +114,12 @@ def get_pins(e_document, is_second_side):
     pins = []
     OVERLAP = 0.2
 
-    for track_index in range(e_document.length_y):
+    for track_index in range(e_document.tracks_count):
         inner = TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index %2 == 0 else 0)
         outer = inner + 1 + OVERLAP
-        for note_index in range(e_document.length_x):
+        for note_index in range(e_document.beats_count):
             if e_document.has_note(note_index, track_index):
-                pin = Pin(inner, outer, is_second_side, e_document.length_x)
+                pin = Pin(inner, outer, is_second_side, e_document.beats_count)
                 pin.set_angle(track_index, note_index)
                 pins.append(pin)
     return pins

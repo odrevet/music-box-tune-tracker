@@ -10,16 +10,16 @@ class Document:
     title = 'Default'
     comment = ''
     _partition = None
-    length_x = 0    #length of beats
-    length_y = 0    #length of tracks
+    beats_count = 0
+    tracks_count = 0
     program = 8
     NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
 
-    def __init__(self, length_x, length_y):
-        self._partition = [[False for x in range(length_x)]
-                          for y in range(length_y)]
-        self.length_x = length_x
-        self.length_y = length_y
+    def __init__(self, beats_count, tracks_count):
+        self._partition = [[False for x in range(beats_count)]
+                          for y in range(tracks_count)]
+        self.beats_count = beats_count
+        self.tracks_count = tracks_count
 
     def has_note(self, x, y):
         return self._partition[y][x]
@@ -34,23 +34,23 @@ class Document:
         self._partition[y][x] = not self._partition[y][x]
 
     def left_shift(self, x):
-        for partition_y in range(self.length_y):
-            self._partition[partition_y].pop(x)
-            self._partition[partition_y].append(False)
+        for track_index in range(self.tracks_count):
+            self._partition[track_index].pop(x)
+            self._partition[track_index].append(False)
 
     def right_shift(self, x):
-        for partition_y in range(self.length_y):
-            self._partition[partition_y].insert(x, False)
-            self._partition[partition_y].pop
+        for track_index in range(self.tracks_count):
+            self._partition[track_index].insert(x, False)
+            self._partition[track_index].pop
 
     def load(self):
         try:
             input = ''
             with open(self.filename) as fp:
                 lineno = 0
-                while lineno < self.length_y:
+                while lineno < self.tracks_count:
                     line = fp.readline().rstrip()
-                    line = line.ljust(self.length_x, self.__EMPTY_FPR)[:self.length_x]
+                    line = line.ljust(self.beats_count, self.__EMPTY_FPR)[:self.beats_count]
                     for i in range(len(line)):
                         self._partition[lineno][i] = line[i] == self.__NOTE_FPR
                     lineno += 1
@@ -64,9 +64,9 @@ class Document:
 
     def save(self):
         output = ''
-        for partition_y in range(0, self.length_y):
-            for partition_x in range(0, self.length_x):
-                has_note = self.has_note(partition_x, partition_y)
+        for track_index in range(0, self.tracks_count):
+            for beat_index in range(0, self.beats_count):
+                has_note = self.has_note(beat_index, track_index)
                 output += self.__NOTE_FPR if has_note else self.__EMPTY_FPR
             output += '\n'
         output += self.title
@@ -85,10 +85,10 @@ class Document:
 
         track.append(mido.Message('program_change', program=self.program, time=0))
 
-        for partition_x in range(self.length_x):
-            for partition_y in range(self.length_y):
-                if self.has_note(partition_x, partition_y):
-                    track.append(mido.Message('note_on', note=self.NOTES[partition_y], time=0))
+        for beat_index in range(self.beats_count):
+            for track_index in range(self.tracks_count):
+                if self.has_note(beat_index, track_index):
+                    track.append(mido.Message('note_on', note=self.NOTES[track_index], time=0))
             track.append(mido.Message('note_off', time=ticks))
 
         mid.save(self.title + '.mid')
