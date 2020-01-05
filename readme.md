@@ -1,6 +1,6 @@
-This sofwtare is a music box tune tracker. 
+This sofwtare is a music box tune tracker.
 
-It can export .scad file to create custom disc for the Fisher Price Record Player toy. 
+It can export .scad file to create custom disc for the Fisher Price Record Player toy.
 
 music box tune tracker use the same file format (.fpr) from "Fred Record Player" available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
@@ -71,6 +71,7 @@ python music-box-tracker.py --port 'TiMidity port 0'
 * s: save
 * l: load
 * x: export to .mid
+* e: edit title
 * q: quit
 * o: move the playing start location to cursor
 * i: move the playing start location to the right

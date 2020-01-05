@@ -54,9 +54,12 @@ class Input:
         # draw border
         rectangle(stdscr,
                   self.start_y,
-                  self.start_y,
+                  self.start_x,
                   self.tracks_count + self.offset_y,
                   self.beats_count + self.offset_x)
+
+        #title
+        stdscr.addstr(self.start_y, self.start_x + 2, self.document.title)
 
         # draw partition table
         self.refresh_partition_display(stdscr)

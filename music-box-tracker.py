@@ -7,6 +7,8 @@ import threading
 
 import mido
 import curses
+import curses.textpad
+from curses.textpad import rectangle
 
 import const
 from document import Document
@@ -25,6 +27,12 @@ def main(stdscr, port, document, input):
 
     input.document = document
     input.draw(stdscr, cursor_x, cursor_y)
+
+    # edit box
+    editwin = curses.newwin(1,79, 20,1)
+    rectangle(stdscr, 19,0, 20+1,87)
+    box = curses.textpad.Textbox(editwin)
+    editwin.addstr(0, 0, document.title)
     stdscr.move(cursor_y, cursor_x)
 
     thread_player = None   #thread to play music in background
@@ -76,6 +84,13 @@ def main(stdscr, port, document, input):
             document.left_shift(cursor_x - 1)
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
+        elif ch == ord('e'):
+            box.edit()
+            title = box.gather()
+            input.document.title = title
+            input.draw(stdscr, cursor_x, cursor_y)
+            stdscr.move(cursor_y, cursor_x)
+
         elif ch == ord(' '):
             x = cursor_x - 1
             y = cursor_y - 1
@@ -149,9 +164,7 @@ if __name__=="__main__":
     parser.add_argument('--file',    help='fpr file to open')
     parser.add_argument('--program', help='midi instrument code')
     parser.add_argument('--title',   help='set the title of a new tune')
-    parser.add_argument('--low',
-                        help='display low pitch note first',
-                        action='store_true')
+    parser.add_argument('--low',     help='display low pitch notes first', action='store_true')
 
     args=parser.parse_args()
     if args.port : portname = args.port
@@ -159,8 +172,6 @@ if __name__=="__main__":
     elif args.title: document.title = args.title
     if args.program : program = int(args.program)
     if args.low: input.tone_descending = False
-
-    print(args.low)
 
     # midi port
     port = None
