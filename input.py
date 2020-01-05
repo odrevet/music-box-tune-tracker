@@ -11,7 +11,7 @@ class Input:
     offset_y = 1
     player_start_at = 0
     document = None
-    tone_descending = False   # display low tone on top
+    tone_descending = True
 
     def __draw_tone(self, stdscr, index, tone_str):
         stdscr.addstr(self.start_y + self.offset_y + index,

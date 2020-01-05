@@ -151,16 +151,16 @@ if __name__=="__main__":
     parser.add_argument('--title',   help='set the title of a new tune')
     parser.add_argument('--low',
                         help='display low pitch note first',
-                        action='store_false')
+                        action='store_true')
 
     args=parser.parse_args()
     if args.port : portname = args.port
     if args.file : document.filename = args.file
     elif args.title: document.title = args.title
     if args.program : program = int(args.program)
-    if args.low: input.tone_descending = True
+    if args.low: input.tone_descending = False
 
-    print(input.tone_descending)
+    print(args.low)
 
     # midi port
     port = None
