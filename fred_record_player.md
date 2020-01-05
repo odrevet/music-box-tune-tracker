@@ -32,7 +32,7 @@ Otherwise the software will crash when trying to create a .scad file as it canno
 
 ## Set local
 
-If your computer has local that set decimal separator to a comma, then the scad file pin will not have the right format, as dot in float numbers will be commas: `pin(42,0,42,0,42,0,0);` instead of `pin(42.0,42.0,42.0,0);`
+If your computer local set decimal separator to `comma`, then the scad file pin will not have the right format, as dot in float numbers will be exported as commas, messing with the comma use to separate arguments in the pin function calls: `pin(42,0,42,0,42,0,0);` instead of `pin(42.0,42.0,42.0,0);`
 
 a good solution is to set the LC_ALL environement variable to C 
 
