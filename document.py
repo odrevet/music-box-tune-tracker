@@ -2,6 +2,10 @@ import mido
 import const
 
 class Document:
+    # what the .fpr format uses
+    __NOTE_FPR = '+'
+    __EMPTY_FPR = '-'
+
     filename = None
     title = 'Default'
     comment = ''
@@ -46,9 +50,9 @@ class Document:
                 lineno = 0
                 while lineno < self.length_y:
                     line = fp.readline().rstrip()
-                    line = line.ljust(self.length_x, const.EMPTY_FPR)[:self.length_x]
+                    line = line.ljust(self.length_x, self.__EMPTY_FPR)[:self.length_x]
                     for i in range(len(line)):
-                        self._partition[lineno][i] = line[i] == const.NOTE_FPR
+                        self._partition[lineno][i] = line[i] == self.__NOTE_FPR
                     lineno += 1
                 self.title=fp.readline().rstrip()
                 while line:
@@ -63,7 +67,7 @@ class Document:
         for partition_y in range(0, self.length_y):
             for partition_x in range(0, self.length_x):
                 has_note = self.has_note(partition_x, partition_y)
-                output += const.NOTE_FPR if has_note else const.EMPTY_FPR
+                output += self.__NOTE_FPR if has_note else self.__EMPTY_FPR
             output += '\n'
         output += self.title
         output += self.comment

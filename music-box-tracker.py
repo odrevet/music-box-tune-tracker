@@ -77,7 +77,12 @@ def main(stdscr, port, document, input):
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
-            document.reverse_note(cursor_x - 1, cursor_y - 1)
+            x = cursor_x - 1
+            y = cursor_y - 1
+            if input.tone_descending:
+                y = input.length_y - 1 - y
+
+            document.reverse_note(x, y)
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
@@ -144,11 +149,19 @@ if __name__=="__main__":
     parser.add_argument('--file',    help='fpr file to open')
     parser.add_argument('--program', help='midi instrument code')
     parser.add_argument('--title',   help='set the title of a new tune')
+    parser.add_argument('--hi',
+                        help='display hi pitch note first',
+                        action='store_false')
+    parser.add_argument('--low',
+                        help='display low pitch note first',
+                        action='store_true')
+
     args=parser.parse_args()
     if args.port : portname = args.port
     if args.file : document.filename = args.file
     elif args.title: document.title = args.title
     if args.program : program = int(args.program)
+    if args.hi: input.tone_descending = False
 
     # midi port
     port = None

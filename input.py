@@ -11,6 +11,7 @@ class Input:
     offset_y = 1
     player_start_at = 0
     document = None
+    tone_descending= True   # display low tone on top
 
     def __draw_tone(self, stdscr, index, tone_str):
         stdscr.addstr(self.start_y + self.offset_y + index,
@@ -19,17 +20,25 @@ class Input:
 
     def refresh_partition_display(self, stdscr):
         '''Read parition and populate the screen'''
-        for partition_y in range(self.length_y):
+        # what is displayed
+        NOTE_CH = '•'
+        EMPTY_CH = '-'
+
+        tracks_range = range(self.length_y)
+        for partition_y in tracks_range:
             for partition_x in range(self.length_x):
                 stdscr.move(self.start_y + self.offset_y + partition_y,
                             self.start_x + self.offset_x + partition_x)
                 attr=None
                 ch=None
+                if self.tone_descending:
+                    partition_y = self.length_y - 1 - partition_y
+
                 if self.document.has_note(partition_x, partition_y):
                     attr=curses.color_pair(const.PAIR_NOTE)
-                    ch=const.NOTE_CH
+                    ch=NOTE_CH
                 else:
-                    ch=const.EMPTY_CH
+                    ch=EMPTY_CH
                     pair = None
                     if partition_x % 2 == 0:
                         pair = const.PAIR_INPUT_A
@@ -53,15 +62,17 @@ class Input:
         self.refresh_partition_display(stdscr)
 
         # draw tones
-        TONES = ['G4 Sol',
+        tones = ['G4 Sol',
                  'C5 Do', 'D5 Ré', 'E5 Mi', 'G5 Sol', 'A5 La', 'B5 Si',
                  'C6 Do', 'D6 Ré', 'E6 Mi', 'F6 Fa', 'G6 Sol', 'A6 La', 'B6 Si',
                  'C7 Do', 'D7 Ré']
+        if self.tone_descending:
+            tones.reverse()
 
         for i in range(0, self.length_y):
             if cursor_y - 1 == i:
                 stdscr.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
-            self.__draw_tone(stdscr, i, TONES[i])
+            self.__draw_tone(stdscr, i, tones[i])
             if cursor_y - 1 == i:
                 stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
