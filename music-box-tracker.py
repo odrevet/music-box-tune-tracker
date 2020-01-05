@@ -23,8 +23,8 @@ def main(stdscr, port, document, input):
     curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_MAGENTA)
     curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
-    input.draw(stdscr, document, cursor_x, cursor_y)
-
+    input.document = document
+    input.draw(stdscr, cursor_x, cursor_y)
     stdscr.move(cursor_y, cursor_x)
 
     thread_player = None   #thread to play music in background
@@ -36,13 +36,13 @@ def main(stdscr, port, document, input):
             next_y = cursor_y - 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
-                input.draw(stdscr, document, cursor_x, cursor_y)
+                input.draw(stdscr, cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_DOWN:
             next_y = cursor_y + 1;
             if(input.can_move(next_y, cursor_x)):
                 cursor_y = next_y
-                input.draw(stdscr, document, cursor_x, cursor_y)
+                input.draw(stdscr, cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_LEFT:
             next_x = cursor_x - 1;
@@ -58,27 +58,27 @@ def main(stdscr, port, document, input):
             document.export_to_mid()
         elif ch == ord('o'):
             input.player_start_at_value(stdscr, cursor_x - 1)
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('u'):
             input.player_start_at_dec(stdscr)
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('i'):
             input.player_start_at_inc(stdscr)
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
             document.right_shift(cursor_x - 1)
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             document.left_shift(cursor_x - 1)
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             document.reverse_note(cursor_x - 1, cursor_y - 1)
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             port.send(mido.Message('note_on',
@@ -102,7 +102,7 @@ def main(stdscr, port, document, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             document.load()
-            input.draw(stdscr, document, cursor_x, cursor_y)
+            input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
             break

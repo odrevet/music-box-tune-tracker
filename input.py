@@ -10,13 +10,14 @@ class Input:
     offset_x = 1
     offset_y = 1
     player_start_at = 0
+    document = None
 
     def __draw_tone(self, stdscr, index, tone_str):
         stdscr.addstr(self.start_y + self.offset_y + index,
                       self.start_x + self.length_x + self.offset_x + 1,
                       tone_str)
 
-    def __populate_screen(self, stdscr, document):
+    def refresh_partition_display(self, stdscr):
         '''Read parition and populate the screen'''
         for partition_y in range(self.length_y):
             for partition_x in range(self.length_x):
@@ -24,7 +25,7 @@ class Input:
                             self.start_x + self.offset_x + partition_x)
                 attr=None
                 ch=None
-                if document.has_note(partition_x, partition_y):
+                if self.document.has_note(partition_x, partition_y):
                     attr=curses.color_pair(const.PAIR_NOTE)
                     ch=const.NOTE_CH
                 else:
@@ -40,7 +41,7 @@ class Input:
                 stdscr.addch(ch)
                 stdscr.attroff(attr)
 
-    def draw(self, stdscr, document, cursor_x, cursor_y):
+    def draw(self, stdscr, cursor_x, cursor_y):
         # draw border
         rectangle(stdscr,
                   self.start_y,
@@ -49,7 +50,7 @@ class Input:
                   self.length_x + self.offset_x)
 
         # draw partition table
-        self.__populate_screen(stdscr, document)
+        self.refresh_partition_display(stdscr)
 
         # draw tones
         TONES = ['G4 Sol',
