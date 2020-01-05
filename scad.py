@@ -104,14 +104,10 @@ class Pin:
                                           self.__angle,
                                           is_second_side_str)
 
-def pins_to_str(pins, title=None, is_second_side=None):
+def pins_to_str(pins, indent):
     pin_str = ''
-    indent = '\t'*2
     for pin in pins:
         pin_str += indent+pin.to_str()+'\n'
-    if title is not None:
-        second_side_str = '1' if is_second_side else '0'
-        pin_str += '\n'+indent+'title("{}",{});\n\n'.format(title, second_side_str)
     return pin_str
 
 def get_pins(e_document, is_second_side):
@@ -136,14 +132,22 @@ def to_scad(version, date_time, thickness, document, document_bis=None):
         content = content.replace('{THICKNESS}', str(thickness))
         content = content.replace('{SECOND_SIDE}', '0' if document_bis is None else '1')
 
+        indent = '\t'*2
         e_document = Expanded_document(86, 22, document)
         pins = get_pins(e_document, False)
-        pin_str = pins_to_str(pins, e_document.title, False)
+        pin_str = pins_to_str(pins, indent)
+
+        if e_document.title is not None:
+            pin_str += '\n'+indent+'title("{}",{});\n\n'.format(e_document.title, '0')
 
         if document_bis is not None:
-            e_document_bis = Expanded_document(86, 22, document)
+            e_document_bis = Expanded_document(86, 22, document_bis)
             pins_bis = get_pins(e_document_bis, True)
-            pin_str += pins_to_str(pins_bis, e_document_bis.title, True)
+            pin_str += pins_to_str(pins_bis, indent)
+
+            if e_document_bis.title is not None:
+                pin_str += '\n'+indent+'title("{}",{});\n\n'.format(e_document_bis.title, '1')
+
 
         content = content.replace('{NOTES}', pin_str)
 
