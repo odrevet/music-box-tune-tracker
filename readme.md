@@ -97,8 +97,8 @@ optional arguments:
   --fprbis FPRBIS       name of fpr file for second track
   --scad SCAD           name of scad file to output
   --thickness THICKNESS
-                        thickness in mm, must be 3 or 5. Default to 3 if one
-                        side or 5 if two side
+                        thickness in mm, must be 3 or 5. Defaults to 3 if one
+                        side or 5 if two sides
 ```
 
 the scad file can be use with [OpenScad](https://www.openscad.org) to create a .stl file to 3D print the record.  
