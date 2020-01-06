@@ -1,25 +1,26 @@
-This sofwtare is a music box tune tracker.
-
-It can export .scad file to create custom disc for the Fisher Price Record Player toy.
+Music box tune tracker. Create a tune or import one and turn it into a record for the Fisher Price Record Player toy
 
 music box tune tracker use the same file format (.fpr) from "Fred Record Player" available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
+# Screenshot
+
+<img src="https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png" width="6400" height="480" />
+
 # Prerequisites
 
-This software uses Python with the Curses library for the interface and the Mido library for sound.
+This software uses Python with the Curses library for the User Interface and the Mido library for sound.
+
+```
+pip install mido python-rtmidi
+```
+
 You will also need a Midi backend, I use timidity, which can be installed under Linux Ubuntu with :
 
 ```
  sudo apt install libasound2-dev libjack-dev timidity
 ```
 
-The python dependencies can be installed with pip:
-
-```
-pip install mido python-rtmidi
-```
-
-Then run timidity with:
+and then run with:
 
 ```
 timidity -iA -B2,8 -Os1l -s 44100
@@ -113,11 +114,6 @@ optional arguments:
   --mid MID   file to import. .mid from musicboxmaniacs.com Kikkerland 15
   --fpr FPR   fpr file to write
 ```
-
-
-# Screenshot
-
-<img src="https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png" width="6400" height="480" />
 
 # Thanks
 
