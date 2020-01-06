@@ -52,7 +52,9 @@ for msg in MidiFile(filename):
             document.set_note(beat_index, track_index, True)
 
         if msg.time > 0 :
-            beat_index += 1
+            #if there are not notes at this beat do not change beat index
+            if any(document.get_beats(beat_index)):
+                beat_index += 1
 
     if beat_index >= limit:
         break
