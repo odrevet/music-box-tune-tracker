@@ -82,7 +82,7 @@ class Input:
 
         #draw player start at
         stdscr.move(self.tracks_count + self.offset_y + 1, self.player_start_at + self.offset_x)
-        stdscr.addch('|')
+        stdscr.addch('▲')
 
     def can_move(self, y, x):
         return (y > self.start_y

@@ -110,6 +110,7 @@ def main(stdscr, port, document, input):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
                 thread_player.join()
+                input.draw(stdscr, cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(target = play,
                                                  args=(stdscr, port, document, input))
@@ -134,8 +135,8 @@ def main(stdscr, port, document, input):
 def play(stdscr, port, document, input):
     t = threading.currentThread()
     SLEEP_DURATION = .45
-    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 2
-    PROGRESS_INDICATOR_CH = '■'
+    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
+    PROGRESS_INDICATOR_CH = '△'
 
     for beat_index in range(input.player_start_at, input.beats_count):
         if getattr(t, "do_run", True) == False:
