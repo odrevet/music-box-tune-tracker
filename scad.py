@@ -44,23 +44,23 @@ class Expanded_document(Document):
         self.title = document.title
 
         for track_index in range(document.tracks_count):
-            beats = document.get_beats(track_index)
+            track = document.get_track(track_index)
             if track_index < 7:
-                self._partition[track_index] = beats.copy()
+                self._partition[track_index] = track.copy()
             elif track_index == 7:
-                self.__split_track(7, 8, beats)
+                self.__split_track(7, 8, track)
             elif track_index == 8:
-                self.__split_track(9, 10, beats)
+                self.__split_track(9, 10, track)
             elif track_index == 9:
-                self.__split_track(11, 12, beats)
+                self.__split_track(11, 12, track)
             elif track_index == 10:
-                self.__split_track(13, 14, beats)
+                self.__split_track(13, 14, track)
             elif track_index == 11:
-                self.__split_track(15, 16, beats)
+                self.__split_track(15, 16, track)
             elif track_index == 12:
-                self.__split_track(17, 18, beats)
+                self.__split_track(17, 18, track)
             elif track_index > 12:
-                self._partition[track_index + 6] = beats.copy()
+                self._partition[track_index + 6] = track.copy()
 
     def __split_track(self, first_track_number, second_track_number, beats):
         on_second_track = False

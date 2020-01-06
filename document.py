@@ -29,8 +29,11 @@ class Document:
     def set_note(self, x, y, value):
         self._partition[y][x] = value
 
-    def get_beats(self, track_index):
+    def get_track(self, track_index):
         return self._partition[track_index]
+
+    def get_beats(self, beat_index):
+        return [track_index[beat_index] for track_index in self._partition]
 
     def reverse_note(self, x, y):
         self._partition[y][x] = not self._partition[y][x]

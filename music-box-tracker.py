@@ -103,8 +103,9 @@ def main(stdscr, port, document, input):
             port.send(mido.Message('note_on', note=document.NOTES[index]))
         elif ch == ord('r'):
             stdscr.move(cursor_y, cursor_x)
-            for track_index in range(input.tracks_count):
-                if document.has_note(cursor_x - 1, track_index):
+            beats = document.get_beats(cursor_x -1)
+            for track_index in range(len(beats)):
+                if beats[track_index]:
                     port.send(mido.Message('note_on', note=document.NOTES[track_index]))
         elif ch == ord('p'):
             if thread_player is not None and thread_player.is_alive():
