@@ -25,11 +25,8 @@ from document import Document
 # the next beat
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--mid',    help='file to import. .mid from musicboxmaniacs.com Kikkerland 15')
+parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
 parser.add_argument('--fpr',    help='fpr file to write')
-#parser.add_argument('--start',    help='start import after start in beats')
-#parser.add_argument('--nolimit',    help='ignore Fisher Price Record beat limit')
-#parser.add_argument('--limit',    help='stop import after limit in beats')
 
 args=parser.parse_args()
 filename = args.mid
