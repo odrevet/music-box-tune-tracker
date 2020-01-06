@@ -1,4 +1,4 @@
-Music box tune tracker. Create a tune or import one and turn it into a record for the Fisher Price Record Player toy
+Music box tune tracker. Create or import a tune and turn it into a record for the Fisher Price Record Player toy
 
 music box tune tracker use the same file format (.fpr) from "Fred Record Player" available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
@@ -14,7 +14,8 @@ This software uses Python with the Curses library for the User Interface and the
 pip install mido python-rtmidi
 ```
 
-You will also need a Midi backend, I use timidity, which can be installed under Linux Ubuntu with :
+To play sounds, Midi software synthesize is required. 
+I use timidity, which can be installed under Linux Ubuntu with :
 
 ```
  sudo apt install libasound2-dev libjack-dev timidity
