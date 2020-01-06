@@ -167,7 +167,7 @@ if __name__=="__main__":
 
     args=parser.parse_args()
     if args.port : portname = args.port
-    if args.file : document.filename = args.file
+    if args.fpr : document.filename = args.fpr
     if args.title: document.title = args.title
     if args.program : program = int(args.program)
     if args.low: input.tone_descending = False
