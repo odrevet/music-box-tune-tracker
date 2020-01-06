@@ -90,19 +90,17 @@ def main(stdscr, port, document, input):
             input.document.title = title
             input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
-
         elif ch == ord(' '):
             x = cursor_x - 1
             y = cursor_y - 1
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
-
             document.reverse_note(x, y)
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
-            port.send(mido.Message('note_on',
-                                   note=document.NOTES[cursor_y - (input.start_y + input.offset_y)]))
+            index = cursor_y - (input.start_y + input.offset_y)
+            port.send(mido.Message('note_on', note=document.NOTES[index]))
         elif ch == ord('r'):
             stdscr.move(cursor_y, cursor_x)
             for track_index in range(input.tracks_count):
@@ -162,6 +160,7 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')
     parser.add_argument('--file',    help='fpr file to open')
+    parser.add_argument('--mid',    help='import from .mid file created with music box tune tracker')
     parser.add_argument('--program', help='midi instrument code')
     parser.add_argument('--title',   help='set the title of a new tune')
     parser.add_argument('--low',     help='display low pitch notes first', action='store_true')
@@ -178,6 +177,8 @@ if __name__=="__main__":
 
     if document.filename:
         document.load()
+    elif args.mid is not None :
+            document.import_from_mid(args.mid)
     else:
         document.filename = document.title + '.fpr'
 

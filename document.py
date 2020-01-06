@@ -1,5 +1,6 @@
 import os
 import mido
+from mido import MidiFile
 import const
 
 class Document:
@@ -71,7 +72,7 @@ class Document:
                 has_note = self.has_note(beat_index, track_index)
                 output += self.__NOTE_FPR if has_note else self.__EMPTY_FPR
             output += '\n'
-        output += self.title
+        output += self.title + '\n'
         output += self.comment
 
         file = open(self.filename, 'w')
@@ -94,3 +95,21 @@ class Document:
             track.append(mido.Message('note_off', time=ticks))
 
         mid.save(self.title + '.mid')
+
+    def import_from_mid(self, filename):
+        self.filename = os.path.splitext(filename)[0]+'.fpr'
+        self.title = os.path.basename(filename)
+        self.comment = 'Imported from ' + os.path.basename(filename)
+
+        beat_index = 0
+        track_index = 0
+
+        for msg in MidiFile(filename):
+            if not msg.is_meta:
+                if msg.type == 'note_on':
+                    track_index = self.NOTES.index(msg.note)
+                    self.set_note(beat_index, track_index, True)
+                if msg.time > 0 :
+                    beat_index += 1
+            if beat_index >= 86:
+                break
