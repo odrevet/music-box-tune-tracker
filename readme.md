@@ -101,6 +101,8 @@ optional arguments:
                         side or 5 if two side
 ```
 
+the scad file can be use with [OpenScad](https://www.openscad.org) to create a .stl file to 3D print the record.  
+
 # Convert .mid from musicboxmaniacs to .fpr
 
 The `maniacs_mid_to_fpr.py` program can convert .mid file from https://musicboxmaniacs.com/
