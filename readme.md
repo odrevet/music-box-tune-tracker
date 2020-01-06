@@ -99,7 +99,7 @@ optional arguments:
                         side or 5 if two side
 ```
 
-# Convert .mid from https://musicboxmaniacs.com/ to .fpr
+# Convert .mid from musicboxmaniacs to .fpr
 
 The `maniacs_mid_to_fpr.py` program can convert .mid file from https://musicboxmaniacs.com/
 
