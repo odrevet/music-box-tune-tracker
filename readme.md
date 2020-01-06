@@ -48,7 +48,7 @@ aplaymidi -l
 optional arguments:
   -h, --help         show this help message and exit
   --port PORT        name of the midi port to use
-  --file FILE        fpr file to open
+  --fpr FPR          .fpr file to open
   --mid MID          import from .mid file created with music box tune tracker
   --program PROGRAM  midi instrument code
   --title TITLE      set the title of a new tune

@@ -159,8 +159,8 @@ if __name__=="__main__":
 
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')
-    parser.add_argument('--file',    help='fpr file to open')
-    parser.add_argument('--mid',    help='import from .mid file created with music box tune tracker')
+    parser.add_argument('--fpr',     help='.fpr file to open')
+    parser.add_argument('--mid',     help='import from .mid file created with music box tune tracker')
     parser.add_argument('--program', help='midi instrument code')
     parser.add_argument('--title',   help='set the title of a new tune')
     parser.add_argument('--low',     help='display low pitch notes first', action='store_true')
