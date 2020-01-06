@@ -119,4 +119,4 @@ optional arguments:
 
 Thanks to [FredMurphy](https://github.com/FredMurphy) to have created and shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
 
-More informations on running Fred Record Player under linux is available in the [fred_record_player](fred_record_player.md) file
+More informations on running Fred Record Player under linux are available in the [fred_record_player](fred_record_player.md) file
