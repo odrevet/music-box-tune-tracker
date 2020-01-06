@@ -99,6 +99,22 @@ optional arguments:
                         side or 5 if two side
 ```
 
+# Convert .mid from https://musicboxmaniacs.com/ to .fpr
+
+The `maniacs_mid_to_fpr.py` program can convert .mid file from https://musicboxmaniacs.com/
+
+It can only convert .mid designed for the `Kikkerland 15 music box`
+
+```
+usage: maniacs_mid_to_fpr.py [-h] [--mid MID] [--fpr FPR]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --mid MID   file to import. .mid from musicboxmaniacs.com Kikkerland 15
+  --fpr FPR   fpr file to write
+```
+
+
 # Screenshot
 
 <img src="https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png" width="6400" height="480" />
