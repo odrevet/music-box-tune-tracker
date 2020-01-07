@@ -135,7 +135,7 @@ def main(stdscr, port, record, input):
 
 def play(stdscr, port, record, input):
     t = threading.currentThread()
-    SLEEP_DURATION = 0.5
+    SLEEP_DURATION = 25 / record.beats_count
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
     PROGRESS_INDICATOR_CH = '△'
 
