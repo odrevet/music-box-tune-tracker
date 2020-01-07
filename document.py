@@ -11,9 +11,9 @@ class Document:
     filename = None
     title = 'Default'
     comment = ''
-    _partition = None
-    beats_count = 0
+    _partition = None  #list of lists of boolean:  track,beat have True if note
     tracks_count = 0
+    beats_count = 0
     program = 8
     NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
 
@@ -23,11 +23,11 @@ class Document:
         self.beats_count = beats_count
         self.tracks_count = tracks_count
 
-    def has_note(self, x, y):
-        return self._partition[y][x]
+    def has_note(self, beat_index, track_index):
+        return self._partition[track_index][beat_index]
 
-    def set_note(self, x, y, value):
-        self._partition[y][x] = value
+    def set_note(self, beat_index, track_index, value):
+        self._partition[track_index][beat_index] = value
 
     def get_track(self, track_index):
         return self._partition[track_index]
@@ -35,17 +35,17 @@ class Document:
     def get_beats(self, beat_index):
         return [track_index[beat_index] for track_index in self._partition]
 
-    def reverse_note(self, x, y):
-        self._partition[y][x] = not self._partition[y][x]
+    def reverse_note(self, beat_index, track_index):
+        self._partition[track_index][beat_index] = not self._partition[track_index][beat_index]
 
-    def left_shift(self, x):
+    def left_shift(self, beat_index):
         for track_index in range(self.tracks_count):
-            self._partition[track_index].pop(x)
+            self._partition[track_index].pop(beat_index)
             self._partition[track_index].append(False)
 
-    def right_shift(self, x):
+    def right_shift(self, beat_index):
         for track_index in range(self.tracks_count):
-            self._partition[track_index].insert(x, False)
+            self._partition[track_index].insert(beat_index, False)
             self._partition[track_index].pop
 
     def load(self):
