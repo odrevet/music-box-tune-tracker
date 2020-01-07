@@ -38,7 +38,7 @@ TRACK_RADIUS = [28.65,
                 57.4]
 
 
-class Expanded_document(Document):
+class ExpandedDocument(Document):
     def __init__(self, beats_count, tracks_count, document):
         super().__init__(beats_count, tracks_count)
         self.title = document.title
@@ -110,16 +110,16 @@ def pins_to_str(pins, indent):
         pin_str += indent+pin.to_str()+'\n'
     return pin_str
 
-def get_pins(e_document, is_second_side):
+def get_pins(expanded_document, is_second_side):
     pins = []
     OVERLAP = 0.2
 
-    for track_index in range(e_document.tracks_count):
+    for track_index in range(expanded_document.tracks_count):
         inner = TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index %2 == 0 else 0)
         outer = inner + 1 + OVERLAP
-        for note_index in range(e_document.beats_count):
-            if e_document.has_note(note_index, track_index):
-                pin = Pin(inner, outer, is_second_side, e_document.beats_count)
+        for note_index in range(expanded_document.beats_count):
+            if expanded_document.has_note(note_index, track_index):
+                pin = Pin(inner, outer, is_second_side, expanded_document.beats_count)
                 pin.set_angle(track_index, note_index)
                 pins.append(pin)
     return pins
@@ -133,20 +133,20 @@ def to_scad(version, date_time, thickness, document, document_bis=None):
         content = content.replace('{SECOND_SIDE}', '0' if document_bis is None else '1')
 
         indent = '\t'*2
-        e_document = Expanded_document(86, 22, document)
-        pins = get_pins(e_document, False)
+        expanded_document = ExpandedDocument(86, 22, document)
+        pins = get_pins(expanded_document, False)
         pin_str = pins_to_str(pins, indent)
 
-        if e_document.title is not None:
-            pin_str += '\n'+indent+'title("{}",{});\n\n'.format(e_document.title, '0')
+        if expanded_document.title is not None:
+            pin_str += '\n'+indent+'title("{}",{});\n\n'.format(expanded_document.title, '0')
 
         if document_bis is not None:
-            e_document_bis = Expanded_document(86, 22, document_bis)
-            pins_bis = get_pins(e_document_bis, True)
+            expanded_document_bis = ExpandedDocument(86, 22, document_bis)
+            pins_bis = get_pins(expanded_document_bis, True)
             pin_str += pins_to_str(pins_bis, indent)
 
-            if e_document_bis.title is not None:
-                pin_str += '\n'+indent+'title("{}",{});\n\n'.format(e_document_bis.title, '1')
+            if expanded_document_bis.title is not None:
+                pin_str += '\n'+indent+'title("{}",{});\n\n'.format(expanded_document_bis.title, '1')
 
 
         content = content.replace('{NOTES}', pin_str)
