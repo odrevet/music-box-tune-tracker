@@ -12,13 +12,18 @@ class Input:
     player_start_at = 0
     record = None
     tone_descending = True
+    window = None
 
-    def __draw_tone(self, stdscr, index, tone_str):
-        stdscr.addstr(self.start_y + self.offset_y + index,
+    def __init__(self, record, window):
+        self.record = record
+        self.window = window
+
+    def __draw_tone(self, track_index, tone_str):
+        self.window.addstr(self.start_y + self.offset_y + track_index,
                       self.start_x + self.beats_count + self.offset_x + 1,
                       tone_str)
 
-    def refresh_partition_display(self, stdscr):
+    def refresh_partition_display(self):
         '''Read parition and populate the screen'''
         # what is displayed
         NOTE_CH = '•'
@@ -27,7 +32,7 @@ class Input:
         tracks_range = range(self.tracks_count)
         for track_index in tracks_range:
             for beat_index in range(self.beats_count):
-                stdscr.move(self.start_y + self.offset_y + track_index,
+                self.window.move(self.start_y + self.offset_y + track_index,
                             self.start_x + self.offset_x + beat_index)
                 attr=None
                 ch=None
@@ -46,13 +51,13 @@ class Input:
                         pair = const.PAIR_INPUT_B
                     attr = curses.color_pair(pair)
 
-                stdscr.attron(attr)
-                stdscr.addch(ch)
-                stdscr.attroff(attr)
+                self.window.attron(attr)
+                self.window.addch(ch)
+                self.window.attroff(attr)
 
-    def draw(self, stdscr, cursor_x, cursor_y):
+    def draw(self, cursor_x, cursor_y):
         # draw border
-        rectangle(stdscr,
+        rectangle(self.window,
                   self.start_y,
                   self.start_x,
                   self.tracks_count + self.offset_y,
@@ -60,10 +65,10 @@ class Input:
 
         #title
         if self.record.title is not None:
-            stdscr.addstr(self.start_y, self.start_x + 2, self.record.title)
+            self.window.addstr(self.start_y, self.start_x + 2, self.record.title)
 
         # draw partition table
-        self.refresh_partition_display(stdscr)
+        self.refresh_partition_display()
 
         # draw tones
         tones = ['G4 Sol',
@@ -73,16 +78,16 @@ class Input:
         if self.tone_descending:
             tones.reverse()
 
-        for i in range(0, self.tracks_count):
-            if cursor_y - 1 == i:
-                stdscr.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
-            self.__draw_tone(stdscr, i, tones[i])
-            if cursor_y - 1 == i:
-                stdscr.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
+        for track_index in range(0, self.tracks_count):
+            if cursor_y - 1 == track_index:
+                self.window.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
+            self.__draw_tone(track_index, tones[track_index])
+            if cursor_y - 1 == track_index:
+                self.window.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
         #draw player start at
-        stdscr.move(self.tracks_count + self.offset_y + 1, self.player_start_at + self.offset_x)
-        stdscr.addch('▲')
+        self.window.move(self.tracks_count + self.offset_y + 1, self.player_start_at + self.offset_x)
+        self.window.addch('▲')
 
     def can_move(self, y, x):
         return (y > self.start_y
@@ -90,15 +95,15 @@ class Input:
                 and y < self.tracks_count + self.offset_y
                 and x < self.beats_count + self.offset_x)
 
-    def player_start_at_value(self, stdscr, value):
+    def player_start_at_value(self, value):
         if value < self.beats_count and value >= 0:
-            stdscr.move(self.tracks_count + self.offset_y + 1,
+            self.window.move(self.tracks_count + self.offset_y + 1,
                         self.player_start_at + self.offset_x)
-            stdscr.addch(' ')
+            self.window.addch(' ')
             self.player_start_at = value
 
-    def player_start_at_inc(self, stdscr):
-        self.player_start_at_value(stdscr, self.player_start_at + 1)
+    def player_start_at_inc(self):
+        self.player_start_at_value(self.window, self.player_start_at + 1)
 
-    def player_start_at_dec(self, stdscr):
-        self.player_start_at_value(stdscr, self.player_start_at - 1)
+    def player_start_at_dec(self):
+        self.player_start_at_value(self.window, self.player_start_at - 1)

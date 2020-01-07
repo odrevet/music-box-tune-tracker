@@ -14,7 +14,9 @@ import const
 from record import Record
 from input import Input
 
-def main(stdscr, port, record, input):
+def main(stdscr, port, record):
+    input = Input(record, stdscr)
+
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -26,7 +28,7 @@ def main(stdscr, port, record, input):
     curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
     input.record = record
-    input.draw(stdscr, cursor_x, cursor_y)
+    input.draw(cursor_x, cursor_y)
 
     # edit box
     editwin = curses.newwin(1,79, 20,1)
@@ -65,30 +67,30 @@ def main(stdscr, port, record, input):
         elif ch == ord('x'):
             record.export_to_mid()
         elif ch == ord('o'):
-            input.player_start_at_value(stdscr, cursor_x - 1)
-            input.draw(stdscr, cursor_x, cursor_y)
+            input.player_start_at_value(cursor_x - 1)
+            input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('u'):
-            input.player_start_at_dec(stdscr)
-            input.draw(stdscr, cursor_x, cursor_y)
+            input.player_start_at_dec()
+            input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('i'):
-            input.player_start_at_inc(stdscr)
-            input.draw(stdscr, cursor_x, cursor_y)
+            input.player_start_at_inc()
+            input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
             record.right_shift(cursor_x - 1)
-            input.refresh_partition_display(stdscr)
+            input.refresh_partition_display()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             record.left_shift(cursor_x - 1)
-            input.refresh_partition_display(stdscr)
+            input.refresh_partition_display()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('e'):
             box.edit()
             title = box.gather()
             input.record.title = title
-            input.draw(stdscr, cursor_x, cursor_y)
+            input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
             x = cursor_x - 1
@@ -96,7 +98,7 @@ def main(stdscr, port, record, input):
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
             record.reverse_note(x, y)
-            input.refresh_partition_display(stdscr)
+            input.refresh_partition_display()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             index = cursor_y - (input.start_y + input.offset_y)
@@ -111,7 +113,7 @@ def main(stdscr, port, record, input):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
                 thread_player.join()
-                input.draw(stdscr, cursor_x, cursor_y)
+                input.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(target = play,
                                                  args=(stdscr, port, record, input))
@@ -122,7 +124,7 @@ def main(stdscr, port, record, input):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             record.load()
-            input.draw(stdscr, cursor_x, cursor_y)
+            input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
             break
@@ -156,8 +158,7 @@ def play(stdscr, port, record, input):
 if __name__=="__main__":
     portname = None
     program = 8
-    input = Input()
-    record = Record(input.beats_count, input.tracks_count)
+    record = Record(86, 16)
 
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')
@@ -192,4 +193,4 @@ if __name__=="__main__":
     port.send(mido.Message('program_change', program=program))
     record.program = program
 
-    curses.wrapper(main, port, record, input)
+    curses.wrapper(main, port, record)
