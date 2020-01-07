@@ -14,7 +14,7 @@ This software uses Python with the Curses library for the User Interface and the
 pip install mido python-rtmidi
 ```
 
-To play sounds, Midi software synthesize is required. 
+To play sounds, Midi software synthesize is required.
 I use timidity, which can be installed under Linux Ubuntu with :
 
 ```
@@ -61,7 +61,7 @@ optional arguments:
 ### Example
 
 ```
-python music-box-tracker.py --port 'TiMidity port 0'
+python music_box_tracker.py --port 'TiMidity port 0'
 ```
 
 ## Using music box tune tracker
@@ -101,7 +101,7 @@ optional arguments:
                         side or 5 if two sides
 ```
 
-the scad file can be use with [OpenScad](https://www.openscad.org) to create a .stl file to 3D print the record.  
+the scad file can be use with [OpenScad](https://www.openscad.org) to create a .stl file to 3D print the record.
 
 # Convert .mid from musicboxmaniacs to .fpr
 
