@@ -11,10 +11,10 @@ import curses.textpad
 from curses.textpad import rectangle
 
 import const
-from document import Document
+from record import Record
 from input import Input
 
-def main(stdscr, port, document, input):
+def main(stdscr, port, record, input):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -25,12 +25,12 @@ def main(stdscr, port, document, input):
     curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_BLACK)
     curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
-    input.document = document
+    input.record = record
     input.draw(stdscr, cursor_x, cursor_y)
 
     # edit box
     editwin = curses.newwin(1,79, 20,1)
-    editwin.addstr(0, 0, document.title)
+    editwin.addstr(0, 0, record.title)
     rectangle(stdscr, 19,0, 20+1,87)
     box = curses.textpad.Textbox(editwin, insert_mode=True)
     stdscr.move(cursor_y, cursor_x)
@@ -63,7 +63,7 @@ def main(stdscr, port, document, input):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
         elif ch == ord('x'):
-            document.export_to_mid()
+            record.export_to_mid()
         elif ch == ord('o'):
             input.player_start_at_value(stdscr, cursor_x - 1)
             input.draw(stdscr, cursor_x, cursor_y)
@@ -77,17 +77,17 @@ def main(stdscr, port, document, input):
             input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
-            document.right_shift(cursor_x - 1)
+            record.right_shift(cursor_x - 1)
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
-            document.left_shift(cursor_x - 1)
+            record.left_shift(cursor_x - 1)
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('e'):
             box.edit()
             title = box.gather()
-            input.document.title = title
+            input.record.title = title
             input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
@@ -95,18 +95,18 @@ def main(stdscr, port, document, input):
             y = cursor_y - 1
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
-            document.reverse_note(x, y)
+            record.reverse_note(x, y)
             input.refresh_partition_display(stdscr)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             index = cursor_y - (input.start_y + input.offset_y)
-            port.send(mido.Message('note_on', note=document.NOTES[index]))
+            port.send(mido.Message('note_on', note=record.NOTES[index]))
         elif ch == ord('r'):
             stdscr.move(cursor_y, cursor_x)
-            beats = document.get_beats(cursor_x -1)
+            beats = record.get_beats(cursor_x -1)
             for track_index in range(len(beats)):
                 if beats[track_index]:
-                    port.send(mido.Message('note_on', note=document.NOTES[track_index]))
+                    port.send(mido.Message('note_on', note=record.NOTES[track_index]))
         elif ch == ord('p'):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -114,14 +114,14 @@ def main(stdscr, port, document, input):
                 input.draw(stdscr, cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(target = play,
-                                                 args=(stdscr, port, document, input))
+                                                 args=(stdscr, port, record, input))
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('s'):
-            document.save()
+            record.save()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
-            document.load()
+            record.load()
             input.draw(stdscr, cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('q'):
@@ -133,9 +133,9 @@ def main(stdscr, port, document, input):
 
     port.close()
 
-def play(stdscr, port, document, input):
+def play(stdscr, port, record, input):
     t = threading.currentThread()
-    SLEEP_DURATION = .45
+    SLEEP_DURATION = 0.5
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
     PROGRESS_INDICATOR_CH = '△'
 
@@ -144,8 +144,8 @@ def play(stdscr, port, document, input):
             stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.beats_count)
             return
         for track_index in range(input.tracks_count):
-            if document.has_note(beat_index, track_index):
-                port.send(mido.Message('note_on', note=document.NOTES[track_index]))
+            if record.has_note(beat_index, track_index):
+                port.send(mido.Message('note_on', note=record.NOTES[track_index]))
         time.sleep(SLEEP_DURATION)
         #update progress indicator
         stdscr.move(PROGRESS_INDICATOR_Y, beat_index + input.offset_x)
@@ -157,7 +157,7 @@ if __name__=="__main__":
     portname = None
     program = 8
     input = Input()
-    document = Document(input.beats_count, input.tracks_count)
+    record = Record(input.beats_count, input.tracks_count)
 
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')
@@ -169,20 +169,20 @@ if __name__=="__main__":
 
     args=parser.parse_args()
     if args.port : portname = args.port
-    if args.fpr : document.filename = args.fpr
-    if args.title: document.title = args.title
+    if args.fpr : record.filename = args.fpr
+    if args.title: record.title = args.title
     if args.program : program = int(args.program)
     if args.low: input.tone_descending = False
 
     # midi port
     port = None
 
-    if document.filename:
-        document.load()
+    if record.filename:
+        record.load()
     elif args.mid is not None :
-            document.import_from_mid(args.mid)
+            record.import_from_mid(args.mid)
     else:
-        document.filename = document.title + '.fpr'
+        record.filename = record.title + '.fpr'
 
     try:
         port = mido.open_output(portname)
@@ -190,6 +190,6 @@ if __name__=="__main__":
         port = mido.open_output()
 
     port.send(mido.Message('program_change', program=program))
-    document.program = program
+    record.program = program
 
-    curses.wrapper(main, port, document, input)
+    curses.wrapper(main, port, record, input)

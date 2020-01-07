@@ -6,7 +6,7 @@ import time, datetime
 from pathlib import Path
 import scad
 
-from document import Document
+from record import Record
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--fpr',    help='name of fpr file')
@@ -29,26 +29,26 @@ if not Path(fpr_file).is_file():
     print('Cannot find ' + fpr_file)
     sys.exit()
 
-document = Document(86, 16)
-document.filename = fpr_file
-document.load()
+record = Record(86, 16)
+record.filename = fpr_file
+record.load()
 
-document_bis = None
+record_bis = None
 if fpr_file_bis is not None:
     if not Path(fpr_file_bis).is_file():
         print('Cannot find ' + fpr_file_bis)
         sys.exit()
 
-    document_bis = Document(86, 16)
-    document_bis.filename = fpr_file_bis
-    document_bis.load()
+    record_bis = Record(86, 16)
+    record_bis.filename = fpr_file_bis
+    record_bis.load()
 
 
 VERSION = '1.0'
 date_time = datetime.datetime.now().strftime('%d %b %Y %H:%M')
 has_second_side = fpr_file_bis is None
 
-scad_output = scad.to_scad(VERSION, date_time, thickness, document, document_bis)
+scad_output = scad.to_scad(VERSION, date_time, thickness, record, record_bis)
 myfile = open(scad_file, 'w')
 myfile.write(scad_output)
 myfile.close()

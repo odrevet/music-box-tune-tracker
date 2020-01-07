@@ -1,6 +1,6 @@
 import math
 import const
-from document import Document
+from record import Record
 
 # Variable to replace in the scad template are:
 # VERSION     : The version of the software used
@@ -38,13 +38,13 @@ TRACK_RADIUS = [28.65,
                 57.4]
 
 
-class ExpandedDocument(Document):
-    def __init__(self, beats_count, tracks_count, document):
+class ExpandedRecord(Record):
+    def __init__(self, beats_count, tracks_count, record):
         super().__init__(beats_count, tracks_count)
-        self.title = document.title
+        self.title = record.title
 
-        for track_index in range(document.tracks_count):
-            track = document.get_track(track_index)
+        for track_index in range(record.tracks_count):
+            track = record.get_track(track_index)
             if track_index < 7:
                 self._partition[track_index] = track.copy()
             elif track_index == 7:
@@ -110,43 +110,43 @@ def pins_to_str(pins, indent):
         pin_str += indent+pin.to_str()+'\n'
     return pin_str
 
-def get_pins(expanded_document, is_second_side):
+def get_pins(expanded_record, is_second_side):
     pins = []
     OVERLAP = 0.2
 
-    for track_index in range(expanded_document.tracks_count):
+    for track_index in range(expanded_record.tracks_count):
         inner = TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index %2 == 0 else 0)
         outer = inner + 1 + OVERLAP
-        for note_index in range(expanded_document.beats_count):
-            if expanded_document.has_note(note_index, track_index):
-                pin = Pin(inner, outer, is_second_side, expanded_document.beats_count)
+        for note_index in range(expanded_record.beats_count):
+            if expanded_record.has_note(note_index, track_index):
+                pin = Pin(inner, outer, is_second_side, expanded_record.beats_count)
                 pin.set_angle(track_index, note_index)
                 pins.append(pin)
     return pins
 
-def to_scad(version, date_time, thickness, document, document_bis=None):
+def to_scad(version, date_time, thickness, record, record_bis=None):
     with open('res/fisher-price-template.scad', 'r') as content_file:
         content = content_file.read()
         content = content.replace('{VERSION}', version)
         content = content.replace('{DATE_TIME}', date_time)
         content = content.replace('{THICKNESS}', str(thickness))
-        content = content.replace('{SECOND_SIDE}', '0' if document_bis is None else '1')
+        content = content.replace('{SECOND_SIDE}', '0' if record_bis is None else '1')
 
         indent = '\t'*2
-        expanded_document = ExpandedDocument(86, 22, document)
-        pins = get_pins(expanded_document, False)
+        expanded_record = ExpandedRecord(86, 22, record)
+        pins = get_pins(expanded_record, False)
         pin_str = pins_to_str(pins, indent)
 
-        if expanded_document.title is not None:
-            pin_str += '\n'+indent+'title("{}",{});\n\n'.format(expanded_document.title, '0')
+        if expanded_record.title is not None:
+            pin_str += '\n'+indent+'title("{}",{});\n\n'.format(expanded_record.title, '0')
 
-        if document_bis is not None:
-            expanded_document_bis = ExpandedDocument(86, 22, document_bis)
-            pins_bis = get_pins(expanded_document_bis, True)
+        if record_bis is not None:
+            expanded_record_bis = ExpandedRecord(86, 22, record_bis)
+            pins_bis = get_pins(expanded_record_bis, True)
             pin_str += pins_to_str(pins_bis, indent)
 
-            if expanded_document_bis.title is not None:
-                pin_str += '\n'+indent+'title("{}",{});\n\n'.format(expanded_document_bis.title, '1')
+            if expanded_record_bis.title is not None:
+                pin_str += '\n'+indent+'title("{}",{});\n\n'.format(expanded_record_bis.title, '1')
 
 
         content = content.replace('{NOTES}', pin_str)

@@ -4,7 +4,7 @@ import sys
 import argparse
 import os
 from mido import MidiFile
-from document import Document
+from record import Record
 
 # About
 # Convert .mid file from https://musicboxmaniacs.com to a .fpr file
@@ -31,7 +31,7 @@ parser.add_argument('--fpr',    help='fpr file to write')
 args=parser.parse_args()
 filename = args.mid
 
-document = Document(86, 16)
+record = Record(86, 16)
 limit = 86
 offset = 12
 
@@ -45,26 +45,26 @@ for msg in MidiFile(filename):
             if note == 77:
                 note = 76
 
-            track_index = document.NOTES.index(note)
-            document.set_note(beat_index, track_index, True)
+            track_index = record.NOTES.index(note)
+            record.set_note(beat_index, track_index, True)
 
         if msg.time > 0 :
             #if there are not notes at this beat do not change beat index
-            if any(document.get_beats(beat_index)):
+            if any(record.get_beats(beat_index)):
                 beat_index += 1
 
     if beat_index >= limit:
         break
 
 if args.fpr:
-    document.filename = args.fpr
+    record.filename = args.fpr
 else:
-    document.filename = os.path.splitext(filename)[0]+'.fpr'
+    record.filename = os.path.splitext(filename)[0]+'.fpr'
 
 basename = os.path.basename(filename)
-document.title = os.path.splitext(basename)[0]
-document.comment = 'Imported from ' + os.path.basename(filename)
+record.title = os.path.splitext(basename)[0]
+record.comment = 'Imported from ' + os.path.basename(filename)
 
-document.save()
+record.save()
 
-print('fpr saved to ' + document.filename)
+print('fpr saved to ' + record.filename)

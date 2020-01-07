@@ -10,7 +10,7 @@ class Input:
     offset_x = 1
     offset_y = 1
     player_start_at = 0
-    document = None
+    record = None
     tone_descending = True
 
     def __draw_tone(self, stdscr, index, tone_str):
@@ -34,7 +34,7 @@ class Input:
                 if self.tone_descending:
                     track_index = self.tracks_count - 1 - track_index
 
-                if self.document.has_note(beat_index, track_index):
+                if self.record.has_note(beat_index, track_index):
                     attr=curses.color_pair(const.PAIR_NOTE)
                     ch=NOTE_CH
                 else:
@@ -59,8 +59,8 @@ class Input:
                   self.beats_count + self.offset_x)
 
         #title
-        if self.document.title is not None:
-            stdscr.addstr(self.start_y, self.start_x + 2, self.document.title)
+        if self.record.title is not None:
+            stdscr.addstr(self.start_y, self.start_x + 2, self.record.title)
 
         # draw partition table
         self.refresh_partition_display(stdscr)
