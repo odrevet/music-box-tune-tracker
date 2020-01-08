@@ -25,8 +25,9 @@ from record import Record
 # the next beat
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
-parser.add_argument('--fpr',    help='fpr file to write')
+parser.add_argument('--mid',      help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
+parser.add_argument('--fpr',      help='fpr file to write')
+parser.add_argument('--noempty', help='no empty beats', action='store_true')
 
 args=parser.parse_args()
 filename = args.mid
@@ -37,6 +38,8 @@ offset = 12
 
 track_index=0
 beat_index=0
+
+ignore_empty_beats = args.noempty
 
 for msg in MidiFile(filename):
     if not msg.is_meta:
@@ -50,7 +53,10 @@ for msg in MidiFile(filename):
 
         if msg.time > 0 :
             #if there are not notes at this beat do not change beat index
-            if any(record.get_beats(beat_index)):
+            if ignore_empty_beats:
+                if any(record.get_beats(beat_index)):
+                    beat_index += 1
+            else:
                 beat_index += 1
 
     if beat_index >= limit:
