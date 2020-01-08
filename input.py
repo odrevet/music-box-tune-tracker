@@ -14,7 +14,7 @@ class Input:
     tone_descending = True
     window = None
 
-    def __init__(self, record, window):
+    def __init__(self, record=None, window=None):
         self.record = record
         self.window = window
 
