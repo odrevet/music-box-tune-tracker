@@ -14,9 +14,7 @@ import const
 from record import Record
 from input import Input
 
-def main(stdscr, port, record):
-    input = Input(record, stdscr)
-
+def main(stdscr, port, record, input):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -28,6 +26,7 @@ def main(stdscr, port, record):
     curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
     input.record = record
+    input.window = stdscr
     input.draw(cursor_x, cursor_y)
 
     # edit box
@@ -101,8 +100,10 @@ def main(stdscr, port, record):
             input.refresh_partition_display()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
-            index = cursor_y - (input.start_y + input.offset_y)
-            port.send(mido.Message('note_on', note=record.NOTES[index]))
+            track_index = cursor_y - (input.start_y + input.offset_y)
+            if input.tone_descending:
+                track_index = input.tracks_count - 1 - track_index
+            port.send(mido.Message('note_on', note=record.NOTES[track_index]))
         elif ch == ord('r'):
             stdscr.move(cursor_y, cursor_x)
             beats = record.get_beats(cursor_x -1)
@@ -159,6 +160,7 @@ if __name__=="__main__":
     portname = None
     program = 8
     record = Record(86, 16)
+    input = Input()
 
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')
@@ -193,4 +195,4 @@ if __name__=="__main__":
     port.send(mido.Message('program_change', program=program))
     record.program = program
 
-    curses.wrapper(main, port, record)
+    curses.wrapper(main, port, record, input)
