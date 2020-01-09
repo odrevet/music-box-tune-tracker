@@ -103,7 +103,7 @@ class Input:
             self.player_start_at = value
 
     def player_start_at_inc(self):
-        self.player_start_at_value(self.window, self.player_start_at + 1)
+        self.player_start_at_value(self.player_start_at + 1)
 
     def player_start_at_dec(self):
-        self.player_start_at_value(self.window, self.player_start_at - 1)
+        self.player_start_at_value(self.player_start_at - 1)
