@@ -22,7 +22,7 @@ fpr_file_bis = args.fprbis
 scad_file = args.scad
 thickness = None
 if args.thickness:
-    thickness = int(args.thickness)
+    thickness = float(args.thickness)
 else:
     thickness = 5 if fpr_file_bis else 3
 
