@@ -26,8 +26,6 @@ if args.thickness:
 else:
     thickness = 5 if fpr_file_bis else 3
 
-print(thickness)
-
 if not Path(fpr_file).is_file():
     print('Cannot find ' + fpr_file)
     sys.exit()
