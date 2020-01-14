@@ -21,10 +21,12 @@ fpr_file = args.fpr
 fpr_file_bis = args.fprbis
 scad_file = args.scad
 thickness = None
-if args.thickness in ['3', '5']:
+if args.thickness:
     thickness = int(args.thickness)
 else:
     thickness = 5 if fpr_file_bis else 3
+
+print(thickness)
 
 if not Path(fpr_file).is_file():
     print('Cannot find ' + fpr_file)
@@ -40,7 +42,7 @@ if fpr_file_bis is not None:
         print('Cannot find ' + fpr_file_bis)
         sys.exit()
 
-    record_bis = Record(const.BEAT_COUNT, count.TRACK_COUNT)
+    record_bis = Record(const.BEAT_COUNT, const.TRACK_COUNT)
     record_bis.filename = fpr_file_bis
     record_bis.load()
 
