@@ -5,8 +5,8 @@ import const
 class Input:
     start_y = 0
     start_x = 0
-    tracks_count = 16
-    beats_count = 86
+    tracks_count = const.TRACK_COUNT
+    beats_count = const.BEAT_COUNT
     offset_x = 1
     offset_y = 1
     player_start_at = 0

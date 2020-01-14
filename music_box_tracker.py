@@ -159,7 +159,7 @@ def play(stdscr, port, record, input):
 if __name__=="__main__":
     portname = None
     program = 8
-    record = Record(86, 16)
+    record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
     input = Input()
 
     parser=argparse.ArgumentParser()

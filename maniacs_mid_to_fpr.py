@@ -5,6 +5,7 @@ import argparse
 import os
 from mido import MidiFile
 from record import Record
+import const
 
 # About
 # Convert .mid file from https://musicboxmaniacs.com to a .fpr file
@@ -32,8 +33,8 @@ parser.add_argument('--noempty', help='no empty beats', action='store_true')
 args=parser.parse_args()
 filename = args.mid
 
-record = Record(86, 16)
-limit = 86
+record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
+limit = const.BEAT_COUNT  #will stop import when beat count reaches limit
 offset = 12
 
 track_index=0

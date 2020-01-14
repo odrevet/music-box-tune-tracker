@@ -5,6 +5,7 @@ import argparse
 import time, datetime
 from pathlib import Path
 import scad
+import const
 
 from record import Record
 
@@ -29,7 +30,7 @@ if not Path(fpr_file).is_file():
     print('Cannot find ' + fpr_file)
     sys.exit()
 
-record = Record(86, 16)
+record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
 record.filename = fpr_file
 record.load()
 
@@ -39,7 +40,7 @@ if fpr_file_bis is not None:
         print('Cannot find ' + fpr_file_bis)
         sys.exit()
 
-    record_bis = Record(86, 16)
+    record_bis = Record(const.BEAT_COUNT, count.TRACK_COUNT)
     record_bis.filename = fpr_file_bis
     record_bis.load()
 
