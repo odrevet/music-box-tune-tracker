@@ -24,7 +24,7 @@ I use timidity, which can be installed under Linux Ubuntu with :
 and then run with:
 
 ```
-timidity -iA -B2,8 -Os1l -s 44100
+timidity -iA -B2,8 -Os1l -s 11100
 ```
 
 # Run
