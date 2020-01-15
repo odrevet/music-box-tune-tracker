@@ -94,14 +94,22 @@ usage: fpr_to_scad.py [-h] [--fpr FPR] [--fprbis FPRBIS] [--scad SCAD]
 optional arguments:
   -h, --help            show this help message and exit
   --fpr FPR             name of fpr file
-  --fprbis FPRBIS       name of fpr file for second track
+  --fprbis FPRBIS       name of fpr file for second side
   --scad SCAD           name of scad file to output
   --thickness THICKNESS
-                        thickness in mm, must be 3 or 5. Defaults to 3 if one
+                        thickness in mm. Defaults to 3 if one
                         side or 5 if two sides
 ```
 
 the scad file can be use with [OpenScad](https://www.openscad.org) to create a .stl file to 3D print the record.
+
+Open a scad file then menu Design/Render (F6) then File/Export/Export as STL (F7)
+
+## How to print the name of the song on the disc
+
+The Write.scad and other files are required to have the title of the tune written on the disc
+
+Head to https://www.thingiverse.com/thing:16193 and clic "DOWNLOAD ALL FILES". Extract the content of Writescad.zip [where OpenScad can find it](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries).
 
 # Convert .mid from musicboxmaniacs to .fpr
 
