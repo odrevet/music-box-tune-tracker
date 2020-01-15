@@ -13,7 +13,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--fpr',    help='name of fpr file')
 parser.add_argument('--fprbis',    help='name of fpr file for second track')
 parser.add_argument('--scad',    help='name of scad file to output')
-parser.add_argument('--thickness',    help='thickness in mm, must be 3 or 5. Defaults to 3 if one side or 5 if two sides')
+parser.add_argument('--thickness',    help='thickness in mm. Defaults to 3 if one side or 5 if two sides')
 
 args=parser.parse_args()
 
