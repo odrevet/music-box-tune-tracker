@@ -195,4 +195,7 @@ if __name__=="__main__":
     port.send(mido.Message('program_change', program=program))
     record.program = program
 
-    curses.wrapper(main, port, record, input)
+    try:
+        curses.wrapper(main, port, record, input)
+    except curses.error:
+        sys.exit('Error when drawing to terminal (is the terminal too small ? )')
