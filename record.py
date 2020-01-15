@@ -11,7 +11,7 @@ class Record:
     filename = None
     title = 'Default'
     comment = ''
-    _partition = None  #list of lists of boolean:  track,beat have True if note
+    _partition = None  #list of lists of boolean: [track][beat] True indicates a note
     tracks_count = 0
     beats_count = 0
     program = 8
