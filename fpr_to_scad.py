@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import os
 import sys
 import argparse
 import time, datetime
@@ -19,7 +19,7 @@ args=parser.parse_args()
 
 fpr_file = args.fpr
 fpr_file_bis = args.fprbis
-scad_file = args.scad
+scad_file = args.scad or  os.path.splitext(fpr_file)[0]+'.scad'
 thickness = None
 if args.thickness:
     thickness = float(args.thickness)
