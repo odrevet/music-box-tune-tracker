@@ -4,6 +4,10 @@
  * http://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
  */
 
+// writing functions by HarlanDMii
+// http://www.thingiverse.com/thing:16193
+use <Write.scad>
+
 // Configuration
 $fn = 100;
 hStock = {THICKNESS};
