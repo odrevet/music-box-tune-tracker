@@ -49,6 +49,9 @@ for msg in MidiFile(filename):
     total_time += msg.time
     beat_index = math.ceil(total_time / speed_ratio)
 
+    if beat_index >= limit:
+        break
+
     if msg.type == 'note_on':
         note = msg.note + offset
         if note == 77:
@@ -56,9 +59,6 @@ for msg in MidiFile(filename):
 
         track_index = record.NOTES.index(note)
         record.set_note(beat_index, track_index, True)
-
-    if beat_index >= limit:
-        break
 
 if args.fpr:
     record.filename = args.fpr
