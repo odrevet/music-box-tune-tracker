@@ -26,13 +26,13 @@ import math
 # This converter do not check tempo, when a midi message has a time above zero, it move to
 # the next beat
 
-FPR_SEC_BETWEEN_BEATS = 0.4
-FPR_TEMPO = 60 / FPR_SEC_BETWEEN_BEATS
+FPR_SEC_BETWEEN_BEATS = 0.2
+FPR_BPM = 60 / FPR_SEC_BETWEEN_BEATS
 
 parser=argparse.ArgumentParser()
 parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
 parser.add_argument('--fpr',    help='fpr file to write')
-parser.add_argument('--bmp',    help='set bmp of mid file')
+parser.add_argument('--bpm',    help='set bpm of mid file')
 parser.add_argument('--stdout', help='do not save output to a file but print to stdout instead', action='store_true')
 
 args=parser.parse_args()
@@ -44,19 +44,19 @@ offset = 12
 track_index = 0
 beat_index = 0
 total_time = 0
-bmp = float(args.bmp) if args.bmp else None
+bpm = float(args.bpm) if args.bpm else None
 speed_ratio=1
-if bmp is not None:
-    speed_ratio = bmp / FPR_TEMPO
+if bpm is not None:
+    speed_ratio = bpm / FPR_BPM
 
 for msg in MidiFile(filename):
     if msg.type == 'set_tempo':
-        if bmp is not None:
+        if bpm is not None:
             continue
 
         ms_per_beat = msg.tempo
-        bmp = tempo2bpm(ms_per_beat)
-        speed_ratio = bmp / FPR_TEMPO
+        bpm = tempo2bpm(ms_per_beat)
+        speed_ratio = bpm / FPR_BPM
 
         continue
 

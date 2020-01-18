@@ -174,7 +174,7 @@ def main(stdscr, port, record, input, program):
 
 def play(stdscr, port, record, input):
     t = threading.currentThread()
-    FPR_SEC_BETWEEN_BEATS = 0.4
+    FPR_SEC_BETWEEN_BEATS = 0.5
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
     PROGRESS_INDICATOR_CH = '△'
 
