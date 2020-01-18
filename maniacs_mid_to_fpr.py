@@ -6,6 +6,7 @@ import os
 from mido import MidiFile
 from record import Record
 import const
+import math
 
 # About
 # Convert .mid file from https://musicboxmaniacs.com to a .fpr file
@@ -28,7 +29,7 @@ import const
 parser=argparse.ArgumentParser()
 parser.add_argument('--mid',      help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
 parser.add_argument('--fpr',      help='fpr file to write')
-parser.add_argument('--noempty', help='no empty beats', action='store_true')
+parser.add_argument('--speed-ratio', help='speed ratio (defaults to 0.4)')
 
 args=parser.parse_args()
 filename = args.mid
@@ -36,29 +37,25 @@ filename = args.mid
 record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
 limit = const.BEAT_COUNT  #will stop import when beat count reaches limit
 offset = 12
-
-track_index=0
-beat_index=0
-
-ignore_empty_beats = args.noempty
+track_index = 0
+beat_index = 0
+total_time = 0
+speed_ratio = float(args.speed_ratio) if args.speed_ratio else 0.4
 
 for msg in MidiFile(filename):
-    if not msg.is_meta:
-        if msg.type == 'note_on':
-            note = msg.note + offset
-            if note == 77:
-                note = 76
+    if  msg.is_meta:
+       continue
 
-            track_index = record.NOTES.index(note)
-            record.set_note(beat_index, track_index, True)
+    total_time += msg.time
+    beat_index = math.ceil(total_time / speed_ratio)
 
-        if msg.time > 0 :
-            #if there are not notes at this beat do not change beat index
-            if ignore_empty_beats:
-                if any(record.get_beats(beat_index)):
-                    beat_index += 1
-            else:
-                beat_index += 1
+    if msg.type == 'note_on':
+        note = msg.note + offset
+        if note == 77:
+            note = 76
+
+        track_index = record.NOTES.index(note)
+        record.set_note(beat_index, track_index, True)
 
     if beat_index >= limit:
         break
