@@ -186,6 +186,10 @@ def play(stdscr, port, record, input):
             if record.has_note(beat_index, track_index):
                 port.send(mido.Message('note_on', note=record.NOTES[track_index]))
         time.sleep(SLEEP_DURATION)
+        for track_index in range(input.tracks_count):
+            if record.has_note(beat_index, track_index):
+                port.send(mido.Message('note_off', note=record.NOTES[track_index]))
+
         #update progress indicator
         stdscr.move(PROGRESS_INDICATOR_Y, beat_index + input.offset_x)
         stdscr.addch(PROGRESS_INDICATOR_CH)
