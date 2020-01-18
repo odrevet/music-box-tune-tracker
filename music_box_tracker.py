@@ -16,13 +16,13 @@ import const
 from record import Record
 from input import Input
 
-def export_to_mid(record):
+def export_to_mid(record, program):
     ticks = 480
     mid = mido.MidiFile(type=0, ticks_per_beat=ticks)
     track = mido.MidiTrack()
     mid.tracks.append(track)
 
-    track.append(mido.Message('program_change', program=record.program, time=0))
+    track.append(mido.Message('program_change', program=program, time=0))
 
     for beat_index in range(record.beats_count):
         for track_index in range(record.tracks_count):
@@ -50,7 +50,7 @@ def import_from_mid(record, filename):
         if beat_index >= 86:
             break
 
-def main(stdscr, port, record, input):
+def main(stdscr, port, record, input, program):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -100,7 +100,7 @@ def main(stdscr, port, record, input):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
         elif ch == ord('x'):
-            export_to_mid(record)
+            export_to_mid(record, program)
         elif ch == ord('o'):
             input.player_start_at_value(cursor_x - 1)
             input.draw(cursor_x, cursor_y)
@@ -194,7 +194,7 @@ def play(stdscr, port, record, input):
 
 if __name__=="__main__":
     portname = None
-    program = 8
+    program = 10
     record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
     input = Input()
 
@@ -229,9 +229,8 @@ if __name__=="__main__":
         port = mido.open_output()
 
     port.send(mido.Message('program_change', program=program))
-    record.program = program
 
     try:
-        curses.wrapper(main, port, record, input)
+        curses.wrapper(main, port, record, input, program)
     except curses.error:
         sys.exit('Error when drawing to terminal (is the terminal too small ? )')
