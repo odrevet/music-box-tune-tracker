@@ -1,7 +1,4 @@
 import os
-import mido
-from mido import MidiFile
-import const
 
 class Record:
     # what the .fpr format uses
@@ -81,38 +78,3 @@ class Record:
         file = open(self.filename, 'w')
         file.write(output)
         file.close()
-
-    def export_to_mid(self):
-        mid = mido.MidiFile(type=0, ticks_per_beat=480)
-        track = mido.MidiTrack()
-        mid.tracks.append(track)
-
-        ticks = 480
-
-        track.append(mido.Message('program_change', program=self.program, time=0))
-
-        for beat_index in range(self.beats_count):
-            for track_index in range(self.tracks_count):
-                if self.has_note(beat_index, track_index):
-                    track.append(mido.Message('note_on', note=self.NOTES[track_index], time=0))
-            track.append(mido.Message('note_off', time=ticks))
-
-        mid.save(self.title + '.mid')
-
-    def import_from_mid(self, filename):
-        self.filename = os.path.splitext(filename)[0]+'.fpr'
-        self.title = os.path.basename(filename)
-        self.comment = 'Imported from ' + os.path.basename(filename)
-
-        beat_index = 0
-        track_index = 0
-
-        for msg in MidiFile(filename):
-            if not msg.is_meta:
-                if msg.type == 'note_on':
-                    track_index = self.NOTES.index(msg.note)
-                    self.set_note(beat_index, track_index, True)
-                if msg.time > 0 :
-                    beat_index += 1
-            if beat_index >= 86:
-                break

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 import argparse
 import time
 import threading
 
 import mido
+from mido import MidiFile
 import curses
 import curses.textpad
 from curses.textpad import rectangle
@@ -13,6 +15,41 @@ from curses.textpad import rectangle
 import const
 from record import Record
 from input import Input
+
+def export_to_mid(record):
+    mid = mido.MidiFile(type=0, ticks_per_beat=480)
+    track = mido.MidiTrack()
+    mid.tracks.append(track)
+
+    ticks = 480
+
+    track.append(mido.Message('program_change', program=record.program, time=0))
+
+    for beat_index in range(record.beats_count):
+        for track_index in range(record.tracks_count):
+            if record.has_note(beat_index, track_index):
+                track.append(mido.Message('note_on', note=record.NOTES[track_index], time=0))
+        track.append(mido.Message('note_off', time=ticks))
+
+    mid.save(record.title + '.mid')
+
+def import_from_mid(record, filename):
+    record.filename = os.path.splitext(filename)[0]+'.fpr'
+    record.title = os.path.basename(filename)
+    record.comment = 'Imported from ' + os.path.basename(filename)
+
+    beat_index = 0
+    track_index = 0
+
+    for msg in MidiFile(filename):
+        if not msg.is_meta:
+            if msg.type == 'note_on':
+                track_index = record.NOTES.index(msg.note)
+                record.set_note(beat_index, track_index, True)
+            if msg.time > 0 :
+                beat_index += 1
+        if beat_index >= 86:
+            break
 
 def main(stdscr, port, record, input):
     cursor_y = input.start_y + input.offset_x
@@ -64,7 +101,7 @@ def main(stdscr, port, record, input):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
         elif ch == ord('x'):
-            record.export_to_mid()
+            export_to_mid(record)
         elif ch == ord('o'):
             input.player_start_at_value(cursor_x - 1)
             input.draw(cursor_x, cursor_y)
@@ -183,7 +220,7 @@ if __name__=="__main__":
     if record.filename:
         record.load()
     elif args.mid is not None :
-            record.import_from_mid(args.mid)
+            import_from_mid(record, args.mid)
     else:
         record.filename = record.title + '.fpr'
 
