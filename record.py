@@ -64,7 +64,7 @@ class Record:
             self.title = os.path.splitext(self.filename)[0]
             pass
 
-    def save(self):
+    def to_fpr(self):
         output = ''
         for track_index in range(0, self.tracks_count):
             for beat_index in range(0, self.beats_count):
@@ -73,7 +73,9 @@ class Record:
             output += '\n'
         output += self.title + '\n'
         output += self.comment
+        return output
 
+    def save(self):
         file = open(self.filename, 'w')
-        file.write(output)
+        file.write(self.to_fpr())
         file.close()
