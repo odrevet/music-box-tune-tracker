@@ -17,11 +17,10 @@ from record import Record
 from input import Input
 
 def export_to_mid(record):
-    mid = mido.MidiFile(type=0, ticks_per_beat=480)
+    ticks = 480
+    mid = mido.MidiFile(type=0, ticks_per_beat=ticks)
     track = mido.MidiTrack()
     mid.tracks.append(track)
-
-    ticks = 480
 
     track.append(mido.Message('program_change', program=record.program, time=0))
 
