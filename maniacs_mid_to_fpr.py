@@ -3,7 +3,7 @@
 import sys
 import argparse
 import os
-from mido import MidiFile
+from mido import MidiFile, tempo2bpm
 from record import Record
 import const
 import math
@@ -26,11 +26,14 @@ import math
 # This converter do not check tempo, when a midi message has a time above zero, it move to
 # the next beat
 
+FPR_SEC_BETWEEN_BEATS = 0.4
+FPR_TEMPO = 60 / FPR_SEC_BETWEEN_BEATS
+
 parser=argparse.ArgumentParser()
-parser.add_argument('--mid',         help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
-parser.add_argument('--fpr',         help='fpr file to write')
-parser.add_argument('--speed-ratio', help='speed ratio (defaults to 0.4)')
-parser.add_argument('--stdout',      help='do not save output to a file but print to stdout instead', action='store_true')
+parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
+parser.add_argument('--fpr',    help='fpr file to write')
+parser.add_argument('--bmp',    help='set bmp of mid file')
+parser.add_argument('--stdout', help='do not save output to a file but print to stdout instead', action='store_true')
 
 args=parser.parse_args()
 filename = args.mid
@@ -41,9 +44,22 @@ offset = 12
 track_index = 0
 beat_index = 0
 total_time = 0
-speed_ratio = float(args.speed_ratio) if args.speed_ratio else 0.4
+bmp = float(args.bmp) if args.bmp else None
+speed_ratio=1
+if bmp is not None:
+    speed_ratio = bmp / FPR_TEMPO
 
 for msg in MidiFile(filename):
+    if msg.type == 'set_tempo':
+        if bmp is not None:
+            continue
+
+        ms_per_beat = msg.tempo
+        bmp = tempo2bpm(ms_per_beat)
+        speed_ratio = bmp / FPR_TEMPO
+
+        continue
+
     if  msg.is_meta:
        continue
 

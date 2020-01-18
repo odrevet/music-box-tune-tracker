@@ -174,7 +174,7 @@ def main(stdscr, port, record, input, program):
 
 def play(stdscr, port, record, input):
     t = threading.currentThread()
-    SLEEP_DURATION = 0.5
+    FPR_SEC_BETWEEN_BEATS = 0.4
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
     PROGRESS_INDICATOR_CH = '△'
 
@@ -185,7 +185,7 @@ def play(stdscr, port, record, input):
         for track_index in range(input.tracks_count):
             if record.has_note(beat_index, track_index):
                 port.send(mido.Message('note_on', note=record.NOTES[track_index]))
-        time.sleep(SLEEP_DURATION)
+        time.sleep(FPR_SEC_BETWEEN_BEATS)
         for track_index in range(input.tracks_count):
             if record.has_note(beat_index, track_index):
                 port.send(mido.Message('note_off', note=record.NOTES[track_index]))
