@@ -27,9 +27,10 @@ import math
 # the next beat
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--mid',      help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
-parser.add_argument('--fpr',      help='fpr file to write')
+parser.add_argument('--mid',         help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
+parser.add_argument('--fpr',         help='fpr file to write')
 parser.add_argument('--speed-ratio', help='speed ratio (defaults to 0.4)')
+parser.add_argument('--stdout',      help='do not save output to a file but print to stdout instead', action='store_true')
 
 args=parser.parse_args()
 filename = args.mid
@@ -69,6 +70,8 @@ basename = os.path.basename(filename)
 record.title = os.path.splitext(basename)[0]
 record.comment = 'Imported from ' + os.path.basename(filename)
 
-record.save()
-
-print('fpr saved to ' + record.filename)
+if args.stdout:
+    sys.stdout.write(record.to_fpr())
+else:
+    record.save()
+    print('fpr saved to ' + record.filename)
