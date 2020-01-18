@@ -26,7 +26,7 @@ import math
 # This converter do not check tempo, when a midi message has a time above zero, it move to
 # the next beat
 
-FPR_SEC_BETWEEN_BEATS = 0.2
+FPR_SEC_BETWEEN_BEATS = 0.5
 FPR_BPM = 60 / FPR_SEC_BETWEEN_BEATS
 
 parser=argparse.ArgumentParser()
