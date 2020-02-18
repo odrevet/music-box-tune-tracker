@@ -42,7 +42,6 @@ class Record:
     def right_shift(self, beat_index):
         for track_index in range(self.tracks_count):
             self._partition[track_index].insert(beat_index, False)
-            self._partition[track_index].pop
 
     def load(self):
         try:
