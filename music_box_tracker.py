@@ -47,7 +47,7 @@ def import_from_mid(record, filename):
                 record.set_note(beat_index, track_index, True)
             if msg.time > 0 :
                 beat_index += 1
-        if beat_index >= 86:
+        if beat_index >= const.BEAT_COUNT:
             break
 
 def main(stdscr, port, record, input, program):
@@ -158,7 +158,6 @@ def main(stdscr, port, record, input, program):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('s'):
             record.save()
-            stdscr.move(cursor_y, cursor_x)
         elif ch == ord('l'):
             record.load()
             input.draw(cursor_x, cursor_y)
@@ -199,7 +198,7 @@ def play(stdscr, port, record, input):
 if __name__=="__main__":
     portname = None
     program = 10
-    record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
+    record = Record(0, const.TRACK_COUNT)
     input = Input()
 
     parser=argparse.ArgumentParser()
@@ -226,6 +225,9 @@ if __name__=="__main__":
             import_from_mid(record, args.mid)
     else:
         record.filename = record.title + '.fpr'
+
+    if record.beats_count < const.BEAT_COUNT:
+        record.resize_beats(const.BEAT_COUNT)
 
     try:
         port = mido.open_output(portname)

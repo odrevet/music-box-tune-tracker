@@ -38,22 +38,43 @@ class Record:
         for track_index in range(self.tracks_count):
             self._partition[track_index].pop(beat_index)
             self._partition[track_index].append(False)
+        self.beats_count -= 1
 
     def right_shift(self, beat_index):
         for track_index in range(self.tracks_count):
             self._partition[track_index].insert(beat_index, False)
+        self.beats_count += 1
+
+    def resize_beats(self, size):
+        self.beats_count = size
+        for track_index in range(self.tracks_count):
+            diff_beat = self.beats_count - len(self._partition[track_index])
+            if diff_beat == 0:
+                continue
+
+            if diff_beat > 0:
+                self._partition[track_index].extend([False] * diff_beat)
+            elif diff_beat < 0:
+                self._partition[track_index] = self._partition[track_index][:diff_beat]
 
     def load(self):
         try:
             input = ''
             with open(self.filename) as fp:
                 lineno = 0
+                max_len_line = 0
                 while lineno < self.tracks_count:
                     line = fp.readline().rstrip()
-                    line = line.ljust(self.beats_count, self.__EMPTY_FPR)[:self.beats_count]
-                    for i in range(len(line)):
+                    len_line = len(line)
+                    if len_line > max_len_line:
+                        max_len_line = len_line
+                    self._partition[lineno] = [False] * len_line
+                    for i in range(len_line):
                         self._partition[lineno][i] = line[i] == self.__NOTE_FPR
                     lineno += 1
+
+                self.resize_beats(max_len_line)
+
                 self.title=fp.readline().rstrip()
                 while line:
                     line=fp.readline()

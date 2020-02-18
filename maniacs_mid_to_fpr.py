@@ -38,8 +38,7 @@ parser.add_argument('--stdout', help='do not save output to a file but print to 
 args=parser.parse_args()
 filename = args.mid
 
-record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
-limit = const.BEAT_COUNT  #will stop import when beat count reaches limit
+record = Record(0, const.TRACK_COUNT)
 offset = 12
 track_index = 0
 beat_index = 0
@@ -60,20 +59,23 @@ for msg in MidiFile(filename):
 
         continue
 
-    if  msg.is_meta:
+    if msg.is_meta:
        continue
 
     total_time += msg.time
     beat_index = math.ceil(total_time / speed_ratio)
-
-    if beat_index >= limit:
-        break
 
     if msg.type == 'note_on':
         note = msg.note + offset
         if note == 77:
             note = 76
 
+        #resize partition
+        diff_beat = (beat_index - record.beats_count) + 1
+        for _ in range(diff_beat):
+            record.right_shift(beat_index)
+
+        # find track and set note
         track_index = record.NOTES.index(note)
         record.set_note(beat_index, track_index, True)
 

@@ -30,9 +30,10 @@ if not Path(fpr_file).is_file():
     print('Cannot find ' + fpr_file)
     sys.exit()
 
-record = Record(const.BEAT_COUNT, const.TRACK_COUNT)
+record = Record(0, const.TRACK_COUNT)
 record.filename = fpr_file
 record.load()
+record.resize_beats(const.BEAT_COUNT)
 
 record_bis = None
 if fpr_file_bis is not None:
@@ -40,9 +41,10 @@ if fpr_file_bis is not None:
         print('Cannot find ' + fpr_file_bis)
         sys.exit()
 
-    record_bis = Record(const.BEAT_COUNT, const.TRACK_COUNT)
+    record_bis = Record(0, const.TRACK_COUNT)
     record_bis.filename = fpr_file_bis
     record_bis.load()
+    record_bis.resize_beats(const.BEAT_COUNT)
 
 
 VERSION = '1.0'
