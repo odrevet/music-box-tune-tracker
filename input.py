@@ -6,7 +6,7 @@ class Input:
     start_y = 0
     start_x = 0
     tracks_count = const.TRACK_COUNT
-    beats_count = const.BEAT_COUNT
+    beats_count = 86
     offset_x = 1
     offset_y = 1
     player_start_at = 0
@@ -14,8 +14,12 @@ class Input:
     tone_descending = True
     window = None
 
+    display_from = 0
+
     def __init__(self, record=None, window=None):
         self.record = record
+        if record and self.beats_count > record.beats_count:
+            self.beats_count = record.beats_count
         self.window = window
 
     def __draw_tone(self, track_index, tone_str):
@@ -39,7 +43,7 @@ class Input:
                 if self.tone_descending:
                     track_index = self.tracks_count - 1 - track_index
 
-                if self.record.has_note(beat_index, track_index):
+                if self.record.has_note(self.display_from + beat_index, track_index):
                     attr=curses.color_pair(const.PAIR_NOTE)
                     ch=NOTE_CH
                 else:
@@ -55,6 +59,15 @@ class Input:
                 self.window.addch(ch)
                 self.window.attroff(attr)
 
+    def draw_player_start_at(self):
+        y = self.tracks_count + self.offset_y + 1
+        self.window.hline(y, 0, '_', self.beats_count + self.offset_x)
+
+        x = self.player_start_at + self.offset_x - self.display_from
+        if x > 0 and x <= self.beats_count:
+            self.window.move(y, x)
+            self.window.addch('▲')
+
     def draw(self, cursor_x, cursor_y):
         # draw border
         rectangle(self.window,
@@ -69,6 +82,7 @@ class Input:
 
         # draw partition table
         self.refresh_partition_display()
+        self.draw_player_start_at()
 
         # draw tones
         tones = ['G4 Sol',
@@ -85,10 +99,6 @@ class Input:
             if cursor_y - 1 == track_index:
                 self.window.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
-        #draw player start at
-        self.window.move(self.tracks_count + self.offset_y + 1, self.player_start_at + self.offset_x)
-        self.window.addch('▲')
-
     def can_move(self, y, x):
         return (y > self.start_y
                 and x > self.start_x
@@ -96,7 +106,7 @@ class Input:
                 and x < self.beats_count + self.offset_x)
 
     def player_start_at_value(self, value):
-        if value < self.beats_count and value >= 0:
+        if value < self.record.beats_count and value >= 0:
             self.window.move(self.tracks_count + self.offset_y + 1,
                         self.player_start_at + self.offset_x)
             self.window.addch(' ')

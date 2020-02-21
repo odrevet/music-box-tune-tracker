@@ -50,7 +50,7 @@ def import_from_mid(record, filename):
         if beat_index >= const.BEAT_COUNT:
             break
 
-def main(stdscr, port, record, input, program):
+def main(stdscr, port, input, program):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -61,7 +61,7 @@ def main(stdscr, port, record, input, program):
     curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_BLACK)
     curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
-    input.record = record
+    record = input.record
     input.window = stdscr
     input.draw(cursor_x, cursor_y)
 
@@ -94,15 +94,23 @@ def main(stdscr, port, record, input, program):
             if(input.can_move(cursor_y, next_x)):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
+            elif input.display_from > 0:
+                input.display_from -= 1
+                input.refresh_partition_display()
+                input.draw_player_start_at()
         elif ch == curses.KEY_RIGHT:
             next_x = cursor_x + 1;
             if(input.can_move(cursor_y, next_x)):
                 cursor_x = next_x
                 stdscr.move(cursor_y, cursor_x)
+            elif input.display_from + cursor_x < record.beats_count:
+                input.display_from += 1
+                input.refresh_partition_display()
+                input.draw_player_start_at()
         elif ch == ord('x'):
             export_to_mid(record, program)
         elif ch == ord('o'):
-            input.player_start_at_value(cursor_x - 1)
+            input.player_start_at_value(input.display_from + cursor_x - 1)
             input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('u'):
@@ -128,7 +136,7 @@ def main(stdscr, port, record, input, program):
             input.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(' '):
-            x = cursor_x - 1
+            x = input.display_from + cursor_x - 1
             y = cursor_y - 1
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
@@ -175,9 +183,8 @@ def play(stdscr, port, record, input):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
-    PROGRESS_INDICATOR_CH = '△'
 
-    for beat_index in range(input.player_start_at, input.beats_count):
+    for beat_index in range(input.player_start_at, record.beats_count):
         if getattr(t, "do_run", True) == False:
             stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.beats_count)
             return
@@ -190,16 +197,17 @@ def play(stdscr, port, record, input):
                 port.send(mido.Message('note_off', note=record.NOTES[track_index]))
 
         #update progress indicator
-        stdscr.move(PROGRESS_INDICATOR_Y, beat_index + input.offset_x)
-        stdscr.addch(PROGRESS_INDICATOR_CH)
-        stdscr.refresh()
+        progress_indicator_x =  beat_index + input.offset_x - input.display_from
+        if progress_indicator_x <= input.beats_count:
+            stdscr.move(PROGRESS_INDICATOR_Y, progress_indicator_x)
+            stdscr.addch('△')
+            stdscr.refresh()
     stdscr.hline(PROGRESS_INDICATOR_Y, 0, ' ', input.beats_count + input.offset_x)
 
 if __name__=="__main__":
     portname = None
     program = 10
     record = Record(0, const.TRACK_COUNT)
-    input = Input()
 
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',    help='name of the midi port to use')
@@ -214,7 +222,6 @@ if __name__=="__main__":
     if args.fpr : record.filename = args.fpr
     if args.title: record.title = args.title
     if args.program : program = int(args.program)
-    if args.low: input.tone_descending = False
 
     # midi port
     port = None
@@ -236,7 +243,10 @@ if __name__=="__main__":
 
     port.send(mido.Message('program_change', program=program))
 
+    input = Input(record)
+    if args.low: input.tone_descending = False
+
     try:
-        curses.wrapper(main, port, record, input, program)
+        curses.wrapper(main, port, input, program)
     except curses.error:
         sys.exit('Error when drawing to terminal (is the terminal too small ? )')
