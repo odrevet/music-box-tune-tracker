@@ -66,11 +66,10 @@ def main(stdscr, port, input, program):
     input.draw(cursor_x, cursor_y)
 
     # edit box
-    # editwin = curses.newwin(1,79, 20,1)
-    # editwin.addstr(0, 0, record.title)
-    # rectangle(stdscr, 19,0, 20+1,87)
-    # box = curses.textpad.Textbox(editwin, insert_mode=True)
-    # stdscr.move(cursor_y, cursor_x)
+    editwin = curses.newwin(1,79, 20,1)
+    editwin.addstr(0, 0, record.title)
+    box = curses.textpad.Textbox(editwin, insert_mode=True)
+    stdscr.move(cursor_y, cursor_x)
 
     thread_player = None   #thread to play music in background
 
