@@ -66,11 +66,11 @@ def main(stdscr, port, input, program):
     input.draw(cursor_x, cursor_y)
 
     # edit box
-    editwin = curses.newwin(1,79, 20,1)
-    editwin.addstr(0, 0, record.title)
-    rectangle(stdscr, 19,0, 20+1,87)
-    box = curses.textpad.Textbox(editwin, insert_mode=True)
-    stdscr.move(cursor_y, cursor_x)
+    # editwin = curses.newwin(1,79, 20,1)
+    # editwin.addstr(0, 0, record.title)
+    # rectangle(stdscr, 19,0, 20+1,87)
+    # box = curses.textpad.Textbox(editwin, insert_mode=True)
+    # stdscr.move(cursor_y, cursor_x)
 
     thread_player = None   #thread to play music in background
 
@@ -96,7 +96,7 @@ def main(stdscr, port, input, program):
                 stdscr.move(cursor_y, cursor_x)
             elif input.display_from > 0:
                 input.display_from -= 1
-                input.refresh_partition_display()
+                input.draw_partition()
                 input.draw_player_start_at()
         elif ch == curses.KEY_RIGHT:
             next_x = cursor_x + 1;
@@ -105,7 +105,7 @@ def main(stdscr, port, input, program):
                 stdscr.move(cursor_y, cursor_x)
             elif input.display_from + cursor_x < record.beats_count:
                 input.display_from += 1
-                input.refresh_partition_display()
+                input.draw_partition()
                 input.draw_player_start_at()
         elif ch == ord('x'):
             export_to_mid(record, program)
@@ -123,11 +123,11 @@ def main(stdscr, port, input, program):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('+'):
             record.right_shift(cursor_x - 1)
-            input.refresh_partition_display()
+            input.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('-'):
             record.left_shift(cursor_x - 1)
-            input.refresh_partition_display()
+            input.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('e'):
             box.edit()
@@ -141,7 +141,7 @@ def main(stdscr, port, input, program):
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
             record.reverse_note(x, y)
-            input.refresh_partition_display()
+            input.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord('t'):
             track_index = cursor_y - (input.start_y + input.offset_y)
@@ -182,7 +182,7 @@ def main(stdscr, port, input, program):
 def play(stdscr, port, record, input):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
-    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + 1
+    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y + 1
 
     for beat_index in range(input.player_start_at, record.beats_count):
         if getattr(t, "do_run", True) == False:

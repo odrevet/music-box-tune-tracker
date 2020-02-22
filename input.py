@@ -27,7 +27,7 @@ class Input:
                       self.start_x + self.beats_count + self.offset_x + 1,
                       tone_str)
 
-    def refresh_partition_display(self):
+    def draw_partition(self):
         '''Read parition and populate the screen'''
         # what is displayed
         NOTE_CH = '•'
@@ -60,7 +60,7 @@ class Input:
                 self.window.attroff(attr)
 
     def draw_player_start_at(self):
-        y = self.tracks_count + self.offset_y + 1
+        y = self.tracks_count + self.offset_y + self.start_y + 1
         self.window.hline(y, 0, '_', self.beats_count + self.offset_x)
 
         x = self.player_start_at + self.offset_x - self.display_from
@@ -73,15 +73,15 @@ class Input:
         rectangle(self.window,
                   self.start_y,
                   self.start_x,
-                  self.tracks_count + self.offset_y,
-                  self.beats_count + self.offset_x)
+                  self.tracks_count + self.offset_y + self.start_y,
+                  self.beats_count + self.offset_x + self.start_x)
 
         #title
         if self.record.title is not None:
             self.window.addstr(self.start_y, self.start_x + 2, self.record.title)
 
         # draw partition table
-        self.refresh_partition_display()
+        self.draw_partition()
         self.draw_player_start_at()
 
         # draw tones
@@ -89,6 +89,7 @@ class Input:
                  'C5 Do', 'D5 Ré', 'E5 Mi', 'G5 Sol', 'A5 La', 'B5 Si',
                  'C6 Do', 'D6 Ré', 'E6 Mi', 'F6 Fa', 'G6 Sol', 'A6 La', 'B6 Si',
                  'C7 Do', 'D7 Ré']
+
         if self.tone_descending:
             tones.reverse()
 
