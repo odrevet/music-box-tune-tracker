@@ -98,6 +98,7 @@ def main(stdscr, port, input, program):
                 input.display_from -= 1
                 input.draw_partition()
                 input.draw_player_start_at()
+                input.draw_beat_index()
         elif ch == curses.KEY_RIGHT:
             next_x = cursor_x + 1;
             if(input.can_move(cursor_y, next_x)):
@@ -107,6 +108,7 @@ def main(stdscr, port, input, program):
                 input.display_from += 1
                 input.draw_partition()
                 input.draw_player_start_at()
+                input.draw_beat_index()
         elif ch == ord('x'):
             export_to_mid(record, program)
         elif ch == ord('o'):
@@ -182,7 +184,7 @@ def main(stdscr, port, input, program):
 def play(stdscr, port, record, input):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
-    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y + 1
+    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y
 
     for beat_index in range(input.player_start_at, record.beats_count):
         if getattr(t, "do_run", True) == False:

@@ -24,8 +24,17 @@ class Input:
 
     def __draw_tone(self, track_index, tone_str):
         self.window.addstr(self.start_y + self.offset_y + track_index,
-                      self.start_x + self.beats_count + self.offset_x + 1,
-                      tone_str)
+                           self.start_x + self.beats_count + self.offset_x + 1,
+                           tone_str)
+
+    def draw_beat_index(self):
+        for beat_index in range(0, self.beats_count):
+            y = self.start_y + self.offset_y + self.tracks_count + 1
+            beat_index_str = str(beat_index + 1 + self.display_from)
+            for beat_index_str_index in range(len(beat_index_str)):
+                self.window.addstr(y + beat_index_str_index,
+                                   self.start_x + self.offset_x + beat_index,
+                                   beat_index_str[beat_index_str_index])
 
     def draw_partition(self):
         '''Read parition and populate the screen'''
@@ -60,7 +69,7 @@ class Input:
                 self.window.attroff(attr)
 
     def draw_player_start_at(self):
-        y = self.tracks_count + self.offset_y + self.start_y + 1
+        y = self.tracks_count + self.offset_y + self.start_y
         self.window.hline(y, 0, '_', self.beats_count + self.offset_x)
 
         x = self.player_start_at + self.offset_x - self.display_from
@@ -84,7 +93,9 @@ class Input:
         self.draw_partition()
         self.draw_player_start_at()
 
-        # draw tones
+        self.draw_beat_index()
+
+        # draw tones TODO parametrable tones
         tones = ['G4 Sol',
                  'C5 Do', 'D5 Ré', 'E5 Mi', 'G5 Sol', 'A5 La', 'B5 Si',
                  'C6 Do', 'D6 Ré', 'E6 Mi', 'F6 Fa', 'G6 Sol', 'A6 La', 'B6 Si',
