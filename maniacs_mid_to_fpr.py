@@ -30,9 +30,9 @@ FPR_SEC_BETWEEN_BEATS = 0.25
 FPR_BPM = 60 / FPR_SEC_BETWEEN_BEATS
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)')
-parser.add_argument('--fpr',    help='fpr file to write')
-parser.add_argument('--bpm',    help='set bpm of mid file')
+parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)', required=True)
+parser.add_argument('--fpr',    help='fpr file to write. When not present, the output file will have the same name as the mid input but with .frp extension')
+parser.add_argument('--bpm',    help='set bpm of mid file. When not present, the bmp will be read from the mid file')
 parser.add_argument('--stdout', help='do not save output to a file but print to stdout instead', action='store_true')
 
 args=parser.parse_args()
