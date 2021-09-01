@@ -29,13 +29,27 @@ import math
 FPR_SEC_BETWEEN_BEATS = 0.25
 FPR_BPM = 60 / FPR_SEC_BETWEEN_BEATS
 
-parser=argparse.ArgumentParser()
-parser.add_argument('--mid',    help='mid file to import from musicboxmaniacs.com (Kikkerland 15 only)', required=True)
-parser.add_argument('--fpr',    help='fpr file to write. When not present, the output file will have the same name as the mid input but with .frp extension')
-parser.add_argument('--bpm',    help='set bpm of mid file. When not present, the bmp will be read from the mid file')
-parser.add_argument('--stdout', help='do not save output to a file but print to stdout instead', action='store_true')
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--mid",
+    help="mid file to import from musicboxmaniacs.com (Kikkerland 15 only)",
+    required=True,
+)
+parser.add_argument(
+    "--fpr",
+    help="fpr file to write. When not present, the output file will have the same name as the mid input but with .frp extension",
+)
+parser.add_argument(
+    "--bpm",
+    help="set bpm of mid file. When not present, the bmp will be read from the mid file",
+)
+parser.add_argument(
+    "--stdout",
+    help="do not save output to a file but print to stdout instead",
+    action="store_true",
+)
 
-args=parser.parse_args()
+args = parser.parse_args()
 filename = args.mid
 
 record = Record(0, const.TRACK_COUNT)
@@ -44,12 +58,12 @@ track_index = 0
 beat_index = 0
 total_time = 0
 bpm = float(args.bpm) if args.bpm else None
-speed_ratio=1
+speed_ratio = 1
 if bpm is not None:
     speed_ratio = bpm / FPR_BPM
 
 for msg in MidiFile(filename):
-    if msg.type == 'set_tempo':
+    if msg.type == "set_tempo":
         if bpm is not None:
             continue
 
@@ -60,17 +74,17 @@ for msg in MidiFile(filename):
         continue
 
     if msg.is_meta:
-       continue
+        continue
 
     total_time += msg.time
     beat_index = math.ceil(total_time / speed_ratio)
 
-    if msg.type == 'note_on':
+    if msg.type == "note_on":
         note = msg.note + offset
         if note == 77:
             note = 76
 
-        #resize partition
+        # resize partition
         diff_beat = (beat_index - record.beats_count) + 1
         for _ in range(diff_beat):
             record.right_shift(beat_index)
@@ -82,16 +96,18 @@ for msg in MidiFile(filename):
 if args.fpr:
     record.filename = args.fpr
 else:
-    record.filename = os.path.splitext(filename)[0]+'.fpr'
+    record.filename = os.path.splitext(filename)[0] + ".fpr"
 
 basename = os.path.basename(filename)
 record.title = os.path.splitext(basename)[0]
-record.comment = '''Imported from
+record.comment = """Imported from
 {}
-with a bpm of {}'''.format(os.path.basename(filename), bpm)
+with a bpm of {}""".format(
+    os.path.basename(filename), bpm
+)
 
 if args.stdout:
     sys.stdout.write(record.to_fpr())
 else:
     record.save()
-    print('fpr saved to ' + record.filename)
+    print("fpr saved to " + record.filename)
