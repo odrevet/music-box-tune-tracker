@@ -13,9 +13,9 @@ import math
 # The .mid from music box maniacs must be for a song designed for the
 # 'Kikkerland 15' music box
 
-# Missing F note
-# As the Fisher Price Record Player does not have a F# tone (midi note 77), it is replace
-# with a G
+# Missing notes
+# As the Fisher Price Record Player does not have all semi-tones, we search the available
+# note range for nearest tone (yes, this will sound bad!)
 
 # Tone
 # The 'Kikkerland 15' is a musical stave below the Fisher Price Record Player, so all the
@@ -48,9 +48,18 @@ parser.add_argument(
     help="do not save output to a file but print to stdout instead",
     action="store_true",
 )
+parser.add_argument(
+    "--verbose",
+    help="show MIDI message information during conversion",
+    action="store_true",
+)
 
 args = parser.parse_args()
 filename = args.mid
+
+def log(msg, nonl=False):
+    if args.verbose:
+        print(msg, end='' if nonl else '\n')
 
 record = Record(0, const.TRACK_COUNT)
 offset = 12
@@ -61,8 +70,10 @@ bpm = float(args.bpm) if args.bpm else None
 speed_ratio = 1
 if bpm is not None:
     speed_ratio = bpm / FPR_BPM
+    log(f"bpm={bpm} ratio={speed_ratio}")
 
 for msg in MidiFile(filename):
+
     if msg.type == "set_tempo":
         if bpm is not None:
             continue
@@ -70,6 +81,7 @@ for msg in MidiFile(filename):
         ms_per_beat = msg.tempo
         bpm = tempo2bpm(ms_per_beat)
         speed_ratio = bpm / FPR_BPM
+        log(f"ms_per_beat={ms_per_beat} bpm={bpm} ratio={speed_ratio}")
 
         continue
 
@@ -78,11 +90,27 @@ for msg in MidiFile(filename):
 
     total_time += msg.time
     beat_index = math.ceil(total_time / speed_ratio)
+    log(f"msg.time={msg.time} beat_index={beat_index} msg.type={msg.type}: ", True)
 
     if msg.type == "note_on":
         note = msg.note + offset
-        if note == 77:
-            note = 76
+        nabv = note
+        nbel = note
+        # search for suitable higher/lower note if we don't have the one specified..
+        while not note in record.NOTES:
+            nabv += 1
+            nbel -= 1
+            # prefer higher notes than lower?
+            if nabv in record.NOTES:
+                note = nabv
+                break
+            elif nbel in record.NOTES:
+                note = nbel
+                break
+        if note != msg.note + offset:
+            log(f"note_on={msg.note+offset}>{note} ", True)
+        else:
+            log(f"note_on={note} ", True)
 
         # resize partition
         diff_beat = (beat_index - record.beats_count) + 1
@@ -92,6 +120,8 @@ for msg in MidiFile(filename):
         # find track and set note
         track_index = record.NOTES.index(note)
         record.set_note(beat_index, track_index, True)
+
+    log("")
 
 if args.fpr:
     record.filename = args.fpr
