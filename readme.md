@@ -6,15 +6,40 @@ music box tune tracker use the same file format (.fpr) from "Fred Record Player"
 
 <img src="https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png" width="6400" height="480" />
 
+# Command line usage
+
+```
+optional arguments:
+  -h, --help         show this help message and exit
+  --port PORT        name of the midi port to use
+  --fpr FPR          .fpr file to open
+  --mid MID          import from .mid file created with music box tune tracker
+  --program PROGRAM  midi instrument code
+  --title TITLE      set the title of a new tune
+  --low              display low pitch notes first
+
+```
+
 # Prerequisites
 
 This software uses Python with the Curses library for the User Interface and the Mido library for sound.
+
+# Optional Dependancies 
+
+## WAV playback
+
+```
+pip install playsound
+```
+
+## Midi playback and extra functionalities
 
 ```
 pip install mido python-rtmidi
 ```
 
-To play sounds, Midi software synthesize is required.
+# Play sounds using a Midi software synthesize
+
 I use timidity, which can be installed under Linux Ubuntu with :
 
 ```
@@ -26,8 +51,6 @@ and then run with:
 ```
 timidity -iA -B2,8 -Os1l -s 11100
 ```
-
-# Run
 
 ## List Midi ports
 
@@ -44,27 +67,13 @@ aplaymidi -l
 128:3    TiMidity                         TiMidity port 3
 ```
 
-## Command line usage
-
-```
-optional arguments:
-  -h, --help         show this help message and exit
-  --port PORT        name of the midi port to use
-  --fpr FPR          .fpr file to open
-  --mid MID          import from .mid file created with music box tune tracker
-  --program PROGRAM  midi instrument code
-  --title TITLE      set the title of a new tune
-  --low              display low pitch notes first
-
-```
-
-### Example
+## Example
 
 ```
 python music_box_tracker.py --port 'TiMidity port 0'
 ```
 
-## Using music box tune tracker
+# Using music box tune tracker
 
 * Arrow key: Move the cursor
 * Space: add/remove a note at cursor

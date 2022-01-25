@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import importlib.util
 import time
 import threading
 
@@ -15,14 +16,16 @@ from midi import Midi
 from record import Record
 from input import Input
 
+def has_midi(midi):
+    return "mido" in sys.modules and midi is not None
 
-def play_note(note, midi=None):
-    if(midi):
+def play_note(note, wav, midi=None):
+    if wav == False and has_midi(midi):
         midi.play_note(note)
     else:
         threading.Thread(target=playsound, args=(f"wav/{note}.wav",), daemon=True).start()
 
-def main(stdscr, input, midi):
+def main(stdscr, input, midi, wav):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -81,7 +84,8 @@ def main(stdscr, input, midi):
                 input.draw_player_start_at()
                 input.draw_beat_index()
         elif ch == ord("x"):
-            midi.export_to_mid(record)
+            if has_midi(midi):
+                midi.export_to_mid(record)
         elif ch == ord("o"):
             input.player_start_at_value(input.display_from + cursor_x - 1)
             input.draw(cursor_x, cursor_y)
@@ -151,8 +155,6 @@ def main(stdscr, input, midi):
         thread_player.do_run = False
         thread_player.join()
 
-    midi.port.close()
-
 
 def play(stdscr, port, record, input):
     t = threading.currentThread()
@@ -190,6 +192,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--low", help="display low pitch notes first", action="store_true"
     )
+    parser.add_argument(
+        "--wav",
+        dest="wav",
+        action="store_true",
+        help="WAV audio backend",
+    )
+    parser.set_defaults(wav=True)
 
     # Midi related arguments
     parser.add_argument("--port", help="name of the midi port to use")
@@ -212,7 +221,7 @@ if __name__ == "__main__":
 
     if record.filename:
         record.load()
-    elif args.mid is not None:
+    elif args.mid is not None and has_midi(midi):
         midi.import_from_mid(record, args.mid)
     else:
         record.filename = record.title + ".fpr"
@@ -225,6 +234,6 @@ if __name__ == "__main__":
         input.tone_descending = False
 
     try:
-        curses.wrapper(main, input, midi)
+        curses.wrapper(main, input, midi, args.wav)
     except curses.error:
         sys.exit("Error when drawing to terminal (is the terminal too small ? )")
