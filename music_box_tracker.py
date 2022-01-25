@@ -11,12 +11,12 @@ import curses.textpad
 from curses.textpad import rectangle
 
 import const
-import midi
+from midi import Midi
 from record import Record
 from input import Input
 
 
-def main(stdscr, port, input, program):
+def main(stdscr, input, port, program):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -75,7 +75,7 @@ def main(stdscr, port, input, program):
                 input.draw_player_start_at()
                 input.draw_beat_index()
         elif ch == ord("x"):
-            midi.export_to_mid(record, program)
+            midi.export_to_mid(record)
         elif ch == ord("o"):
             input.player_start_at_value(input.display_from + cursor_x - 1)
             input.draw(cursor_x, cursor_y)
@@ -175,9 +175,9 @@ def play(stdscr, port, record, input):
 
 
 if __name__ == "__main__":
-    portname = None
-    program = 10
     record = Record(0, const.TRACK_COUNT)
+    program = 10
+    portname = ""
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", help="name of the midi port to use")
@@ -192,17 +192,16 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    if args.port:
-        portname = args.port
     if args.fpr:
         record.filename = args.fpr
     if args.title:
         record.title = args.title
     if args.program:
         program = int(args.program)
+    if args.port:
+        portname = args.port
 
-    # midi port
-    port = None
+    midi = Midi(program, portname)
 
     if record.filename:
         record.load()
@@ -214,18 +213,11 @@ if __name__ == "__main__":
     if record.beats_count < const.BEAT_COUNT:
         record.resize_beats(const.BEAT_COUNT)
 
-    try:
-        port = mido.open_output(portname)
-    except:
-        port = mido.open_output()
-
-    port.send(mido.Message("program_change", program=program))
-
     input = Input(record)
     if args.low:
         input.tone_descending = False
 
     try:
-        curses.wrapper(main, port, input, program)
+        curses.wrapper(main, input, midi.port, midi.program)
     except curses.error:
         sys.exit("Error when drawing to terminal (is the terminal too small ? )")
