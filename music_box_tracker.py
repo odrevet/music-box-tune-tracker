@@ -6,15 +6,16 @@ import importlib.util
 import time
 import threading
 
-from playsound import playsound
 import curses
 import curses.textpad
 from curses.textpad import rectangle
 
-import const
 if "mido" in sys.modules:
     from midi import Midi
+if "playsound" in sys.modules:
+    from playsound import playsound
 
+import const
 from record import Record
 from input import Input
 
@@ -24,7 +25,7 @@ def has_midi(midi):
 def play_note(note, wav, midi=None):
     if wav == False and has_midi(midi):
         midi.play_note(note)
-    else:
+    elif "playsound" in sys.modules:
         threading.Thread(target=playsound, args=(f"wav/{note}.wav",), daemon=True).start()
 
 def main(stdscr, input, midi, wav):
