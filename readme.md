@@ -12,7 +12,7 @@ This software uses `Python` with the `Curses` library for the User Interface.
 
 # Optional Dependancies 
 
-To play music and preview what your music will sound like on a fisher price record, there are two options: 
+To preview what your music will sound like on a fisher price record, there are two options: 
 
 * `Wav` playback is the more easy and is recommanded.
 * `Midi` playback will add extra functionalities but will require a little more configurations.  
