@@ -104,7 +104,7 @@ class Input:
 
         self.draw_beat_index()
 
-        # draw tones TODO parametrable tones
+        # draw tones
         tones = [
             "G4 Sol",
             "C5 Do",
