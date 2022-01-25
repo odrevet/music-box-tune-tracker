@@ -21,6 +21,9 @@ class Midi:
 
         self.port.send(mido.Message("program_change", program=self.program))
 
+    def play_note(self, note):
+        self.port.send(mido.Message("note_on", note=note))
+
 
     def export_to_mid(self, record):
         ticks = 480
