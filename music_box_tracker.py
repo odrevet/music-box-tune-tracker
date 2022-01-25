@@ -180,17 +180,21 @@ if __name__ == "__main__":
     portname = ""
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", help="name of the midi port to use")
+    
+    # General arguments
     parser.add_argument("--fpr", help=".fpr file to open")
-    parser.add_argument(
-        "--mid", help="import from .mid file created with music box tune tracker"
-    )
-    parser.add_argument("--program", help="midi instrument code")
     parser.add_argument("--title", help="set the title of a new tune")
     parser.add_argument(
         "--low", help="display low pitch notes first", action="store_true"
     )
 
+    # Midi related arguments
+    parser.add_argument("--port", help="name of the midi port to use")
+    parser.add_argument("--program", help="midi instrument code")
+    parser.add_argument(
+        "--mid", help="import from .mid file created with music box tune tracker"
+    )
+    
     args = parser.parse_args()
     if args.fpr:
         record.filename = args.fpr
