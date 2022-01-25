@@ -21,6 +21,9 @@ class Midi:
 
         self.port.send(mido.Message("program_change", program=self.program))
 
+    def __del__(self):
+        self.port.close()
+
     def play_note(self, note):
         self.port.send(mido.Message("note_on", note=note))
 
