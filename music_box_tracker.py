@@ -5,7 +5,7 @@ import argparse
 import time
 import threading
 
-#from playsound import playsound
+from playsound import playsound
 import curses
 import curses.textpad
 from curses.textpad import rectangle
@@ -15,6 +15,12 @@ from midi import Midi
 from record import Record
 from input import Input
 
+
+def play_note(note, midi=None):
+    if(midi):
+        midi.play_note(note)
+    else:
+        threading.Thread(target=playsound, args=(f"wav/{note}.wav",), daemon=True).start()
 
 def main(stdscr, input, midi):
     cursor_y = input.start_y + input.offset_x
@@ -114,17 +120,13 @@ def main(stdscr, input, midi):
             track_index = cursor_y - (input.start_y + input.offset_y)
             if input.tone_descending:
                 track_index = input.tracks_count - 1 - track_index
-
-            # WAV backend
-            # threading.Thread(target=playsound, args=("wav/A6.wav",), daemon=True).start()
-            # Midi backend
-            midi.play_note(record.NOTES[track_index])
+            play_note(record.NOTES[track_index], midi)
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)
             beats = record.get_beats(cursor_x - 1)
             for track_index in range(len(beats)):
                 if beats[track_index]:
-                    midi.play_note(record.NOTES[track_index])
+                    play_note(record.NOTES[track_index], midi)
         elif ch == ord("p"):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -163,7 +165,7 @@ def play(stdscr, port, record, input):
             return
         for track_index in range(input.tracks_count):
             if record.has_note(beat_index, track_index):
-                midi.play_note(record.NOTES[track_index])
+                play_note(record.NOTES[track_index], midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
 
         # update progress indicator
