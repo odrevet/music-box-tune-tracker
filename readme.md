@@ -29,9 +29,9 @@ For more informations about using midi as an audio backend using the `mido` pack
 
 # music_box_tracker.py
 
-## Command line options
-
 Edit and preview `fpr` files.
+
+## Command line options
 
 ```
 optional arguments:
