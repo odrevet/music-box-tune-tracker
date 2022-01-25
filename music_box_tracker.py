@@ -6,6 +6,7 @@ import time
 import threading
 
 import mido
+#from playsound import playsound
 import curses
 import curses.textpad
 from curses.textpad import rectangle
@@ -16,7 +17,7 @@ from record import Record
 from input import Input
 
 
-def main(stdscr, input, port, program):
+def main(stdscr, input, midi):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -114,13 +115,18 @@ def main(stdscr, input, port, program):
             track_index = cursor_y - (input.start_y + input.offset_y)
             if input.tone_descending:
                 track_index = input.tracks_count - 1 - track_index
-            port.send(mido.Message("note_on", note=record.NOTES[track_index]))
+
+
+            # WAV backend
+            #threading.Thread(target=playsound, args=("wav/A6.wav",), daemon=True).start()
+            # Midi backend
+            midi.port.send(mido.Message("note_on", note=record.NOTES[track_index]))
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)
             beats = record.get_beats(cursor_x - 1)
             for track_index in range(len(beats)):
                 if beats[track_index]:
-                    port.send(mido.Message("note_on", note=record.NOTES[track_index]))
+                    midi.port.send(mido.Message("note_on", note=record.NOTES[track_index]))
         elif ch == ord("p"):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -128,7 +134,7 @@ def main(stdscr, input, port, program):
                 input.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(
-                    target=play, args=(stdscr, port, record, input)
+                    target=play, args=(stdscr, midi.port, record, input)
                 )
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
@@ -145,7 +151,7 @@ def main(stdscr, input, port, program):
         thread_player.do_run = False
         thread_player.join()
 
-    port.close()
+    midi.port.close()
 
 
 def play(stdscr, port, record, input):
@@ -180,7 +186,7 @@ if __name__ == "__main__":
     portname = ""
 
     parser = argparse.ArgumentParser()
-    
+
     # General arguments
     parser.add_argument("--fpr", help=".fpr file to open")
     parser.add_argument("--title", help="set the title of a new tune")
@@ -194,7 +200,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--mid", help="import from .mid file created with music box tune tracker"
     )
-    
+
     args = parser.parse_args()
     if args.fpr:
         record.filename = args.fpr
@@ -222,6 +228,6 @@ if __name__ == "__main__":
         input.tone_descending = False
 
     try:
-        curses.wrapper(main, input, midi.port, midi.program)
+        curses.wrapper(main, input, midi)
     except curses.error:
         sys.exit("Error when drawing to terminal (is the terminal too small ? )")
