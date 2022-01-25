@@ -1,6 +1,6 @@
 Music box tune tracker. Create or import a tune and turn it into a record for the Fisher Price Record Player toy
 
-music box tune tracker use the same file format (.fpr) from "Fred Record Player" available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
+ `Music Box Tune Tracker` uses the same file format (.fpr) from `Fred Record Player` available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
 # Screenshot
 
