@@ -203,7 +203,7 @@ if __name__ == "__main__":
         action="store_true",
         help="WAV audio backend",
     )
-    parser.set_defaults(wav=True)
+    parser.set_defaults(wav=False)
 
     # Midi related arguments
     if "mido" in sys.modules:

@@ -27,7 +27,11 @@ pip install playsound
 
 For more informations about using midi as an audio backend using the `mido` package, see `midi.md`. 
 
-# Command line usage
+# music_box_tracker.py
+
+## Command line options
+
+Edit and preview `fpr` files.
 
 ```
 optional arguments:
@@ -35,6 +39,7 @@ optional arguments:
   --fpr FPR          .fpr file to open
   --title TITLE      set the title of a new tune
   --low              display low pitch notes first
+  --wav              WAV audio backend (only available if `playsound` package is installed)
 ```
 
 
@@ -46,7 +51,7 @@ Opions only available if the `mido` package is installed:
   --program PROGRAM  midi instrument code
 ```
 
-# Using music box tune tracker
+## Keys
 
 * Arrow key: Move the cursor
 * Space: add/remove a note at cursor
