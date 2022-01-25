@@ -12,7 +12,9 @@ import curses.textpad
 from curses.textpad import rectangle
 
 import const
-from midi import Midi
+if "mido" in sys.modules:
+    from midi import Midi
+
 from record import Record
 from input import Input
 
@@ -138,7 +140,7 @@ def main(stdscr, input, midi, wav):
                 input.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(
-                    target=play, args=(stdscr, midi.port, record, input)
+                    target=play, args=(stdscr, midi, record, input)
                 )
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
@@ -156,7 +158,7 @@ def main(stdscr, input, midi, wav):
         thread_player.join()
 
 
-def play(stdscr, port, record, input):
+def play(stdscr, midi, record, input):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y
@@ -201,27 +203,32 @@ if __name__ == "__main__":
     parser.set_defaults(wav=True)
 
     # Midi related arguments
-    parser.add_argument("--port", help="name of the midi port to use")
-    parser.add_argument("--program", help="midi instrument code")
-    parser.add_argument(
-        "--mid", help="import from .mid file created with music box tune tracker"
-    )
+    if "mido" in sys.modules:
+        parser.add_argument("--port", help="name of the midi port to use")
+        parser.add_argument("--program", help="midi instrument code")
+        parser.add_argument(
+            "--mid", help="import from .mid file created with music box tune tracker"
+        )
 
     args = parser.parse_args()
     if args.fpr:
         record.filename = args.fpr
     if args.title:
         record.title = args.title
-    if args.program:
-        program = int(args.program)
-    if args.port:
-        portname = args.port
 
-    midi = Midi(program, portname)
+
+    midi = None
+    if "mido" in sys.modules:
+        if args.program:
+            program = int(args.program)
+        if args.port:
+            portname = args.port
+
+        Midi(program, portname)
 
     if record.filename:
         record.load()
-    elif args.mid is not None and has_midi(midi):
+    elif "mido" in sys.modules and args.mid is not None:
         midi.import_from_mid(record, args.mid)
     else:
         record.filename = record.title + ".fpr"
