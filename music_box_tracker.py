@@ -2,7 +2,6 @@
 
 import sys
 import argparse
-import importlib.util
 import time
 import threading
 
@@ -12,21 +11,23 @@ from curses.textpad import rectangle
 
 if "mido" in sys.modules:
     from midi import Midi
-if "playsound" in sys.modules:
-    from playsound import playsound
+#if "playsound" in sys.modules:
+from playsound import playsound
 
 import const
 from record import Record
 from input import Input
 
-def has_midi(midi):
-    return "mido" in sys.modules and midi is not None
 
 def play_note(note, wav, midi=None):
-    if wav == False and has_midi(midi):
+    if wav == False and "mido" in sys.modules:
         midi.play_note(note)
-    elif "playsound" in sys.modules:
-        threading.Thread(target=playsound, args=(f"wav/{note}.wav",), daemon=True).start()
+    #elif "playsound" in sys.modules:
+    else:
+        threading.Thread(
+            target=playsound, args=(f"wav/{note}.wav",), daemon=True
+        ).start()
+
 
 def main(stdscr, input, midi, wav):
     cursor_y = input.start_y + input.offset_x
@@ -87,7 +88,7 @@ def main(stdscr, input, midi, wav):
                 input.draw_player_start_at()
                 input.draw_beat_index()
         elif ch == ord("x"):
-            if has_midi(midi):
+            if "mido" in sys.modules:
                 midi.export_to_mid(record)
         elif ch == ord("o"):
             input.player_start_at_value(input.display_from + cursor_x - 1)
@@ -127,13 +128,13 @@ def main(stdscr, input, midi, wav):
             track_index = cursor_y - (input.start_y + input.offset_y)
             if input.tone_descending:
                 track_index = input.tracks_count - 1 - track_index
-            play_note(record.NOTES[track_index], midi)
+            play_note(record.NOTES[track_index], wav, midi)
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)
             beats = record.get_beats(cursor_x - 1)
             for track_index in range(len(beats)):
                 if beats[track_index]:
-                    play_note(record.NOTES[track_index], midi)
+                    play_note(record.NOTES[track_index], wav, midi)
         elif ch == ord("p"):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -141,7 +142,7 @@ def main(stdscr, input, midi, wav):
                 input.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(
-                    target=play, args=(stdscr, midi, record, input)
+                    target=play, args=(stdscr, wav, midi, record, input)
                 )
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
@@ -159,7 +160,7 @@ def main(stdscr, input, midi, wav):
         thread_player.join()
 
 
-def play(stdscr, midi, record, input):
+def play(stdscr, wav, midi, record, input):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y
@@ -170,7 +171,7 @@ def play(stdscr, midi, record, input):
             return
         for track_index in range(input.tracks_count):
             if record.has_note(beat_index, track_index):
-                play_note(record.NOTES[track_index], midi)
+                play_note(record.NOTES[track_index], wav, midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
 
         # update progress indicator
@@ -184,7 +185,6 @@ def play(stdscr, midi, record, input):
 
 if __name__ == "__main__":
     record = Record(0, const.TRACK_COUNT)
-
     parser = argparse.ArgumentParser()
 
     # General arguments
@@ -214,7 +214,6 @@ if __name__ == "__main__":
         record.filename = args.fpr
     if args.title:
         record.title = args.title
-
 
     midi = None
     if "mido" in sys.modules:
