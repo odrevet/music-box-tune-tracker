@@ -184,8 +184,6 @@ def play(stdscr, midi, record, input):
 
 if __name__ == "__main__":
     record = Record(0, const.TRACK_COUNT)
-    program = 10
-    portname = ""
 
     parser = argparse.ArgumentParser()
 
@@ -220,12 +218,14 @@ if __name__ == "__main__":
 
     midi = None
     if "mido" in sys.modules:
+        program = 10
+        portname = ""
         if args.program:
             program = int(args.program)
         if args.port:
             portname = args.port
 
-        Midi(program, portname)
+        midi = Midi(program, portname)
 
     if record.filename:
         record.load()
