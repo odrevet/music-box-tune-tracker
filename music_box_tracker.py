@@ -9,10 +9,15 @@ import curses
 import curses.textpad
 from curses.textpad import rectangle
 
-if "mido" in sys.modules:
+try:
     from midi import Midi
-#if "playsound" in sys.modules:
-from playsound import playsound
+except ImportError:
+    pass
+
+try:
+    from playsound import playsound
+except ImportError:
+    pass
 
 import const
 from record import Record
@@ -22,8 +27,7 @@ from input import Input
 def play_note(note, wav, midi=None):
     if wav == False and "mido" in sys.modules:
         midi.play_note(note)
-    #elif "playsound" in sys.modules:
-    else:
+    elif "playsound" in sys.modules:
         threading.Thread(
             target=playsound, args=(f"wav/{note}.wav",), daemon=True
         ).start()
