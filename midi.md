@@ -46,9 +46,7 @@ python music_box_tracker.py --port 'TiMidity port 0'
 
 # Convert .mid from musicboxmaniacs to .fpr
 
-The `maniacs_mid_to_fpr.py` program can convert .mid file from https://musicboxmaniacs.com/
-
-It can only convert .mid designed for the `Kikkerland 15 music box`
+The `maniacs_mid_to_fpr.py` program can convert `.mid` designed for the `Kikkerland 15 music box` from https://musicboxmaniacs.com/ into `.fpr`
 
 ```
 usage: maniacs_mid_to_fpr.py [-h] [--mid MID] [--fpr FPR]
