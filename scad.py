@@ -80,7 +80,7 @@ class Pin:
     __outer = None
     __angle = None
     __is_second_side = None
-    __beat_count = 86
+    __beat_count = const.BEAT_COUNT
 
     def __init__(self, inner, outer, is_second_side, beat_count):
         self.__inner = inner
