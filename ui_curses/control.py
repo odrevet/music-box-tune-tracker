@@ -15,7 +15,7 @@ except ImportError:
 
 from play import play_note
 import const
-
+import ui_curses.const
 
 def run_curses(stdscr, input, midi, audio):
     cursor_y = input.start_y + input.offset_x
@@ -23,10 +23,10 @@ def run_curses(stdscr, input, midi, audio):
 
     curses.start_color()
     curses.use_default_colors()
-    curses.init_pair(const.PAIR_NOTE, curses.COLOR_RED, curses.COLOR_YELLOW)
-    curses.init_pair(const.PAIR_INPUT_A, -1, curses.COLOR_CYAN)
-    curses.init_pair(const.PAIR_INPUT_B, -1, curses.COLOR_BLACK)
-    curses.init_pair(const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
+    curses.init_pair(ui_curses.const.PAIR_NOTE, curses.COLOR_RED, curses.COLOR_YELLOW)
+    curses.init_pair(ui_curses.const.PAIR_INPUT_A, -1, curses.COLOR_CYAN)
+    curses.init_pair(ui_curses.const.PAIR_INPUT_B, -1, curses.COLOR_BLACK)
+    curses.init_pair(ui_curses.const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
     record = input.record
     input.window = stdscr

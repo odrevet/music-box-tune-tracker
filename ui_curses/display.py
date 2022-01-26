@@ -1,9 +1,9 @@
 import curses
 from curses.textpad import rectangle
 import const
+import ui_curses.const
 
-
-class Input:
+class CursesDisplay:
     start_y = 0
     start_x = 0
     tracks_count = const.TRACK_COUNT
@@ -39,7 +39,7 @@ class Input:
 
             cursor_on_current_index = cursor_x - 1 == beat_index_with_offset
             if cursor_on_current_index:
-                self.window.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
+                self.window.attron(curses.color_pair(ui_curses.const.PAIR_HIGHLIGHT))
 
             for beat_index_str_index in range(len(beat_index_with_offset_display)):
                 self.window.addstr(
@@ -49,7 +49,7 @@ class Input:
                 )
 
             if cursor_on_current_index:
-                self.window.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
+                self.window.attroff(curses.color_pair(ui_curses.const.PAIR_HIGHLIGHT))
 
     def draw_partition(self):
         """Read parition and populate the screen"""
@@ -74,15 +74,15 @@ class Input:
                     if self.record.has_note(
                         beat_index + self.display_from, track_index
                     ):
-                        attr = curses.color_pair(const.PAIR_NOTE)
+                        attr = curses.color_pair(ui_curses.const.PAIR_NOTE)
                         ch = NOTE_CH
                     else:
                         ch = EMPTY_CH
                         pair = None
                         if beat_index % 2 == 0:
-                            pair = const.PAIR_INPUT_A
+                            pair = ui_curses.const.PAIR_INPUT_A
                         else:
-                            pair = const.PAIR_INPUT_B
+                            pair = ui_curses.const.PAIR_INPUT_B
                         attr = curses.color_pair(pair)
 
                     self.window.attron(attr)
@@ -144,10 +144,10 @@ class Input:
         for track_index in range(0, self.tracks_count):
             cursor_on_current_tone = cursor_y - 1 == track_index
             if cursor_on_current_tone:
-                self.window.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
+                self.window.attron(curses.color_pair(ui_curses.const.PAIR_HIGHLIGHT))
             self.__draw_tone(track_index, tones[track_index])
             if cursor_on_current_tone:
-                self.window.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
+                self.window.attroff(curses.color_pair(ui_curses.const.PAIR_HIGHLIGHT))
 
     def can_move(self, y, x):
         return (

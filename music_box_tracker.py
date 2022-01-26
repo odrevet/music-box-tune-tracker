@@ -18,8 +18,8 @@ except ImportError:
 
 import const
 from record import Record
-from input import Input
-from ui_curses import run_curses
+from ui_curses.display import CursesDisplay
+from ui_curses.control import run_curses
 
 if __name__ == "__main__":
     record = Record(0, const.TRACK_COUNT)
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     else:
         record.filename = record.title + ".fpr"
 
-    input = Input(record)
+    input = CursesDisplay(record)
     if args.low:
         input.tone_descending = False
 
