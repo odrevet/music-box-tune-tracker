@@ -14,8 +14,8 @@ except ImportError:
     pass
 
 from play import play_note
-import const
 import ui_curses.const
+
 
 def run_curses(stdscr, input, midi, audio):
     cursor_y = input.start_y + input.offset_x
@@ -109,8 +109,8 @@ def run_curses(stdscr, input, midi, audio):
             x = input.display_from + cursor_x - 1
             y = cursor_y - 1
 
-            if x >= record.beats_count: 
-                record.resize_beats(x+1)
+            if x >= record.beats_count:
+                record.resize_beats(x + 1)
 
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
