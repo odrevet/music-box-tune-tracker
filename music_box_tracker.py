@@ -56,7 +56,7 @@ if __name__ == "__main__":
         sys.exit("Wav backend selected but playsound package not found. ")
 
     midi = None
-    if args.audio == "midi" and "mido" in sys.modules and "rtmidi" in sys.modules:
+    if "mido" in sys.modules and "rtmidi" in sys.modules:
         program = 10
         portname = ""
         if args.program:
