@@ -34,13 +34,13 @@ class CursesDisplay:
     def draw_beat_index(self, cursor_x):
         for beat_index in range(0, self.beats_count):
             y = self.start_y + self.offset_y + self.tracks_count + 1
-            beat_index_with_offset = beat_index + self.display_from
-            beat_index_with_offset_display = str(beat_index_with_offset + 1)
+            beat_index_with_offset_display = str(beat_index + self.display_from + 1)
 
-            cursor_on_current_index = cursor_x - 1 == beat_index_with_offset
+            cursor_on_current_index = cursor_x - 1 == beat_index
             if cursor_on_current_index:
                 self.window.attron(curses.color_pair(ui_curses.const.PAIR_HIGHLIGHT))
 
+            # Vertical print of beat indexes
             for beat_index_str_index in range(len(beat_index_with_offset_display)):
                 self.window.addstr(
                     y + beat_index_str_index,
