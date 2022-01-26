@@ -1,11 +1,10 @@
 import os
 
 import mido
-from mido import MidiFile
 
 import const
 
-class Midi: 
+class Midi:
     program = 10
     portname = None
     port = None
@@ -55,7 +54,7 @@ class Midi:
         beat_index = 0
         track_index = 0
 
-        for msg in MidiFile(filename):
+        for msg in mido.MidiFile(filename):
             if not msg.is_meta:
                 if msg.type == "note_on":
                     track_index = record.NOTES.index(msg.note)
