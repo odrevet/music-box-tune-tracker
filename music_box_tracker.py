@@ -26,16 +26,16 @@ from record import Record
 from input import Input
 
 
-def play_note(note, wav, midi=None):
-    if wav == False and "mido" in sys.modules:
+def play_note(note, audio, midi=None):
+    if audio == "midi" and "mido" in sys.modules:
         midi.play_note(note)
-    elif "playsound" in sys.modules:
+    elif audio == "wav" and "playsound" in sys.modules:
         threading.Thread(
             target=playsound, args=(f"wav/{note}.wav",), daemon=True
         ).start()
 
 
-def main(stdscr, input, midi, wav):
+def main(stdscr, input, midi, audio):
     cursor_y = input.start_y + input.offset_x
     cursor_x = input.start_x + input.offset_y
 
@@ -134,13 +134,13 @@ def main(stdscr, input, midi, wav):
             track_index = cursor_y - (input.start_y + input.offset_y)
             if input.tone_descending:
                 track_index = input.tracks_count - 1 - track_index
-            play_note(record.NOTES[track_index], wav, midi)
+            play_note(record.NOTES[track_index], audio, midi)
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)
             beats = record.get_beats(cursor_x - 1)
             for track_index in range(len(beats)):
                 if beats[track_index]:
-                    play_note(record.NOTES[track_index], wav, midi)
+                    play_note(record.NOTES[track_index], audio, midi)
         elif ch == ord("p"):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
@@ -148,7 +148,7 @@ def main(stdscr, input, midi, wav):
                 input.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(
-                    target=play, args=(stdscr, wav, midi, record, input)
+                    target=play, args=(stdscr, audio, midi, record, input)
                 )
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
@@ -166,7 +166,7 @@ def main(stdscr, input, midi, wav):
         thread_player.join()
 
 
-def play(stdscr, wav, midi, record, input):
+def play(stdscr, audio, midi, record, input):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
     PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y
@@ -177,7 +177,7 @@ def play(stdscr, wav, midi, record, input):
             return
         for track_index in range(input.tracks_count):
             if record.has_note(beat_index, track_index):
-                play_note(record.NOTES[track_index], wav, midi)
+                play_note(record.NOTES[track_index], audio, midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
 
         # update progress indicator
@@ -200,12 +200,11 @@ if __name__ == "__main__":
         "--low", help="display low pitch notes first", action="store_true"
     )
     parser.add_argument(
-        "--wav",
-        dest="wav",
-        action="store_true",
-        help="WAV audio backend",
+        "--audio",
+        choices=['wav', 'midi'],
+        help="use wav or midi as audio backend",
     )
-    parser.set_defaults(wav=False)
+    parser.set_defaults(audio="wav")
 
     # Midi related arguments
     if "mido" in sys.modules:
@@ -221,11 +220,11 @@ if __name__ == "__main__":
     if args.title:
         record.title = args.title
 
-    if args.wav == True and "playsound" not in sys.modules:
+    if args.audio == "wav" and "playsound" not in sys.modules:
         sys.exit("Wav backend select but playsound package notfound. ")
 
     midi = None
-    if "mido" in sys.modules and "rtmidi" in sys.modules:
+    if args.audio == "midi" and "mido" in sys.modules and "rtmidi" in sys.modules:
         program = 10
         portname = ""
         if args.program:
@@ -250,6 +249,6 @@ if __name__ == "__main__":
         input.tone_descending = False
 
     try:
-        curses.wrapper(main, input, midi, args.wav)
+        curses.wrapper(main, input, midi, args.audio)
     except curses.error:
         sys.exit("Error when drawing to terminal (is the terminal too small ? )")

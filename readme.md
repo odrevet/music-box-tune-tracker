@@ -39,7 +39,7 @@ optional arguments:
   --fpr FPR          .fpr file to open
   --title TITLE      set the title of a new tune
   --low              display low pitch notes first
-  --wav              WAV audio backend (only available if `playsound` package is installed)
+  --audio {wav,midi}  use wav or midi as audio backend (require the `playsound` package)
 ```
 
 
