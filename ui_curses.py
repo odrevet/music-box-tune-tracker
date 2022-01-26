@@ -5,8 +5,6 @@ import threading
 import time
 
 import curses
-import curses.textpad
-from curses.textpad import rectangle
 
 try:
     import mido
