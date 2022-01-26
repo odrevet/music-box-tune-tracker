@@ -10,6 +10,8 @@ import curses.textpad
 from curses.textpad import rectangle
 
 try:
+    import mido
+    import rtmidi
     from midi import Midi
 except ImportError:
     pass
@@ -219,8 +221,11 @@ if __name__ == "__main__":
     if args.title:
         record.title = args.title
 
+    if args.wav == True and "playsound" not in sys.modules:
+        sys.exit("Wav backend select but playsound package notfound. ")
+
     midi = None
-    if "mido" in sys.modules:
+    if "mido" in sys.modules and "rtmidi" in sys.modules:
         program = 10
         portname = ""
         if args.program:
