@@ -30,6 +30,7 @@ def run_curses(stdscr, input, midi, audio):
 
     record = input.record
     input.window = stdscr
+    input.set_size()
     input.draw(cursor_x, cursor_y)
 
     # edit box
@@ -59,22 +60,22 @@ def run_curses(stdscr, input, midi, audio):
             next_x = cursor_x - 1
             if input.can_move(cursor_y, next_x):
                 cursor_x = next_x
+                input.draw_beat_index(cursor_x)
                 stdscr.move(cursor_y, cursor_x)
             elif input.display_from > 0:
                 input.display_from -= 1
-                input.draw_partition()
-                input.draw_player_start_at()
-                input.draw_beat_index()
+                stdscr.erase()
+                input.draw(cursor_x, cursor_y)
         elif ch == curses.KEY_RIGHT:
             next_x = cursor_x + 1
             if input.can_move(cursor_y, next_x):
                 cursor_x = next_x
+                input.draw_beat_index(cursor_x)
                 stdscr.move(cursor_y, cursor_x)
-            elif input.display_from + cursor_x < record.beats_count:
+            else:
                 input.display_from += 1
-                input.draw_partition()
-                input.draw_player_start_at()
-                input.draw_beat_index()
+                stdscr.erase()
+                input.draw(cursor_x, cursor_y)
         elif ch == ord("x"):
             if "mido" in sys.modules:
                 midi.export_to_mid(record)
@@ -107,6 +108,10 @@ def run_curses(stdscr, input, midi, audio):
         elif ch == ord(" "):
             x = input.display_from + cursor_x - 1
             y = cursor_y - 1
+
+            if x >= record.beats_count: 
+                record.resize_beats(x+1)
+
             if input.tone_descending:
                 y = input.tracks_count - 1 - y
             record.reverse_note(x, y)
@@ -142,6 +147,10 @@ def run_curses(stdscr, input, midi, audio):
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("q"):
             break
+        elif ch == curses.KEY_RESIZE:
+            input.set_size()
+            stdscr.erase()
+            input.draw(cursor_x, cursor_y)
 
     if thread_player is not None and thread_player.is_alive():
         thread_player.do_run = False

@@ -7,7 +7,7 @@ class Input:
     start_y = 0
     start_x = 0
     tracks_count = const.TRACK_COUNT
-    beats_count = 86
+    beats_count = 0
     offset_x = 1
     offset_y = 1
     player_start_at = 0
@@ -17,11 +17,12 @@ class Input:
 
     display_from = 0
 
-    def __init__(self, record=None, window=None):
+    def __init__(self, record=None):
         self.record = record
-        if record and self.beats_count > record.beats_count:
-            self.beats_count = record.beats_count
-        self.window = window
+
+    def set_size(self):
+        _, cols = self.window.getmaxyx()
+        self.beats_count = int(cols) - 17
 
     def __draw_tone(self, track_index, tone_str):
         self.window.addstr(
@@ -30,20 +31,28 @@ class Input:
             tone_str,
         )
 
-    def draw_beat_index(self):
+    def draw_beat_index(self, cursor_x):
         for beat_index in range(0, self.beats_count):
             y = self.start_y + self.offset_y + self.tracks_count + 1
-            beat_index_str = str(beat_index + 1 + self.display_from)
-            for beat_index_str_index in range(len(beat_index_str)):
+            beat_index_with_offset = beat_index + self.display_from
+            beat_index_with_offset_display = str(beat_index_with_offset + 1)
+
+            cursor_on_current_index = cursor_x - 1 == beat_index_with_offset
+            if cursor_on_current_index:
+                self.window.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
+
+            for beat_index_str_index in range(len(beat_index_with_offset_display)):
                 self.window.addstr(
                     y + beat_index_str_index,
                     self.start_x + self.offset_x + beat_index,
-                    beat_index_str[beat_index_str_index],
+                    beat_index_with_offset_display[beat_index_str_index],
                 )
+
+            if cursor_on_current_index:
+                self.window.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
     def draw_partition(self):
         """Read parition and populate the screen"""
-        # what is displayed
         NOTE_CH = "•"
         EMPTY_CH = "_"
 
@@ -54,26 +63,31 @@ class Input:
                     self.start_y + self.offset_y + track_index,
                     self.start_x + self.offset_x + beat_index,
                 )
-                attr = None
-                ch = None
+
                 if self.tone_descending:
                     track_index = self.tracks_count - 1 - track_index
 
-                if self.record.has_note(self.display_from + beat_index, track_index):
-                    attr = curses.color_pair(const.PAIR_NOTE)
-                    ch = NOTE_CH
-                else:
-                    ch = EMPTY_CH
-                    pair = None
-                    if beat_index % 2 == 0:
-                        pair = const.PAIR_INPUT_A
-                    else:
-                        pair = const.PAIR_INPUT_B
-                    attr = curses.color_pair(pair)
+                attr = None
+                ch = None
 
-                self.window.attron(attr)
-                self.window.addch(ch)
-                self.window.attroff(attr)
+                if beat_index + self.display_from < self.record.beats_count:
+                    if self.record.has_note(
+                        beat_index + self.display_from, track_index
+                    ):
+                        attr = curses.color_pair(const.PAIR_NOTE)
+                        ch = NOTE_CH
+                    else:
+                        ch = EMPTY_CH
+                        pair = None
+                        if beat_index % 2 == 0:
+                            pair = const.PAIR_INPUT_A
+                        else:
+                            pair = const.PAIR_INPUT_B
+                        attr = curses.color_pair(pair)
+
+                    self.window.attron(attr)
+                    self.window.addch(ch)
+                    self.window.attroff(attr)
 
     def draw_player_start_at(self):
         y = self.tracks_count + self.offset_y + self.start_y
@@ -102,7 +116,7 @@ class Input:
         self.draw_partition()
         self.draw_player_start_at()
 
-        self.draw_beat_index()
+        self.draw_beat_index(cursor_x)
 
         # draw tones
         tones = [
@@ -128,10 +142,11 @@ class Input:
             tones.reverse()
 
         for track_index in range(0, self.tracks_count):
-            if cursor_y - 1 == track_index:
+            cursor_on_current_tone = cursor_y - 1 == track_index
+            if cursor_on_current_tone:
                 self.window.attron(curses.color_pair(const.PAIR_HIGHLIGHT))
             self.__draw_tone(track_index, tones[track_index])
-            if cursor_y - 1 == track_index:
+            if cursor_on_current_tone:
                 self.window.attroff(curses.color_pair(const.PAIR_HIGHLIGHT))
 
     def can_move(self, y, x):

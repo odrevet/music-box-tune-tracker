@@ -73,9 +73,6 @@ if __name__ == "__main__":
     else:
         record.filename = record.title + ".fpr"
 
-    if record.beats_count < const.BEAT_COUNT:
-        record.resize_beats(const.BEAT_COUNT)
-
     input = Input(record)
     if args.low:
         input.tone_descending = False
