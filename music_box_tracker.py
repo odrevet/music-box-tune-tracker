@@ -221,7 +221,7 @@ if __name__ == "__main__":
         record.title = args.title
 
     if args.audio == "wav" and "playsound" not in sys.modules:
-        sys.exit("Wav backend select but playsound package notfound. ")
+        sys.exit("Wav backend selected but playsound package not found. ")
 
     midi = None
     if args.audio == "midi" and "mido" in sys.modules and "rtmidi" in sys.modules:
