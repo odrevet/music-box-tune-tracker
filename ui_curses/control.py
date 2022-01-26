@@ -17,9 +17,9 @@ from play import play_note
 import ui_curses.const
 
 
-def run_curses(stdscr, input, midi, audio):
-    cursor_y = input.start_y + input.offset_x
-    cursor_x = input.start_x + input.offset_y
+def run_curses(stdscr, display, midi, audio):
+    cursor_y = display.start_y + display.offset_x
+    cursor_x = display.start_x + display.offset_y
 
     curses.start_color()
     curses.use_default_colors()
@@ -28,10 +28,10 @@ def run_curses(stdscr, input, midi, audio):
     curses.init_pair(ui_curses.const.PAIR_INPUT_B, -1, curses.COLOR_BLACK)
     curses.init_pair(ui_curses.const.PAIR_HIGHLIGHT, curses.COLOR_RED, -1)
 
-    record = input.record
-    input.window = stdscr
-    input.set_size()
-    input.draw(cursor_x, cursor_y)
+    record = display.record
+    display.window = stdscr
+    display.set_size()
+    display.draw(cursor_x, cursor_y)
 
     # edit box
     editwin = curses.newwin(1, 79, 20, 1)
@@ -46,81 +46,81 @@ def run_curses(stdscr, input, midi, audio):
 
         if ch == curses.KEY_UP:
             next_y = cursor_y - 1
-            if input.can_move(next_y, cursor_x):
+            if display.can_move(next_y, cursor_x):
                 cursor_y = next_y
-                input.draw(cursor_x, cursor_y)
+                display.draw(cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_DOWN:
             next_y = cursor_y + 1
-            if input.can_move(next_y, cursor_x):
+            if display.can_move(next_y, cursor_x):
                 cursor_y = next_y
-                input.draw(cursor_x, cursor_y)
+                display.draw(cursor_x, cursor_y)
                 stdscr.move(cursor_y, cursor_x)
         elif ch == curses.KEY_LEFT:
             next_x = cursor_x - 1
-            if input.can_move(cursor_y, next_x):
+            if display.can_move(cursor_y, next_x):
                 cursor_x = next_x
-                input.draw_beat_index(cursor_x)
+                display.draw_beat_index(cursor_x)
                 stdscr.move(cursor_y, cursor_x)
-            elif input.display_from > 0:
-                input.display_from -= 1
+            elif display.display_from > 0:
+                display.display_from -= 1
                 stdscr.erase()
-                input.draw(cursor_x, cursor_y)
+                display.draw(cursor_x, cursor_y)
         elif ch == curses.KEY_RIGHT:
             next_x = cursor_x + 1
-            if input.can_move(cursor_y, next_x):
+            if display.can_move(cursor_y, next_x):
                 cursor_x = next_x
-                input.draw_beat_index(cursor_x)
+                display.draw_beat_index(cursor_x)
                 stdscr.move(cursor_y, cursor_x)
             else:
-                input.display_from += 1
+                display.display_from += 1
                 stdscr.erase()
-                input.draw(cursor_x, cursor_y)
+                display.draw(cursor_x, cursor_y)
         elif ch == ord("x"):
             if "mido" in sys.modules:
                 midi.export_to_mid(record)
         elif ch == ord("o"):
-            input.player_start_at_value(input.display_from + cursor_x - 1)
-            input.draw(cursor_x, cursor_y)
+            display.player_start_at_value(display.display_from + cursor_x - 1)
+            display.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("u"):
-            input.player_start_at_dec()
-            input.draw(cursor_x, cursor_y)
+            display.player_start_at_dec()
+            display.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("i"):
-            input.player_start_at_inc()
-            input.draw(cursor_x, cursor_y)
+            display.player_start_at_inc()
+            display.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("+"):
             record.right_shift(cursor_x - 1)
-            input.draw_partition()
+            display.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("-"):
             record.left_shift(cursor_x - 1)
-            input.draw_partition()
+            display.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("e"):
             box.edit()
             title = box.gather()
-            input.record.title = title
-            input.draw(cursor_x, cursor_y)
+            display.record.title = title
+            display.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord(" "):
-            x = input.display_from + cursor_x - 1
+            x = display.display_from + cursor_x - 1
             y = cursor_y - 1
 
             if x >= record.beats_count:
                 record.resize_beats(x + 1)
 
-            if input.tone_descending:
-                y = input.tracks_count - 1 - y
+            if display.tone_descending:
+                y = display.tracks_count - 1 - y
             record.reverse_note(x, y)
-            input.draw_partition()
+            display.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("t"):
-            track_index = cursor_y - (input.start_y + input.offset_y)
-            if input.tone_descending:
-                track_index = input.tracks_count - 1 - track_index
+            track_index = cursor_y - (display.start_y + display.offset_y)
+            if display.tone_descending:
+                track_index = display.tracks_count - 1 - track_index
             play_note(record.NOTES[track_index], audio, midi)
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)
@@ -132,10 +132,10 @@ def run_curses(stdscr, input, midi, audio):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False
                 thread_player.join()
-                input.draw(cursor_x, cursor_y)
+                display.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(
-                    target=play, args=(stdscr, audio, midi, record, input)
+                    target=play, args=(stdscr, audio, midi, record, display)
                 )
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
@@ -143,38 +143,38 @@ def run_curses(stdscr, input, midi, audio):
             record.save()
         elif ch == ord("l"):
             record.load()
-            input.draw(cursor_x, cursor_y)
+            display.draw(cursor_x, cursor_y)
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("q"):
             break
         elif ch == curses.KEY_RESIZE:
-            input.set_size()
+            display.set_size()
             stdscr.erase()
-            input.draw(cursor_x, cursor_y)
+            display.draw(cursor_x, cursor_y)
 
     if thread_player is not None and thread_player.is_alive():
         thread_player.do_run = False
         thread_player.join()
 
 
-def play(stdscr, audio, midi, record, input):
+def play(stdscr, audio, midi, record, display):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
-    PROGRESS_INDICATOR_Y = input.tracks_count + input.offset_y + input.start_y
+    PROGRESS_INDICATOR_Y = display.tracks_count + display.offset_y + display.start_y
 
-    for beat_index in range(input.player_start_at, record.beats_count):
+    for beat_index in range(display.player_start_at, record.beats_count):
         if getattr(t, "do_run", True) == False:
-            stdscr.hline(PROGRESS_INDICATOR_Y, 0, " ", input.beats_count)
+            stdscr.hline(PROGRESS_INDICATOR_Y, 0, " ", display.beats_count)
             return
-        for track_index in range(input.tracks_count):
+        for track_index in range(display.tracks_count):
             if record.has_note(beat_index, track_index):
                 play_note(record.NOTES[track_index], audio, midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
 
         # update progress indicator
-        progress_indicator_x = beat_index + input.offset_x - input.display_from
-        if progress_indicator_x <= input.beats_count:
+        progress_indicator_x = beat_index + display.offset_x - display.display_from
+        if progress_indicator_x <= display.beats_count:
             stdscr.move(PROGRESS_INDICATOR_Y, progress_indicator_x)
             stdscr.addch("△")
             stdscr.refresh()
-    stdscr.hline(PROGRESS_INDICATOR_Y, 0, " ", input.beats_count + input.offset_x)
+    stdscr.hline(PROGRESS_INDICATOR_Y, 0, " ", display.beats_count + display.offset_x)

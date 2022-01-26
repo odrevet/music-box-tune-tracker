@@ -73,11 +73,11 @@ if __name__ == "__main__":
     else:
         record.filename = record.title + ".fpr"
 
-    input = CursesDisplay(record)
+    display = CursesDisplay(record)
     if args.low:
-        input.tone_descending = False
+        display.tone_descending = False
 
     try:
-        curses.wrapper(run_curses, input, midi, args.audio)
+        curses.wrapper(run_curses, display, midi, args.audio)
     except curses.error:
-        sys.exit("Error when drawing to terminal (is the terminal too small ? )")
+        sys.exit("Error when drawing to terminal (terminal too small ? )")
