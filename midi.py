@@ -1,6 +1,4 @@
 import os
-from mido import MidiFile, tempo2bpm
-import const
 import math
 
 import mido
@@ -79,13 +77,13 @@ class Midi:
         if bpm is not None:
             speed_ratio = bpm / FPR_BPM
 
-        for msg in MidiFile(filename):
+        for msg in mido.MidiFile(filename):
             if msg.type == "set_tempo":
                 if bpm is not None:
                     continue
 
                 ms_per_beat = msg.tempo
-                bpm = tempo2bpm(ms_per_beat)
+                bpm = mido.tempo2bpm(ms_per_beat)
                 speed_ratio = bpm / FPR_BPM
 
                 continue
