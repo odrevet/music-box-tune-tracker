@@ -45,6 +45,7 @@ if __name__ == "__main__":
         help="use wav or midi as audio backend",
     )
     parser.set_defaults(audio="wav")
+    parser.add_argument("--check-packages", help="Check if optional packages are installed and quit", action="store_true")
 
     # Midi related arguments
     if "mido" in sys.modules:
@@ -67,6 +68,12 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
+    if args.check_packages:
+        print(f"playsound (wav audio backend): {'playsound' in sys.modules}")
+        print(f"mido (midi import/export): {'mido' in sys.modules}")
+        print(f"rtmidi (mido audio backend): {'rtmidi' in sys.modules}")
+        sys.exit()
+
     if args.fpr:
         record.filename = args.fpr
     if args.title:
