@@ -17,13 +17,12 @@ class Midi:
         except:
            self.port = mido.open_output()
 
-        self.port.send(mido.Message("program_change", program=self.program))
-
     def close_port(self):
         self.port.close()
 
     def set_program(self, program):
         self.program = program
+        self.port.send(mido.Message("program_change", program=program))
 
     def play_note(self, note):
         self.port.send(mido.Message("note_on", note=note))
