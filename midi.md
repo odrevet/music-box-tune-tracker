@@ -1,17 +1,33 @@
-With the `mido` library and it's dependancy installed: 
+# Import/Export songs from midi files
+
+With the `mido` package installed: 
+
+```
+pip install mido
+```
+
+More command line functions and shortcuts will be available: 
+
+
+## Extra Shortcut
+`x` key to export to .mid
+
+
+## Extra Command line arguments
+```
+--mid Import song from midi file exported by music box tune tracker
+-- maniacs Improt song from midi files exported from musicboxmaniacs.com
+```
+
+# Play sounds using a Midi software synthesize
+
+To use Midi as an audio backend you will need two extra packages: 
 
 ```
 pip install mido python-rtmidi
 ```
 
-Music Box Tune Tracker has extra functionalities: 
-
-* Import / Export songs to midi
-* Use midi as an audio backend
-
-# Play sounds using a Midi software synthesize
-
-Timidity is a great option, which can be installed under Linux Ubuntu with :
+And a midi synthesizer: Timidity is a great option, which can be installed under Linux Ubuntu with :
 
 ```
  sudo apt install libasound2-dev libjack-dev timidity
@@ -42,17 +58,4 @@ aplaymidi -l
 
 ```
 python music_box_tracker.py --port 'TiMidity port 0'
-```
-
-# Convert .mid from musicboxmaniacs to .fpr
-
-The `maniacs_mid_to_fpr.py` program can convert `.mid` designed for the `Kikkerland 15 music box` from https://musicboxmaniacs.com/ into `.fpr`
-
-```
-usage: maniacs_mid_to_fpr.py [-h] [--mid MID] [--fpr FPR]
-
-optional arguments:
-  -h, --help  show this help message and exit
-  --mid MID   file to import. .mid from musicboxmaniacs.com Kikkerland 15
-  --fpr FPR   fpr file to write
 ```

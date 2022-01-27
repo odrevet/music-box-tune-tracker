@@ -17,15 +17,15 @@ To preview what your music will sound like on a fisher price record, there are t
 * `Wav` playback is the more easy and is recommanded.
 * `Midi` playback will add extra functionalities but will require a little more configurations.  
 
-## WAV playback
+## WAV audio backend
 
 ```
 pip install playsound
 ```
 
-## Midi playback and extra functionalities
+## Midi audio backend and extra functionalities
 
-For more informations about using midi as an audio backend using the `mido` package, see `midi.md`. 
+For more informations about using midi as an audio backend and import/export from midi files, see [midi.md](midi.md). 
 
 # music_box_tracker.py
 
