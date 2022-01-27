@@ -3,8 +3,6 @@ import math
 
 import mido
 
-import const
-
 
 class Midi:
     program = 10
@@ -63,8 +61,6 @@ class Midi:
                     record.set_note(beat_index, track_index, True)
                 if msg.time > 0:
                     beat_index += 1
-            if beat_index >= const.BEAT_COUNT:
-                break
 
     def import_from_mid_maniacs(self, record, filename, bpm):
         FPR_SEC_BETWEEN_BEATS = 0.25
