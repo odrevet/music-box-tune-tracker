@@ -6,6 +6,10 @@ import curses
 
 try:
     import mido
+except ImportError:
+    pass
+
+try:
     import rtmidi
 except ImportError:
     pass
@@ -15,7 +19,11 @@ try:
 except ImportError:
     pass
 
-from midi import Midi
+try:
+    from midi import Midi
+except ImportError:
+    pass
+
 import const
 from record import Record
 from ui_curses.display import CursesDisplay
