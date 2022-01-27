@@ -16,7 +16,9 @@ More command line functions and shortcuts will be available:
 ## Extra Command line arguments
 ```
 --mid Import song from midi file exported by music box tune tracker
--- maniacs Improt song from midi files exported from musicboxmaniacs.com
+--maniacs Import song from midi files exported from musicboxmaniacs.com
+--bpm set bpm
+--program change instruments
 ```
 
 # Play sounds using a Midi software synthesize
