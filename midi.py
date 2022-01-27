@@ -131,4 +131,4 @@ class Midi:
         record.title = os.path.splitext(basename)[0]
         record.comment = f"""Imported from
         {os.path.basename(filename)}
-        ms_per_beat={ms_per_beat} bpm={bpm} ratio={speed_ratio}"""
+        bpm={bpm} ratio={speed_ratio}"""

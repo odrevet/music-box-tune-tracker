@@ -2,6 +2,8 @@ Music box tune tracker. Create or import a tune and turn it into a record for th
 
  `Music Box Tune Tracker` uses the same file format (.fpr) from `Fred Record Player` available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
+For usage, use the `--help` argument. Some arguments are available only if some optional package are installed. 
+
 # Screenshot
 
 <img src="https://github.com/odrevet/music-box-tune-tracker/blob/master/screenshot/screenshot.png" width="6400" height="480" />
@@ -30,26 +32,6 @@ For more informations about using midi as an audio backend and import/export fro
 # music_box_tracker.py
 
 Edit and preview `fpr` files.
-
-## Command line options
-
-```
-optional arguments:
-  -h, --help         show this help message and exit
-  --fpr FPR          .fpr file to open
-  --title TITLE      set the title of a new tune
-  --low              display low pitch notes first
-  --audio {wav,midi}  use wav or midi as audio backend (require the `playsound` package)
-```
-
-
-Opions only available if the `mido` package is installed:
-
-```
-  --port PORT        name of the midi port to use
-  --mid MID          import from .mid file created with music box tune tracker
-  --program PROGRAM  midi instrument code
-```
 
 ## Keys
 

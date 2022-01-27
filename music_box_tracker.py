@@ -40,8 +40,6 @@ if __name__ == "__main__":
 
     # Midi related arguments
     if "mido" in sys.modules:
-        parser.add_argument("--port", help="name of the midi port to use")
-        parser.add_argument("--program", help="midi instrument code")
         parser.add_argument(
             "--mid", help="import from .mid file created with music box tune tracker"
         )
@@ -49,6 +47,16 @@ if __name__ == "__main__":
             "--maniacs",
             help="import from .mid file exported from musicboxmaniacs.com for Kikkerland 15",
         )
+        parser.add_argument(
+            "--bpm",
+            help="bpm for maniacs midi import",
+        )
+
+
+        if "rtmidi" in sys.modules:
+            parser.add_argument("--port", help="name of the midi port to use")
+            parser.add_argument("--program", help="midi instrument code")
+
 
     args = parser.parse_args()
     if args.fpr:
@@ -82,7 +90,11 @@ if __name__ == "__main__":
         if args.mid is not None:
             midi.import_from_mid(record, args.mid)
         elif args.maniacs is not None:
-            midi.import_from_mid_maniacs(record, args.maniacs, None)
+            bpm = None
+            if args.bpm:
+                bpm = int(args.bpm)
+
+            midi.import_from_mid_maniacs(record, args.maniacs, bpm)
     else:
         record.filename = record.title + ".fpr"
 
