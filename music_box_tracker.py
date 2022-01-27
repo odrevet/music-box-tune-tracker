@@ -6,7 +6,7 @@ import curses
 
 try:
     import mido
-    import rtmidi
+    #import rtmidi
     from midi import Midi
 except ImportError:
     pass
@@ -45,6 +45,9 @@ if __name__ == "__main__":
         parser.add_argument(
             "--mid", help="import from .mid file created with music box tune tracker"
         )
+        parser.add_argument(
+            "--maniacs", help="import from .mid file exported from musicboxmaniacs.com for Kikkerland 15"
+        )
 
     args = parser.parse_args()
     if args.fpr:
@@ -56,7 +59,7 @@ if __name__ == "__main__":
         sys.exit("Wav backend selected but playsound package not found. ")
 
     midi = None
-    if "mido" in sys.modules and "rtmidi" in sys.modules:
+    if "mido" in sys.modules: # and "rtmidi" in sys.modules:
         program = 10
         portname = ""
         if args.program:
@@ -68,8 +71,11 @@ if __name__ == "__main__":
 
     if record.filename:
         record.load()
-    elif "mido" in sys.modules and args.mid is not None:
-        midi.import_from_mid(record, args.mid)
+    elif "mido" in sys.modules:
+        if args.mid is not None:
+            midi.import_from_mid(record, args.mid)
+        elif args.maniacs is not None: 
+            midi.import_from_mid_maniacs(record, args.maniacs, None)
     else:
         record.filename = record.title + ".fpr"
 
