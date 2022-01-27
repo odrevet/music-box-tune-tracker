@@ -6,8 +6,7 @@ import curses
 
 try:
     import mido
-    #import rtmidi
-    from midi import Midi
+    import rtmidi
 except ImportError:
     pass
 
@@ -16,6 +15,7 @@ try:
 except ImportError:
     pass
 
+from midi import Midi
 import const
 from record import Record
 from ui_curses.display import CursesDisplay
@@ -46,7 +46,8 @@ if __name__ == "__main__":
             "--mid", help="import from .mid file created with music box tune tracker"
         )
         parser.add_argument(
-            "--maniacs", help="import from .mid file exported from musicboxmaniacs.com for Kikkerland 15"
+            "--maniacs",
+            help="import from .mid file exported from musicboxmaniacs.com for Kikkerland 15",
         )
 
     args = parser.parse_args()
@@ -56,25 +57,31 @@ if __name__ == "__main__":
         record.title = args.title
 
     if args.audio == "wav" and "playsound" not in sys.modules:
-        sys.exit("Wav backend selected but playsound package not found. ")
+        sys.exit("Wav audio backend selected but playsound package not found. ")
+
+    if args.audio == "midi" and ("mido" not in sys.modules or "rtmidi" not in sys.modules):
+        sys.exit("Midi audio backend selected but mido and rtmidi packages not found. ")
 
     midi = None
-    if "mido" in sys.modules: # and "rtmidi" in sys.modules:
-        program = 10
-        portname = ""
-        if args.program:
-            program = int(args.program)
-        if args.port:
-            portname = args.port
+    if "mido" in sys.modules:
+        midi = Midi()
 
-        midi = Midi(program, portname)
+        if args.audio == "midi" and "rtmidi" in sys.modules:
+            program = 10
+            portname = ""
+            if args.program:
+                program = int(args.program)
+            if args.port:
+                portname = args.port
+            midi.open_port(portname)
+            midi.set_program(program)
 
     if record.filename:
         record.load()
     elif "mido" in sys.modules:
         if args.mid is not None:
             midi.import_from_mid(record, args.mid)
-        elif args.maniacs is not None: 
+        elif args.maniacs is not None:
             midi.import_from_mid_maniacs(record, args.maniacs, None)
     else:
         record.filename = record.title + ".fpr"
@@ -85,5 +92,7 @@ if __name__ == "__main__":
 
     try:
         curses.wrapper(run_curses, display, midi, args.audio)
+        if args.audio == "midi" and "rtmidi" in sys.modules:
+            midi.close_port()
     except curses.error:
         sys.exit("Error when drawing to terminal (terminal too small ? )")

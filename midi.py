@@ -1,8 +1,5 @@
 import os
-import sys
-import argparse
 from mido import MidiFile, tempo2bpm
-from record import Record
 import const
 import math
 
@@ -13,24 +10,24 @@ import const
 
 class Midi:
     program = 10
-    portname = None
     port = None
 
-    def __init__(self, program, portname):
-        self.program = program
-        self.portname = portname
-
-        # try:
-        #    self.port = mido.open_output(self.portname)
-        # except:
-        #    self.port = mido.open_output()
-
-    #
-    # self.port.send(mido.Message("program_change", program=self.program))
-
-    def __del__(self):
+    def __init__(self):
         pass
-        # self.port.close()
+
+    def open_port(self, portname):
+        try:
+           self.port = mido.open_output(portname)
+        except:
+           self.port = mido.open_output()
+
+        self.port.send(mido.Message("program_change", program=self.program))
+
+    def close_port(self):
+        self.port.close()
+
+    def set_program(self, program):
+        self.program = program
 
     def play_note(self, note):
         self.port.send(mido.Message("note_on", note=note))
