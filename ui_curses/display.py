@@ -3,6 +3,7 @@ from curses.textpad import rectangle
 import const
 import ui_curses.const
 
+
 class CursesDisplay:
     start_y = 0
     start_x = 0
@@ -171,3 +172,11 @@ class CursesDisplay:
 
     def player_start_at_dec(self):
         self.player_start_at_value(self.player_start_at - 1)
+
+    def update_progress_bar(self, beat_index):
+        y = self.tracks_count + self.offset_y + self.start_y
+        x = beat_index + self.offset_x - self.display_from
+        if x <= self.beats_count:
+            self.window.move(y, x)
+            self.window.addch("△")
+            self.window.refresh()

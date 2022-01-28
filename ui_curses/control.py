@@ -140,8 +140,7 @@ def run_curses(stdscr, display, midi, audio):
                         midi,
                         record,
                         display.player_start_at,
-                        update_progress_bar,
-                        display,
+                        display.update_progress_bar,
                     ),
                 )
                 thread_player.start()
@@ -162,13 +161,3 @@ def run_curses(stdscr, display, midi, audio):
     if thread_player is not None and thread_player.is_alive():
         thread_player.do_run = False
         thread_player.join()
-
-
-def update_progress_bar(display, beat_index):
-    y = display.tracks_count + display.offset_y + display.start_y
-    x = beat_index + display.offset_x - display.display_from
-    if x <= display.beats_count:
-        display.window.move(y, x)
-        display.window.addch("△")
-        display.window.refresh()
-

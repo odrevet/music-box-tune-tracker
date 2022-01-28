@@ -26,7 +26,7 @@ def play_note(note, audio, midi=None):
         ).start()
 
 
-def play(audio, midi, record, start_at, on_note_callback, param):
+def play(audio, midi, record, start_at, on_note_callback):
     t = threading.currentThread()
     FPR_SEC_BETWEEN_BEATS = 0.5
 
@@ -39,4 +39,4 @@ def play(audio, midi, record, start_at, on_note_callback, param):
                 play_note(record.NOTES[track_index], audio, midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
 
-        on_note_callback(param, beat_index)
+        on_note_callback(beat_index)
