@@ -176,6 +176,7 @@ class CursesDisplay:
     def update_progress_bar(self, beat_index):
         y = self.tracks_count + self.offset_y + self.start_y
         x = beat_index + self.offset_x - self.display_from
+        self.window.hline(y, 0, "-", x)
         if x <= self.beats_count:
             self.window.move(y, x)
             self.window.addch("△")
