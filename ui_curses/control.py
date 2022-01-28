@@ -2,7 +2,6 @@
 
 import sys
 import threading
-import time
 
 import curses
 
@@ -13,7 +12,7 @@ try:
 except ImportError:
     pass
 
-from play import play_note
+from sound import play_note, play
 import ui_curses.const
 
 
@@ -135,7 +134,15 @@ def run_curses(stdscr, display, midi, audio):
                 display.draw(cursor_x, cursor_y)
             else:
                 thread_player = threading.Thread(
-                    target=play, args=(stdscr, audio, midi, record, display)
+                    target=play,
+                    args=(
+                        audio,
+                        midi,
+                        record,
+                        display.player_start_at,
+                        update_progress_bar,
+                        display,
+                    ),
                 )
                 thread_player.start()
             stdscr.move(cursor_y, cursor_x)
@@ -157,24 +164,11 @@ def run_curses(stdscr, display, midi, audio):
         thread_player.join()
 
 
-def play(stdscr, audio, midi, record, display):
-    t = threading.currentThread()
-    FPR_SEC_BETWEEN_BEATS = 0.5
-    PROGRESS_INDICATOR_Y = display.tracks_count + display.offset_y + display.start_y
+def update_progress_bar(display, beat_index):
+    y = display.tracks_count + display.offset_y + display.start_y
+    x = beat_index + display.offset_x - display.display_from
+    if x <= display.beats_count:
+        display.window.move(y, x)
+        display.window.addch("△")
+        display.window.refresh()
 
-    for beat_index in range(display.player_start_at, record.beats_count):
-        if getattr(t, "do_run", True) == False:
-            stdscr.hline(PROGRESS_INDICATOR_Y, 0, " ", display.beats_count)
-            return
-        for track_index in range(display.tracks_count):
-            if record.has_note(beat_index, track_index):
-                play_note(record.NOTES[track_index], audio, midi)
-        time.sleep(FPR_SEC_BETWEEN_BEATS)
-
-        # update progress indicator
-        progress_indicator_x = beat_index + display.offset_x - display.display_from
-        if progress_indicator_x <= display.beats_count:
-            stdscr.move(PROGRESS_INDICATOR_Y, progress_indicator_x)
-            stdscr.addch("△")
-            stdscr.refresh()
-    stdscr.hline(PROGRESS_INDICATOR_Y, 0, " ", display.beats_count + display.offset_x)
