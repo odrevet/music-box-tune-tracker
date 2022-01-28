@@ -102,14 +102,14 @@ if __name__ == "__main__":
     if record.filename:
         record.load()
     elif "mido" in sys.modules:
+        bpm = None
+        if args.bpm:
+            bpm = int(args.bpm)
+            
         if args.mid is not None:
-            midi.import_from_mid(record, args.mid)
+            midi.import_from_mid(record, args.mid, bpm, 0)
         elif args.maniacs is not None:
-            bpm = None
-            if args.bpm:
-                bpm = int(args.bpm)
-
-            midi.import_from_mid_maniacs(record, args.maniacs, bpm)
+            midi.import_from_mid(record, args.maniacs, bpm, 12)
     else:
         record.filename = record.title + ".fpr"
 

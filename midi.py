@@ -45,7 +45,7 @@ class Midi:
 
         mid.save(record.title + ".mid")
 
-    def import_from_mid(self, record, filename):
+    def old_mid(self, record, filename):
         record.filename = os.path.splitext(filename)[0] + ".fpr"
         record.title = os.path.basename(filename)
         record.comment = "Imported from " + os.path.basename(filename)
@@ -61,10 +61,9 @@ class Midi:
                 if msg.time > 0:
                     beat_index += 1
 
-    def import_from_mid_maniacs(self, record, filename, bpm):
+    def import_from_mid(self, record, filename, bpm, offset):
         FPR_SEC_BETWEEN_BEATS = 0.25
         FPR_BPM = 60 / FPR_SEC_BETWEEN_BEATS
-        offset = 12
         track_index = 0
         beat_index = 0
         total_time = 0
