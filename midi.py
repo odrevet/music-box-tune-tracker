@@ -45,22 +45,6 @@ class Midi:
 
         mid.save(record.title + ".mid")
 
-    def old_mid(self, record, filename):
-        record.filename = os.path.splitext(filename)[0] + ".fpr"
-        record.title = os.path.basename(filename)
-        record.comment = "Imported from " + os.path.basename(filename)
-
-        beat_index = 0
-        track_index = 0
-
-        for msg in mido.MidiFile(filename):
-            if not msg.is_meta:
-                if msg.type == "note_on":
-                    track_index = record.NOTES.index(msg.note)
-                    record.set_note(beat_index, track_index, True)
-                if msg.time > 0:
-                    beat_index += 1
-
     def import_from_mid(self, record, filename, bpm, offset):
         FPR_SEC_BETWEEN_BEATS = 0.25
         FPR_BPM = 60 / FPR_SEC_BETWEEN_BEATS
