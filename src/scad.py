@@ -76,17 +76,12 @@ class ExpandedRecord(Record):
 
 
 class Pin:
-    __inner = None
-    __outer = None
-    __angle = None
-    __is_second_side = None
-    __beat_count = const.BEAT_COUNT
-
     def __init__(self, inner, outer, is_second_side, beat_count):
         self.__inner = inner
         self.__outer = outer
         self.__is_second_side = is_second_side
         self.__beat_count = beat_count
+        self.__angle = None
 
     def set_angle(self, track, note):
         HEAD_OFFSET = 2
