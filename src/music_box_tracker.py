@@ -44,7 +44,11 @@ if __name__ == "__main__":
         help="use wav or midi as audio backend",
     )
     parser.set_defaults(audio="wav")
-    parser.add_argument("--check-packages", help="Check if optional packages are installed and quit", action="store_true")
+    parser.add_argument(
+        "--check-packages",
+        help="Check if optional packages are installed and quit",
+        action="store_true",
+    )
 
     # Midi related arguments
     if "mido" in sys.modules:
@@ -57,14 +61,16 @@ if __name__ == "__main__":
         )
         parser.add_argument(
             "--bpm",
-            help="bpm for maniacs midi import",
+            help="bpm of midi import",
         )
-
+        parser.add_argument(
+            "--offset",
+            help="shift tones of midi import",
+        )
 
         if "rtmidi" in sys.modules:
             parser.add_argument("--port", help="name of the midi port to use")
             parser.add_argument("--program", help="midi instrument code")
-
 
     args = parser.parse_args()
     if args.check_packages:
@@ -81,7 +87,9 @@ if __name__ == "__main__":
     if args.audio == "wav" and "playsound" not in sys.modules:
         sys.exit("Wav audio backend selected but playsound package not found. ")
 
-    if args.audio == "midi" and ("mido" not in sys.modules or "rtmidi" not in sys.modules):
+    if args.audio == "midi" and (
+        "mido" not in sys.modules or "rtmidi" not in sys.modules
+    ):
         sys.exit("Midi audio backend selected but mido and rtmidi packages not found. ")
 
     midi = None
@@ -104,11 +112,18 @@ if __name__ == "__main__":
         bpm = None
         if args.bpm:
             bpm = int(args.bpm)
-            
+
+        offset = 0
         if args.mid is not None:
-            midi.import_from_mid(record, args.mid, bpm, 0)
+            if args.offset:
+                offset = int(args.offset)
+            midi.import_from_mid(record, args.mid, bpm, offset)
         elif args.maniacs is not None:
-            midi.import_from_mid(record, args.maniacs, bpm, 12)
+            if args.offset:
+                offset = int(args.offset)
+            else:
+                offset = 12
+            midi.import_from_mid(record, args.maniacs, bpm, offset)
     else:
         record.filename = record.title + ".fpr"
 
