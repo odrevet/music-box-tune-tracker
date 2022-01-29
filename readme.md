@@ -84,4 +84,4 @@ More informations on running Fred Record Player under linux are available in the
 
 * Writing functions by HarlanDMii http://www.thingiverse.com/thing:16193
 
-* and contributors
+* Contributors
