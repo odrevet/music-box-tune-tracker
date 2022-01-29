@@ -76,6 +76,13 @@ the scad file can be use with [OpenScad](https://www.openscad.org) to create a .
 
 Open a scad file then menu Design/Render (F6) then File/Export/Export as STL (F7)
 
+# How to print the name of the song on the disc
+
+The Write.scad and it's dependancies are required to have the title of the tune written on the disc. 
+
+Move the files under writescad (updated version from https://www.thingiverse.com/thing:16193) [where OpenScad can find it](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries).
+
+
 # Thanks
 
 * [FredMurphy](https://github.com/FredMurphy) to have created and shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
