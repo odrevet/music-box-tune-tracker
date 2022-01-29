@@ -21,45 +21,45 @@ class Record:
         ]
         self.beats_count = beats_count
 
-    def has_note(self, beat_index, track_index):
-        return self._partition[track_index][beat_index]
+    def has_note(self, beat_index, tone_index):
+        return self._partition[tone_index][beat_index]
 
-    def set_note(self, beat_index, track_index, value):
-        self._partition[track_index][beat_index] = value
+    def set_note(self, beat_index, tone_index, value):
+        self._partition[tone_index][beat_index] = value
 
-    def get_track(self, track_index):
-        return self._partition[track_index]
+    def get_track(self, tone_index):
+        return self._partition[tone_index]
 
     def get_beats(self, beat_index):
-        return [track_index[beat_index] for track_index in self._partition]
+        return [tone_index[beat_index] for tone_index in self._partition]
 
-    def reverse_note(self, beat_index, track_index):
-        self._partition[track_index][beat_index] = not self._partition[track_index][
+    def reverse_note(self, beat_index, tone_index):
+        self._partition[tone_index][beat_index] = not self._partition[tone_index][
             beat_index
         ]
 
     def left_shift(self, beat_index):
-        for track_index in range(Record.TONES_COUNT):
-            self._partition[track_index].pop(beat_index)
-            self._partition[track_index].append(False)
+        for tone_index in range(Record.TONES_COUNT):
+            self._partition[tone_index].pop(beat_index)
+            self._partition[tone_index].append(False)
         self.beats_count -= 1
 
     def right_shift(self, beat_index):
-        for track_index in range(Record.TONES_COUNT):
-            self._partition[track_index].insert(beat_index, False)
+        for tone_index in range(Record.TONES_COUNT):
+            self._partition[tone_index].insert(beat_index, False)
         self.beats_count += 1
 
     def resize_beats(self, size):
         self.beats_count = size
-        for track_index in range(Record.TONES_COUNT):
-            diff_beat = self.beats_count - len(self._partition[track_index])
+        for tone_index in range(Record.TONES_COUNT):
+            diff_beat = self.beats_count - len(self._partition[tone_index])
             if diff_beat == 0:
                 continue
 
             if diff_beat > 0:
-                self._partition[track_index].extend([False] * diff_beat)
+                self._partition[tone_index].extend([False] * diff_beat)
             elif diff_beat < 0:
-                self._partition[track_index] = self._partition[track_index][:diff_beat]
+                self._partition[tone_index] = self._partition[tone_index][:diff_beat]
 
     def load(self):
         try:
@@ -89,9 +89,9 @@ class Record:
 
     def to_fpr(self):
         output = ""
-        for track_index in range(0, Record.TONES_COUNT):
+        for tone_index in range(0, Record.TONES_COUNT):
             for beat_index in range(0, self.beats_count):
-                has_note = self.has_note(beat_index, track_index)
+                has_note = self.has_note(beat_index, tone_index)
                 output += self.__NOTE_FPR if has_note else self.__EMPTY_FPR
             output += "\n"
         output += self.title + "\n"

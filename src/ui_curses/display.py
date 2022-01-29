@@ -54,8 +54,8 @@ class CursesDisplay:
         NOTE_CH = "•"
         EMPTY_CH = "_"
 
-        tracks_range = range(Record.TONES_COUNT)
-        for track_index in tracks_range:
+        tones_range = range(Record.TONES_COUNT)
+        for track_index in tones_range:
             for beat_index in range(self.beats_count):
                 self.window.move(
                     self.start_y + self.offset_y + track_index,

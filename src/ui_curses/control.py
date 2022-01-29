@@ -117,16 +117,16 @@ def run_curses(stdscr, display, midi, audio):
             display.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("t"):
-            track_index = cursor_y - (display.start_y + display.offset_y)
+            tone_index = cursor_y - (display.start_y + display.offset_y)
             if display.tone_descending:
-                track_index = Record.TONES_COUNT - 1 - track_index
-            play_note(record.NOTES[track_index], audio, midi)
+                tone_index = Record.TONES_COUNT - 1 - tone_index
+            play_note(record.NOTES[tone_index], audio, midi)
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)
             beats = record.get_beats(cursor_x - 1)
-            for track_index in range(len(beats)):
-                if beats[track_index]:
-                    play_note(record.NOTES[track_index], audio, midi)
+            for tone_index in range(len(beats)):
+                if beats[tone_index]:
+                    play_note(record.NOTES[tone_index], audio, midi)
         elif ch == ord("p"):
             if thread_player is not None and thread_player.is_alive():
                 thread_player.do_run = False

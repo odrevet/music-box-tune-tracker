@@ -35,9 +35,9 @@ def play(audio, midi, record, start_at, on_note_callback):
         if getattr(t, "do_run", True) == False:
             return
 
-        for track_index in range(Record.TONES_COUNT):
-            if record.has_note(beat_index, track_index):
-                play_note(record.NOTES[track_index], audio, midi)
+        for tone_index in range(Record.TONES_COUNT):
+            if record.has_note(beat_index, tone_index):
+                play_note(record.NOTES[tone_index], audio, midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
 
         on_note_callback(beat_index)
