@@ -6,6 +6,7 @@ class Record:
     __NOTE_FPR = "+"
     __EMPTY_FPR = "-"
     NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
+    MAX_BEAT = 86
 
     def __init__(self, beats_count, tracks_count):
         self.filename = None
