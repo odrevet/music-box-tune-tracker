@@ -129,34 +129,34 @@ def get_pins(physical_record, is_second_side):
     return pins
 
 
-def to_scad(version, date_time, thickness, record, record_bis=None):
+def to_scad(version, date_time, thickness, record, has_verso=None):
     with open("res/fisher-price-template.scad", "r") as content_file:
         content = content_file.read()
         content = content.replace("{VERSION}", version)
         content = content.replace("{DATE_TIME}", date_time)
         content = content.replace("{THICKNESS}", str(thickness))
-        content = content.replace("{SECOND_SIDE}", "0" if record_bis is None else "1")
+        content = content.replace("{SECOND_SIDE}", "0" if has_verso is None else "1")
 
         indent = "\t" * 2
-        physical_record = PhysicalRecord(Record.MAX_BEAT, record)
-        pins = get_pins(physical_record, False)
+        physical_record_recto = PhysicalRecord(Record.MAX_BEAT, record)
+        pins = get_pins(physical_record_recto, False)
         pin_str = pins_to_str(pins, indent)
 
-        if physical_record.title is not None:
+        if physical_record_recto.title is not None:
             pin_str += (
-                "\n" + indent + 'title("{}",{});\n\n'.format(physical_record.title, "0")
+                "\n" + indent + 'title("{}",{});\n\n'.format(physical_record_recto.title, "0")
             )
 
-        if record_bis is not None:
-            physical_record_bis = PhysicalRecord(Record.MAX_BEAT, record_bis)
-            pins_bis = get_pins(physical_record_bis, True)
+        if has_verso is not None:
+            physical_record_verso = PhysicalRecord(Record.MAX_BEAT, has_verso)
+            pins_bis = get_pins(physical_record_verso, True)
             pin_str += pins_to_str(pins_bis, indent)
 
-            if physical_record_bis.title is not None:
+            if physical_record_verso.title is not None:
                 pin_str += (
                     "\n"
                     + indent
-                    + 'title("{}",{});\n\n'.format(physical_record_bis.title, "1")
+                    + 'title("{}",{});\n\n'.format(physical_record_verso.title, "1")
                 )
 
         content = content.replace("{NOTES}", pin_str)
