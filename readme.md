@@ -2,7 +2,7 @@ Music box tune tracker. Create or import a tune and turn it into a record for th
 
  `Music Box Tune Tracker` uses the same file format (.fpr) from `Fred Record Player` available at https://www.instructables.com/id/3D-printing-records-for-a-Fisher-Price-toy-record-/
 
-For usage, use the `--help` argument. Some arguments are available only if some optional package are installed. 
+For usage, use the `--help` argument. Some arguments are available only if some optional package are installed.
 
 # Screenshot
 
@@ -10,14 +10,14 @@ For usage, use the `--help` argument. Some arguments are available only if some 
 
 # Prerequisites
 
-This software uses `Python` with the `Curses` library for the User Interface. 
+This software uses `Python` with the `Curses` library for the User Interface.
 
-# Optional Dependancies 
+# Optional Dependancies
 
-To preview what your music will sound like on a fisher price record, there are two options: 
+To preview what your music will sound like on a fisher price record, there are two options:
 
 * `Wav` playback is the more easy and is recommanded.
-* `Midi` playback will add extra functionalities but will require a little more configurations.  
+* `Midi` playback will add extra functionalities but will require a little more configurations.
 
 ## WAV audio backend
 
@@ -27,7 +27,7 @@ pip install playsound
 
 ## Midi audio backend and extra functionalities
 
-For more informations about using midi as an audio backend and import/export from midi files, see [midi.md](midi.md). 
+For more informations about using midi as an audio backend and import/export from midi files, see [midi.md](midi.md).
 
 # music_box_tracker.py
 
@@ -70,14 +70,6 @@ optional arguments:
                         side or 5 if two sides
 ```
 
-## How to print the name of the song on the disc
-
-The Write.scad and other files are required to have the title of the tune written on the disc
-
-Head to https://www.thingiverse.com/thing:16193 and clic "DOWNLOAD ALL FILES". Extract the content of Writescad.zip [where OpenScad can find it](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Libraries).
-
-Note: the ' are rendered as ", so in the scad file I replace all ' by ` before rendering.
-
 # Convert .scad to .stl
 
 the scad file can be use with [OpenScad](https://www.openscad.org) to create a .stl file to 3D print the record.
@@ -86,6 +78,10 @@ Open a scad file then menu Design/Render (F6) then File/Export/Export as STL (F7
 
 # Thanks
 
-Thanks to [FredMurphy](https://github.com/FredMurphy) to have created and shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
+* [FredMurphy](https://github.com/FredMurphy) to have created and shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
 
 More informations on running Fred Record Player under linux are available in the [fred_record_player](fred_record_player.md) file
+
+* Writing functions by HarlanDMii http://www.thingiverse.com/thing:16193
+
+* and contributors
