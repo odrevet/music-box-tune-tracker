@@ -1,13 +1,11 @@
 import curses
 from curses.textpad import rectangle
-import const
 import ui_curses.const
-
+from record import Record
 
 class CursesDisplay:
     start_y = 0
     start_x = 0
-    tracks_count = const.TRACK_COUNT
     beats_count = 0
     offset_x = 1
     offset_y = 1
@@ -33,7 +31,7 @@ class CursesDisplay:
 
     def draw_beat_index(self, cursor_x):
         for beat_index in range(0, self.beats_count):
-            y = self.start_y + self.offset_y + self.tracks_count + 1
+            y = self.start_y + self.offset_y + Record.TONES_COUNT + 1
             beat_index_with_offset_display = str(beat_index + self.display_from + 1)
 
             cursor_on_current_index = cursor_x - 1 == beat_index
@@ -56,7 +54,7 @@ class CursesDisplay:
         NOTE_CH = "•"
         EMPTY_CH = "_"
 
-        tracks_range = range(self.tracks_count)
+        tracks_range = range(Record.TONES_COUNT)
         for track_index in tracks_range:
             for beat_index in range(self.beats_count):
                 self.window.move(
@@ -65,7 +63,7 @@ class CursesDisplay:
                 )
 
                 if self.tone_descending:
-                    track_index = self.tracks_count - 1 - track_index
+                    track_index = Record.TONES_COUNT - 1 - track_index
 
                 attr = None
                 ch = None
@@ -90,7 +88,7 @@ class CursesDisplay:
                     self.window.attroff(attr)
 
     def draw_player_start_at(self):
-        y = self.tracks_count + self.offset_y + self.start_y
+        y = Record.TONES_COUNT + self.offset_y + self.start_y
         self.window.hline(y, 0, "_", self.beats_count + self.offset_x)
 
         x = self.player_start_at + self.offset_x - self.display_from
@@ -104,7 +102,7 @@ class CursesDisplay:
             self.window,
             self.start_y,
             self.start_x,
-            self.tracks_count + self.offset_y + self.start_y,
+            Record.TONES_COUNT + self.offset_y + self.start_y,
             self.beats_count + self.offset_x + self.start_x,
         )
 
@@ -141,7 +139,7 @@ class CursesDisplay:
         if self.tone_descending:
             tones.reverse()
 
-        for track_index in range(0, self.tracks_count):
+        for track_index in range(0, Record.TONES_COUNT):
             cursor_on_current_tone = cursor_y - 1 == track_index
             if cursor_on_current_tone:
                 self.window.attron(curses.color_pair(ui_curses.const.PAIR_HIGHLIGHT))
@@ -153,14 +151,14 @@ class CursesDisplay:
         return (
             y > self.start_y
             and x > self.start_x
-            and y < self.tracks_count + self.offset_y
+            and y < Record.TONES_COUNT + self.offset_y
             and x < self.beats_count + self.offset_x
         )
 
     def player_start_at_value(self, value):
         if value < self.record.beats_count and value >= 0:
             self.window.move(
-                self.tracks_count + self.offset_y + 1,
+                Record.TONES_COUNT + self.offset_y + 1,
                 self.player_start_at + self.offset_x,
             )
             self.window.addch(" ")
@@ -173,7 +171,7 @@ class CursesDisplay:
         self.player_start_at_value(self.player_start_at - 1)
 
     def update_progress_bar(self, beat_index):
-        y = self.tracks_count + self.offset_y + self.start_y
+        y = Record.TONES_COUNT + self.offset_y + self.start_y
         x = beat_index + self.offset_x - self.display_from
         self.window.hline(y, 0, "-", x)
         if x <= self.beats_count:

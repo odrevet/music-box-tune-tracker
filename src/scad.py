@@ -41,11 +41,13 @@ TRACK_RADIUS = [
 
 
 class ExpandedRecord(Record):
-    def __init__(self, beats_count, tracks_count, record):
-        super().__init__(beats_count, tracks_count)
+    def __init__(self, beats_count, record):
+        super().__init__(beats_count)
         self.title = record.title
-
-        for track_index in range(record.tracks_count):
+        self._partition = [
+            [False for x in range(beats_count)] for y in range(Record.TRACKS_COUNT)
+        ]
+        for track_index in range(Record.TONES_COUNT):
             track = record.get_track(track_index)
             if track_index < 7:
                 self._partition[track_index] = track.copy()
@@ -115,7 +117,7 @@ def get_pins(expanded_record, is_second_side):
     pins = []
     OVERLAP = 0.2
 
-    for track_index in range(expanded_record.tracks_count):
+    for track_index in range(Record.TRACKS_COUNT):
         inner = (
             TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index % 2 == 0 else 0)
         )
@@ -137,7 +139,7 @@ def to_scad(version, date_time, thickness, record, record_bis=None):
         content = content.replace("{SECOND_SIDE}", "0" if record_bis is None else "1")
 
         indent = "\t" * 2
-        expanded_record = ExpandedRecord(Record.MAX_BEAT, 22, record)
+        expanded_record = ExpandedRecord(Record.MAX_BEAT, record)
         pins = get_pins(expanded_record, False)
         pin_str = pins_to_str(pins, indent)
 
@@ -147,7 +149,7 @@ def to_scad(version, date_time, thickness, record, record_bis=None):
             )
 
         if record_bis is not None:
-            expanded_record_bis = ExpandedRecord(Record.MAX_BEAT, 22, record_bis)
+            expanded_record_bis = ExpandedRecord(Record.MAX_BEAT, record_bis)
             pins_bis = get_pins(expanded_record_bis, True)
             pin_str += pins_to_str(pins_bis, indent)
 

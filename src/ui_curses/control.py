@@ -14,7 +14,7 @@ except ImportError:
 
 from sound import play_note, play
 import ui_curses.const
-
+from record import Record
 
 def run_curses(stdscr, display, midi, audio):
     cursor_y = display.start_y + display.offset_x
@@ -112,14 +112,14 @@ def run_curses(stdscr, display, midi, audio):
                 record.resize_beats(x + 1)
 
             if display.tone_descending:
-                y = display.tracks_count - 1 - y
+                y = Record.TONES_COUNT - 1 - y
             record.reverse_note(x, y)
             display.draw_partition()
             stdscr.move(cursor_y, cursor_x)
         elif ch == ord("t"):
             track_index = cursor_y - (display.start_y + display.offset_y)
             if display.tone_descending:
-                track_index = display.tracks_count - 1 - track_index
+                track_index = Record.TONES_COUNT - 1 - track_index
             play_note(record.NOTES[track_index], audio, midi)
         elif ch == ord("r"):
             stdscr.move(cursor_y, cursor_x)

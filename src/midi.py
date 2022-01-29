@@ -3,6 +3,7 @@ import math
 
 import mido
 
+from record import Record
 
 class Midi:
     program = 10
@@ -33,7 +34,7 @@ class Midi:
         track.append(mido.Message("program_change", program=Midi.program, time=0))
 
         for beat_index in range(record.beats_count):
-            for track_index in range(record.tracks_count):
+            for track_index in range(Record.TONES_COUNT):
                 if record.has_note(beat_index, track_index):
                     track.append(
                         mido.Message("note_on", note=record.NOTES[track_index], time=0)

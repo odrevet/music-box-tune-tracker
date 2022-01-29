@@ -30,7 +30,7 @@ from ui_curses.display import CursesDisplay
 from ui_curses.control import run_curses
 
 if __name__ == "__main__":
-    record = Record(0, const.TRACK_COUNT)
+    record = Record(0)
     parser = argparse.ArgumentParser()
 
     # General arguments

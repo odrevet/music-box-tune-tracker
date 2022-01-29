@@ -7,18 +7,19 @@ class Record:
     __EMPTY_FPR = "-"
     NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
     MAX_BEAT = 86
+    TONES_COUNT = 16
+    TRACKS_COUNT = 22
 
-    def __init__(self, beats_count, tracks_count):
+    def __init__(self, beats_count):
         self.filename = None
         self.title = "Default"
         self.comment = ""
 
         # list of lists of boolean: [track][beat] True indicates a note
         self._partition = [
-            [False for x in range(beats_count)] for y in range(tracks_count)
+            [False for x in range(beats_count)] for y in range(Record.TONES_COUNT)
         ]
         self.beats_count = beats_count
-        self.tracks_count = tracks_count
 
     def has_note(self, beat_index, track_index):
         return self._partition[track_index][beat_index]
@@ -38,19 +39,19 @@ class Record:
         ]
 
     def left_shift(self, beat_index):
-        for track_index in range(self.tracks_count):
+        for track_index in range(Record.TONES_COUNT):
             self._partition[track_index].pop(beat_index)
             self._partition[track_index].append(False)
         self.beats_count -= 1
 
     def right_shift(self, beat_index):
-        for track_index in range(self.tracks_count):
+        for track_index in range(Record.TONES_COUNT):
             self._partition[track_index].insert(beat_index, False)
         self.beats_count += 1
 
     def resize_beats(self, size):
         self.beats_count = size
-        for track_index in range(self.tracks_count):
+        for track_index in range(Record.TONES_COUNT):
             diff_beat = self.beats_count - len(self._partition[track_index])
             if diff_beat == 0:
                 continue
@@ -65,7 +66,7 @@ class Record:
             with open(self.filename) as fp:
                 lineno = 0
                 max_len_line = 0
-                while lineno < self.tracks_count:
+                while lineno < Record.TONES_COUNT:
                     line = fp.readline().rstrip()
                     len_line = len(line)
                     if len_line > max_len_line:
@@ -88,7 +89,7 @@ class Record:
 
     def to_fpr(self):
         output = ""
-        for track_index in range(0, self.tracks_count):
+        for track_index in range(0, Record.TONES_COUNT):
             for beat_index in range(0, self.beats_count):
                 has_note = self.has_note(beat_index, track_index)
                 output += self.__NOTE_FPR if has_note else self.__EMPTY_FPR

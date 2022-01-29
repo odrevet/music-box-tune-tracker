@@ -16,6 +16,7 @@ try:
 except ImportError:
     pass
 
+from record import Record
 
 def play_note(note, audio, midi=None):
     if audio == "midi" and "mido" in sys.modules:
@@ -34,7 +35,7 @@ def play(audio, midi, record, start_at, on_note_callback):
         if getattr(t, "do_run", True) == False:
             return
 
-        for track_index in range(record.tracks_count):
+        for track_index in range(Record.TONES_COUNT):
             if record.has_note(beat_index, track_index):
                 play_note(record.NOTES[track_index], audio, midi)
         time.sleep(FPR_SEC_BETWEEN_BEATS)
