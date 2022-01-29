@@ -27,7 +27,7 @@ pip install playsound
 
 ## Midi audio backend and extra functionalities
 
-For more informations about using midi as an audio backend and import/export from midi files, see [midi.md](midi.md).
+For more informations about using midi as an audio backend and import/export from midi files, see [midi.md](doc/midi.md).
 
 # music_box_tracker.py
 
@@ -80,7 +80,7 @@ Open a scad file then menu Design/Render (F6) then File/Export/Export as STL (F7
 
 * [FredMurphy](https://github.com/FredMurphy) to have created and shared "Fred Record Player" source code, it was of a great help, notably to implement the export to scad feature.
 
-More informations on running Fred Record Player under linux are available in the [fred_record_player](fred_record_player.md) file
+More informations on running Fred Record Player under linux are available in the [fred_record_player](doc/fred_record_player.md) file
 
 * Writing functions by HarlanDMii http://www.thingiverse.com/thing:16193
 
