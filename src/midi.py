@@ -8,20 +8,17 @@ class Midi:
     program = 10
     port = None
 
-    def __init__(self):
-        pass
-
     def open_port(self, portname):
         try:
-           self.port = mido.open_output(portname)
+           Midi.port = mido.open_output(portname)
         except:
-           self.port = mido.open_output()
+           Midi.port = mido.open_output()
 
     def close_port(self):
-        self.port.close()
+        Midi.port.close()
 
     def set_program(self, program):
-        self.program = program
+        Midi.program = program
         self.port.send(mido.Message("program_change", program=program))
 
     def play_note(self, note):
@@ -33,7 +30,7 @@ class Midi:
         track = mido.MidiTrack()
         mid.tracks.append(track)
 
-        track.append(mido.Message("program_change", program=self.program, time=0))
+        track.append(mido.Message("program_change", program=Midi.program, time=0))
 
         for beat_index in range(record.beats_count):
             for track_index in range(record.tracks_count):

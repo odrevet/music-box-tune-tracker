@@ -15,7 +15,6 @@ class CursesDisplay:
     record = None
     tone_descending = True
     window = None
-
     display_from = 0
 
     def __init__(self, record=None):

@@ -5,16 +5,14 @@ class Record:
     # what the .fpr format uses
     __NOTE_FPR = "+"
     __EMPTY_FPR = "-"
-
-    filename = None
-    title = "Default"
-    comment = ""
-    _partition = None  # list of lists of boolean: [track][beat] True indicates a note
-    tracks_count = 0
-    beats_count = 0
     NOTES = [67, 72, 74, 76, 79, 81, 83, 84, 86, 88, 89, 91, 93, 95, 96, 98]
 
     def __init__(self, beats_count, tracks_count):
+        self.filename = None
+        self.title = "Default"
+        self.comment = ""
+
+        # list of lists of boolean: [track][beat] True indicates a note
         self._partition = [
             [False for x in range(beats_count)] for y in range(tracks_count)
         ]
@@ -63,7 +61,6 @@ class Record:
 
     def load(self):
         try:
-            input = ""
             with open(self.filename) as fp:
                 lineno = 0
                 max_len_line = 0
