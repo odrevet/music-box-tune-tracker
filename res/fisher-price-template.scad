@@ -6,7 +6,7 @@
 
 // writing functions by HarlanDMii
 // http://www.thingiverse.com/thing:16193
-use <Write.scad>
+use <writescad/Write.scad>
 
 // Configuration
 $fn = 100;
