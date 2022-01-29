@@ -22,7 +22,7 @@ def play_note(note, audio, midi=None):
         midi.play_note(note)
     elif audio == "wav" and "playsound" in sys.modules:
         threading.Thread(
-            target=playsound, args=(f"wav/{note}.wav",), daemon=True
+            target=playsound, args=(f"res/wav/{note}.wav",), daemon=True
         ).start()
 
 
