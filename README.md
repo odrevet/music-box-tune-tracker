@@ -31,6 +31,8 @@ For more informations about using midi as an audio backend and import/export fro
 
 # music_box_tracker.py
 
+`python src/music_box_tracker.py`
+
 Edit and preview `fpr` files.
 
 ## Keys
@@ -53,7 +55,7 @@ Edit and preview `fpr` files.
 
 # Convert .fpr to .scad
 
-.fpr file can be converted to .scad file by using the `fpr_to_scad.py` script
+.fpr file can be converted to .scad file by using the `src/fpr_to_scad.py` script
 
 
 ```
