@@ -24,7 +24,6 @@ try:
 except ImportError:
     pass
 
-import const
 from record import Record
 from ui_curses.display import CursesDisplay
 from ui_curses.control import run_curses

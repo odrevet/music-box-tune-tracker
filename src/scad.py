@@ -1,5 +1,4 @@
 import math
-import const
 from record import Record
 
 # Variable to replace in the scad template are:
