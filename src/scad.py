@@ -39,7 +39,7 @@ TRACK_RADIUS = [
 ]
 
 
-class ExpandedRecord(Record):
+class PhysicalRecord(Record):
     def __init__(self, beats_count, record):
         super().__init__(beats_count)
         self.title = record.title
@@ -112,7 +112,7 @@ def pins_to_str(pins, indent):
     return pin_str
 
 
-def get_pins(expanded_record, is_second_side):
+def get_pins(physical_record, is_second_side):
     pins = []
     OVERLAP = 0.2
 
@@ -121,9 +121,9 @@ def get_pins(expanded_record, is_second_side):
             TRACK_RADIUS[track_index] - 0.5 - (OVERLAP if track_index % 2 == 0 else 0)
         )
         outer = inner + 1 + OVERLAP
-        for note_index in range(expanded_record.beats_count):
-            if expanded_record.has_note(note_index, track_index):
-                pin = Pin(inner, outer, is_second_side, expanded_record.beats_count)
+        for note_index in range(physical_record.beats_count):
+            if physical_record.has_note(note_index, track_index):
+                pin = Pin(inner, outer, is_second_side, physical_record.beats_count)
                 pin.set_angle(track_index, note_index)
                 pins.append(pin)
     return pins
@@ -138,25 +138,25 @@ def to_scad(version, date_time, thickness, record, record_bis=None):
         content = content.replace("{SECOND_SIDE}", "0" if record_bis is None else "1")
 
         indent = "\t" * 2
-        expanded_record = ExpandedRecord(Record.MAX_BEAT, record)
-        pins = get_pins(expanded_record, False)
+        physical_record = PhysicalRecord(Record.MAX_BEAT, record)
+        pins = get_pins(physical_record, False)
         pin_str = pins_to_str(pins, indent)
 
-        if expanded_record.title is not None:
+        if physical_record.title is not None:
             pin_str += (
-                "\n" + indent + 'title("{}",{});\n\n'.format(expanded_record.title, "0")
+                "\n" + indent + 'title("{}",{});\n\n'.format(physical_record.title, "0")
             )
 
         if record_bis is not None:
-            expanded_record_bis = ExpandedRecord(Record.MAX_BEAT, record_bis)
-            pins_bis = get_pins(expanded_record_bis, True)
+            physical_record_bis = PhysicalRecord(Record.MAX_BEAT, record_bis)
+            pins_bis = get_pins(physical_record_bis, True)
             pin_str += pins_to_str(pins_bis, indent)
 
-            if expanded_record_bis.title is not None:
+            if physical_record_bis.title is not None:
                 pin_str += (
                     "\n"
                     + indent
-                    + 'title("{}",{});\n\n'.format(expanded_record_bis.title, "1")
+                    + 'title("{}",{});\n\n'.format(physical_record_bis.title, "1")
                 )
 
         content = content.replace("{NOTES}", pin_str)
