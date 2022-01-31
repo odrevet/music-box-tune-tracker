@@ -59,5 +59,5 @@ aplaymidi -l
 ## Example
 
 ```
-python music_box_tracker.py --port 'TiMidity port 0'
+python src/music_box_tracker.py --port 'TiMidity port 0'
 ```
